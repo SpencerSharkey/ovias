@@ -7,7 +7,6 @@ DEFINE_BASECLASS( "drive_base" );
 
 SF:Msg("\t\t\t** Registering drive_ovias **\n")
 
-
 drive.Register( "drive_ovias", 
 {
 	// Clientside CalcView
@@ -19,13 +18,25 @@ drive.Register( "drive_ovias",
 
 		view.origin = view.origin - oang:Forward()*100
 
+		// Trace in all directions so we dont't hit walls.
+		local tr = util.TraceLine({
+			startpos = view.origin,
+			filter = self.Entity,
+			endpos = view.origin + oang:Forward()*-5 + oang:Right()*5
+		})
+				
+		if (tr.Fraction < 1) then
+			view.origin = tr.HitPos + tr.HitNormal*5
+		end
+
+		// Set some global player variables, so we can use them in other areas of the gamemode (getting the mouse->world pos)
 		self.Player.ov_ViewAngles = view.angles
 		self.Player.ov_ViewOrigin = view.origin
+
 	end,
 
 	// Before Movement, setting shit up here.
 	StartMove =  function( self, mv, cmd )
-
 		local ma = mv:GetMoveAngles()
 		ma.pitch = 40
 		mv:SetMoveAngles(ma)
