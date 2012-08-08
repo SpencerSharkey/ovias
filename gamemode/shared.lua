@@ -34,7 +34,12 @@ function GM:GetGamemodeDescription()
 	return self:GetGameDescription()
 end
 
-function SF:Msg(s)
+function SF:Msg(s, t)
+	t = t or 0
+	for i = 1, t do
+		s = "\t"..s
+	end
+	s = s.."\n"
 	Msg(s)
 end
 
@@ -58,7 +63,6 @@ function hook.Call(name, gamemode, ...)
 	end
 
 	if (returnvalue) then
-		//print(name)
 		returnvalue = oldHook(name, gamemode, ...)
 	end
 
@@ -81,7 +85,7 @@ end
 function SF:RegisterClass(s, t)
 	if (!self.CLASSES[s]) then
 		self.CLASSES[s] = t
-		self:Msg("\t\t\tRegistering Class: "..s.."\n")
+		self:Msg("Registering Class: "..s, 3)
 	end
 end
 
@@ -98,14 +102,14 @@ function SF:Include(Dir, File)
 end
 
 function SF:IncludeCS(Dir)
-	self:Msg("\tAdding Client Folder: ["..self.LoaderDir.."/"..Dir.."]\n")
+	self:Msg("Adding Client Folder: ["..self.LoaderDir.."/"..Dir.."]", 1)
 	for k, File in pairs(file.Find(self.LoaderDir.."/"..Dir.."/cl_*.lua", LUA_PATH)) do
-		self:Msg("\t\tFound Client File: "..File.."\n")
+		self:Msg("Found Client File: "..File, 2)
 		AddCSLuaFile(Dir.."/"..File)
 	end
 
 	for k, File in pairs(file.Find(self.LoaderDir.."/"..Dir.."/sh_*.lua", LUA_PATH)) do
-		self:Msg("\t\tFound Shared File: "..File.."\n")
+		self:Msg("Found Shared File: "..File, 2)
 		AddCSLuaFile(Dir.."/"..File)
 	end
 end
@@ -116,9 +120,9 @@ function SF:IncludeDirectory(Dir)
 	end
 
 	for k, side in pairs(self:GetSides()) do
-		self:Msg("\tLoading Side: "..side.." ["..self.LoaderDir.."/"..Dir.."/"..side.."*.lua]\n")
+		self:Msg("Loading Side: "..side.." ["..self.LoaderDir.."/"..Dir.."/"..side.."*.lua]", 1)
 		for k, File in pairs(file.Find(self.LoaderDir.."/"..Dir.."/"..side.."*.lua", LUA_PATH)) do
-			self:Msg("\t\tFound File: "..File.."\n")
+			self:Msg("Found File: "..File, 2)
 			self:Include(Dir, File)
 		end
 	end
@@ -151,29 +155,24 @@ function SF:Init(Dir)
 	
 	self.ResourceDir = "gamemodes/"..Dir.."/content"
 
-	self:Print("###############################################")
-	self:Print("# "..Dir.." by Slidefuse")
+	self:Msg("###############################################")
+	self:Msg("# "..Dir.." by Slidefuse")
 	
 	if(SERVER) then
-		self:Print("# Sending Resources to Client")
+		self:Msg("# Sending Resources to Client")
 		self:AddResourceDirectory("sound")
 		self:AddResourceDirectory("models")
 		self:AddResourceDirectory("materials")
 		self:AddResourceDirectory("resources")
 	end
 	
-	self:Print("# Loading LUA Files")
+	self:Msg("# Loading LUA Files")
 	self:IncludeDirectory("classes")
 	self:IncludeDirectory("vgui")
 
-	self:Print("\tSetting up NetHooks")
+	self:Msg("Setting up NetHooks", 1)
 	self:Call("SetupNetHooks")
-	self:Print("###############################################")
-
-	self:Msg("*** Search ***\n")
-	SF:Msg(GM.Folder:gsub("gamemodes/","") .. "/gamemode\n")
+	self:Msg("###############################################")
 end
-
-
 
 SF:Init("ovias")
