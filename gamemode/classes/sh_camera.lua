@@ -55,6 +55,7 @@ drive.Register( "drive_ovias",
 
 		local ang = mv:GetMoveAngles()
 		local pos = mv:GetOrigin()
+
 		local vel = mv:GetVelocity()
 		ang.pitch = 0
 
@@ -103,3 +104,11 @@ drive.Register( "drive_ovias",
 	end,
 
 }, "drive_base" );
+
+
+local ncam = {}
+
+function ncam:SetupNetHooks()
+end
+
+SF:RegisterClass("ncam", ncam)
