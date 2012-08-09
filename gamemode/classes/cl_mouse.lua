@@ -5,36 +5,37 @@
 
 if (SERVER) then return end
 
-local CLASS = {}
+SF.Mouse = {}
 
-local e = ClientsideModel("models/roller.mdl")
-e:Spawn()
-e:Activate()
+SF.Mouse.ent = ClientsideModel("models/roller.mdl")
+SF.Mouse.ent:Spawn()
+SF.Mouse.ent:Activate()
 
-CLASS.Rotating = true
+gui.EnableScreenClicker(true)
 
+local lastX = 0
+local lastY = 0
+function SF.Mouse:CreateMove(cmd)
+	local x, y = gui.MousePos()
+	local deltaX = x-lastX
+	local deltaY = y-lastY
 
-
-function CLASS:Think()
-	e:SetAngles(Angle(0, CurTime()*150, 0))
+	/* Rotation */
+	local angle = cmd:GetViewAngles()
 	if (input.IsMouseDown(MOUSE_MIDDLE)) then
-		if (!self.Rotating) then
-			gui.EnableScreenClicker(false)
-			self.Rotating = true
-			RememberCursorPosition()
-		end
-	else
-		if (self.Rotating) then
-			gui.EnableScreenClicker(true)
-			RestoreCursorPosition()
-			self.Rotating = false
-		end
-		gui.EnableScreenClicker(true)
+		angle.yaw = angle.yaw + deltaX/((ScrW()/360)*1) //The division cleans it up for different monitors.
+		cmd:SetViewAngles(angle)
 	end
-	local tr = LocalPlayer():GetEyeTrace()
-	//print(tr.HitPos)
-	e:SetPos(tr.HitPos + Vector(0, 0, 0))
-	//e:SetAngles(tr.HitNormal:Angle())
+
+	/* Movement /w Right Click + Drag */
+	if (input.IsMouseDown(MOUSE_RIGHT)) then
+		cmd:SetSideMove(ScrW()*5*-deltaX)
+		cmd:SetForwardMove(ScrH()*5*deltaY)
+	end
+
+	/* Manual Deltas */
+	lastX = x
+	lastY = y
 end
 
-SF:RegisterClass("clMouse", CLASS)
+SF:RegisterClass("clMouse", SF.Mouse)
