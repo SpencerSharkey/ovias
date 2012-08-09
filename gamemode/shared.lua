@@ -35,6 +35,7 @@ function GM:GetGamemodeDescription()
 end
 
 function SF:Msg(s, t)
+	s = tostring(s)
 	t = t or 0
 	for i = 1, t do
 		s = "\t"..s
