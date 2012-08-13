@@ -11,13 +11,13 @@ UNIT.metaNet = {}
 
 /* Some shared Base functions for units to use */
 
-function UNIT.__call(key, val, network)
-	if (!val) then
-		return self.metaData[key] or nil
+function UNIT:__call(key, val, network)
+	if (!val and self.metaData[key]) then
+		return self.metaData[key]
 	else
 		self.metaData[key] = val
 		if (network and SERVER) then
-			self.metaNet[key] = true
+			self.metaNet[key] = network // Can alwasy pass false incase you wanna turn netwokring off. I guess.
 			self:NetworkMeta(key)
 		end
 	end

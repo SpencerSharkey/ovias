@@ -131,23 +131,25 @@ function SF:IncludeDirectory(Dir, Prefix)
 	end
 end
 
-function SF:IncludeDirectoryRel(Search, Include, t)
+function SF:IncludeDirectoryRel(Search, Include, t, hide)
+	local hide = hide or false
 	local t = t or 1
-	self:Msg("Adding Client Folder: ["..self.LoaderDir.."/"..Search.."]", t)
+
+	if (hide) then self:Msg("Adding Client Folder: ["..self.LoaderDir.."/"..Search.."]", t) end
 	for k, File in pairs(file.Find(self.LoaderDir.."/"..Search.."/cl_*.lua", LUA_PATH)) do
-		self:Msg("Found Client File: "..File, t+1)
+		if (hide) then self:Msg("Found Client File: "..File, t+1) end
 		AddCSLuaFile(Include.."/"..File)
 	end
 
 	for k, File in pairs(file.Find(self.LoaderDir.."/"..Search.."/sh_*.lua", LUA_PATH)) do
-		self:Msg("Found Shared File: "..File, t+1)
+		if (hide) then self:Msg("Found Shared File: "..File, t+1) end
 		AddCSLuaFile(Include.."/"..File)
 	end
 
 	for k, side in pairs(self:GetSides()) do
-		self:Msg("Loading Side: "..side.." ["..self.LoaderDir.."/"..Search.."/"..side.."*.lua]", t)
+		if (hide) then self:Msg("Loading Side: "..side.." ["..self.LoaderDir.."/"..Search.."/"..side.."*.lua]", t) end
 		for k, File in pairs(file.Find(self.LoaderDir.."/"..Search.."/"..side.."*.lua", LUA_PATH)) do
-			self:Msg("Found File: "..File, t+1)
+			if (hide) then self:Msg("Found File: "..File, t+1) end
 			self:Include(Include, File)
 		end
 	end

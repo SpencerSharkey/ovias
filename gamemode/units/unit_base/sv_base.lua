@@ -7,10 +7,20 @@
 
 
 function UNIT:Init()
-	self.Ent = ents.Create("ov_unit")
-	self.Ent:SetUnit(self)
-
 	self("model", "models/roller.mdl")
+	self("size", 8)
+	self("speed", 5)
+
+	self.Ent = ents.Create("ov_unit")
+	self.Ent:InitUnit(self)
+end
+
+function UNIT:GetPos()
+	return self.Ent:GetPos()
+end
+
+function ENT:GetAngles()
+	return self.Ent:GetAngles()
 end
 
 function UNIT:SetPos(v)
