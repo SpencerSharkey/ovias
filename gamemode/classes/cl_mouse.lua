@@ -5,6 +5,7 @@
 
 if (SERVER) then return end
 
+local worldPanel = vgui.GetWorldPanel()
 SF.Mouse = {}
 
 SF.Mouse.ent = ClientsideModel("models/roller.mdl")
@@ -15,6 +16,7 @@ gui.EnableScreenClicker(true)
 
 local lastX = 0
 local lastY = 0
+local dragAncor, dragTime
 function SF.Mouse:CreateMove(cmd)
 	local x, y = gui.MousePos()
 	local deltaX = x-lastX
@@ -29,13 +31,40 @@ function SF.Mouse:CreateMove(cmd)
 
 	/* Movement /w Right Click + Drag */
 	if (input.IsMouseDown(MOUSE_RIGHT)) then
-		cmd:SetSideMove(ScrW()*5*-deltaX)
-		cmd:SetForwardMove(ScrH()*5*deltaY)
+		local tr
+		if (dragAnchor) then //Override the pos with the anchor, so we can be pinpoint :)
+			tr = LocalPlayer():GetEyeTraceAnchor(dragAnchor)
+			//print(tr.HitPos)
+		else
+			tr = LocalPlayer():GetEyeTrace()
+			dragAnchor = tr.HitPos
+			self.ent:SetPos(dragAnchor)
+			dragTime = CurTime()
+		end
+
+		local deltaTime = CurTime() - dragTime
+		local deltaPos = tr.HitPos - dragAnchor
+		print(deltaPos)
+		LocalPlayer().ov_DragDelta = Vector(math.Round(deltaPos.x), math.Round(deltaPos.y), math.Round(deltaPos.z))
+		//print(deltaTime, LocalPlayer().ov_DragDelta)
+	else
+		dragAnchor = nil
+		LocalPlayer().ov_DragDelta = nil
+		dragtime = nil
+		self.ent:SetPos(Vector(0))
 	end
 
 	/* Manual Deltas */
 	lastX = x
 	lastY = y
+end
+
+
+function worldPanel:OnMouseWheeled(delta)
+	if (!LocalPlayer().ov_ZoomDelta) then
+		LocalPlayer().ov_ZoomDelta = 0
+	end
+	LocalPlayer().ov_ZoomDelta =  LocalPlayer().ov_ZoomDelta + delta*-1 * 12
 end
 
 SF:RegisterClass("clMouse", SF.Mouse)

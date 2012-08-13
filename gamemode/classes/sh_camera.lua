@@ -5,18 +5,60 @@
 
 DEFINE_BASECLASS( "drive_base" );
 
-SF:Msg("\t\t\t** Registering drive_ovias **\n")
+SF:Msg("** Registering drive_ovias **", 3)
+
+local overrideCalcOrigin = Vector(0)
+
+local A = 90
+local sinA = math.sin(math.Deg2Rad(90))
+local cosA = math.cos(math.Deg2Rad(90))
 
 drive.Register( "drive_ovias", 
 {
 	// Clientside CalcView
 	CalcView =  function( self, view )
-		view.angles.pitch = 40
-		view.angles.roll = 0
+		if (!self.Player.ov_ViewAngles or !self.Player.ov_ViewOrigin) then
+			self.Player.ov_ViewAngles = view.angles
+			self.Player.ov_ViewOrigin = view.origin
+		end
+		// the math for calculating the angle is here: http://4stor.com/images/AfPu.png
 
-		local oang = Angle(0, view.angles.yaw, 0)
+		view.angles.pitch = 45
 
-		view.origin = view.origin - oang:Forward()*100
+		// Make a copy of the angles so we can find the distance we want
+		local oang = Angle(view.angles.p, view.angles.y, view.angles.r)
+		oang.pitch = 0
+
+		// Get the distance from the ground
+		local tr = util.TraceLine({
+			startpos = view.origin,
+			filter = self.Entity,
+			endpos = view.origin - Vector(0, 0, 2000)
+		})
+
+
+		local groundDist = view.origin.z - tr.HitPos.z // Distance from the ground ('c' in the triangle drawing)
+		
+		local b = self.Player.ov_ZoomLevel
+		//SF:Msg("Z: "..self.Player.ov_ZoomLevel)
+	
+		view.origin = view.origin - oang:Forward()*groundDist // Set the distance for the camera to be away from. Half the height!
+
+		//local save = self.Player.ov_ViewAngles
+		//local c = self.Player:MouseToWorld(ScrW()/2, ScrH()/2).HitPos:Distance(view.origin) - 10
+		
+
+		//local a = math.sqrt((c^2 + b^2) - (2*c*b*cosA)) // Law of Cosines
+
+		//print (a, b, c)
+
+		///SF:Msg(math.asin()
+		//SF:Msg((sinA*b)/a)
+		//local B = math.deg(math.sin((sinA*b)/a))
+		//view.angles.pitch = B
+
+		//print(B)
+
 
 		// Trace in all directions so we dont't hit walls.
 		local tr = util.TraceLine({
@@ -37,9 +79,22 @@ drive.Register( "drive_ovias",
 
 	// Before Movement, setting shit up here.
 	StartMove =  function( self, mv, cmd )
+		if (!self.Player.ovCamera) then
+			self.Player.ovCamera = self.Entity
+		end
 		local ma = mv:GetMoveAngles()
-		ma.pitch = 40
+		ma.pitch = 50
 		mv:SetMoveAngles(ma)
+
+		if (!self.Player.ov_ZoomLevel) then
+			self.Player.ov_ZoomLevel = 48
+		end
+		
+		if (self.Player.ov_ZoomDelta != nil) then
+			self.Player.ov_ZoomLevel = math.Clamp(self.Player.ov_ZoomLevel + self.Player.ov_ZoomDelta, 48, 220)
+			self.Player.ov_ZoomDelta = nil
+			SF:Net("ZoomLevel", {self.Player.ov_ZoomLevel})
+		end
 
 		local vOrigin = self.Entity:GetNetworkOrigin()
 
@@ -66,9 +121,13 @@ drive.Register( "drive_ovias",
 			filter = self.Entity
 		}
 		local tr = util.TraceLine(trace)
+		
+		//pos.z = self.Player.ov_ZoomLevel
+
 		if (tr.HitWorld) then
-			pos.z = Lerp(0.05, pos.z, tr.HitPos.z + 150)
+			pos.z = math.Round(Lerp(0.05, pos.z, tr.HitPos.z + self.Player.ov_ZoomLevel))
 		end
+
 
 		vel = vel + ang:Forward() * mv:GetForwardSpeed() * speed
 		vel = vel + ang:Right() * mv:GetSideSpeed() * speed
@@ -76,6 +135,7 @@ drive.Register( "drive_ovias",
 
 		// Air resistance
 		vel = vel * 0.90
+
 
 		pos = pos + vel
 
@@ -109,6 +169,9 @@ drive.Register( "drive_ovias",
 local ncam = {}
 
 function ncam:SetupNetHooks()
+	SF:NetHook("ZoomLevel", function(ply, level)
+		ply.ov_ZoomLevel = level[1]
+	end)
 end
 
 SF:RegisterClass("ncam", ncam)
