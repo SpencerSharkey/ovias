@@ -102,22 +102,24 @@ function SF:Include(Dir, File)
 	include(Dir.."/"..File)
 end
 
-function SF:IncludeCS(Dir)
+function SF:IncludeCS(Dir, Prefix)
+	local Prefix = Prefix or ""
 	self:Msg("Adding Client Folder: ["..self.LoaderDir.."/"..Dir.."]", 1)
 	for k, File in pairs(file.Find(self.LoaderDir.."/"..Dir.."/cl_*.lua", LUA_PATH)) do
 		self:Msg("Found Client File: "..File, 2)
-		AddCSLuaFile(Dir.."/"..File)
+		AddCSLuaFile(Prefix..Dir.."/"..File)
 	end
 
 	for k, File in pairs(file.Find(self.LoaderDir.."/"..Dir.."/sh_*.lua", LUA_PATH)) do
 		self:Msg("Found Shared File: "..File, 2)
-		AddCSLuaFile(Dir.."/"..File)
+		AddCSLuaFile(Prefix..Dir.."/"..File)
 	end
 end
 
-function SF:IncludeDirectory(Dir)
+function SF:IncludeDirectory(Dir, Prefix)
+	local Prefix = Prefix or ""
 	if (SERVER) then
-		self:IncludeCS(Dir)
+		self:IncludeCS(Dir, Prefix)
 	end
 
 	for k, side in pairs(self:GetSides()) do
@@ -125,6 +127,28 @@ function SF:IncludeDirectory(Dir)
 		for k, File in pairs(file.Find(self.LoaderDir.."/"..Dir.."/"..side.."*.lua", LUA_PATH)) do
 			self:Msg("Found File: "..File, 2)
 			self:Include(Dir, File)
+		end
+	end
+end
+
+function SF:IncludeDirectoryRel(Search, Include, t)
+	local t = t or 1
+	self:Msg("Adding Client Folder: ["..self.LoaderDir.."/"..Search.."]", t)
+	for k, File in pairs(file.Find(self.LoaderDir.."/"..Search.."/cl_*.lua", LUA_PATH)) do
+		self:Msg("Found Client File: "..File, t+1)
+		AddCSLuaFile(Include.."/"..File)
+	end
+
+	for k, File in pairs(file.Find(self.LoaderDir.."/"..Search.."/sh_*.lua", LUA_PATH)) do
+		self:Msg("Found Shared File: "..File, t+1)
+		AddCSLuaFile(Include.."/"..File)
+	end
+
+	for k, side in pairs(self:GetSides()) do
+		self:Msg("Loading Side: "..side.." ["..self.LoaderDir.."/"..Search.."/"..side.."*.lua]", t)
+		for k, File in pairs(file.Find(self.LoaderDir.."/"..Search.."/"..side.."*.lua", LUA_PATH)) do
+			self:Msg("Found File: "..File, t+1)
+			self:Include(Include, File)
 		end
 	end
 end
@@ -157,7 +181,7 @@ function SF:Init(Dir)
 	self.ResourceDir = "gamemodes/"..Dir.."/content"
 
 	self:Msg("###############################################")
-	self:Msg("# "..Dir.." by Slidefuse")
+	self:Msg("# "..GM.Name.." by "..GM.Author.." ("..GM.Email..")")
 	
 	if(SERVER) then
 		self:Msg("# Sending Resources to Client")
