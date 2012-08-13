@@ -4,3 +4,7 @@
 
 	Unit: base
 ]]--
+
+function UNIT:Draw()
+	-- custom draw code here
+end

@@ -8,6 +8,9 @@
 
 function UNIT:Init()
 	self.Ent = ents.Create("ov_unit")
+	self.Ent:SetUnit(self)
+
+	self("model", "models/roller.mdl")
 end
 
 function UNIT:SetPos(v)
