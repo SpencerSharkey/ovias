@@ -6,7 +6,7 @@
 ]]--
 
 
-function UNIT:Init()
+function STRUCTURE:Init()
 	self("model", "models/roller.mdl")
 	self("size", 8)
 	self("speed", 5)
@@ -15,23 +15,23 @@ function UNIT:Init()
 	self.Ent:InitUnit(self)
 end
 
-function UNIT:GetPos()
+function STRUCTURE:GetPos()
 	return self.Ent:GetPos()
 end
 
-function UNIT:GetAngles()
+function STRUCTURE:GetAngles()
 	return self.Ent:GetAngles()
 end
 
-function UNIT:SetPos(v)
+function STRUCTURE:SetPos(v)
 	if (!IsValid(self.Ent)) then return end
 	self.Ent:SetPos(v)
 end
 
-function UNIT:SetAngles(a)
+function STRUCTURE:SetAngles(a)
 	self.Ent:SetAngles(a)
 end
 
-function UNIT:SetColor(c)
+function STRUCTURE:SetColor(c)
 	self.Ent:SetColor(c)
 end

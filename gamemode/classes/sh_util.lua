@@ -1,4 +1,7 @@
 if (CLIENT) then
+
+	local meta = FindMetaTable("Player")
+
 	function MPosAimVec(iScreenX,iScreenY,iScreenW,iScreenH,aCamRot,fFoV)
 		if(!aCamRot) then return Vector(0) end
 	    local fHalfWidth = iScreenW*0.5;
@@ -12,7 +15,7 @@ if (CLIENT) then
 	    return (vForward*d + vRight*(iScreenX-fHalfWidth) + vUp*(fHalfHeight-iScreenY)):GetNormal();
 	end
 
-	function _R.Player:GetEyeTrace()
+	function meta:GetEyeTrace()
 
 		local vAngles = self.ov_ViewAngles
 		local vOrigin = self.ov_ViewOrigin
@@ -33,7 +36,7 @@ if (CLIENT) then
 		return tr
 	end
 
-	function _R.Player:MouseToWorld(mposx, mposy)
+	function meta:MouseToWorld(mposx, mposy)
 
 		local vAngles = self.ov_ViewAngles
 		local vOrigin = self.ov_ViewOrigin
@@ -52,7 +55,7 @@ if (CLIENT) then
 		return tr
 	end
 
-	function _R.Player:GetEyeTraceAnchor(anchor)
+	function meta:GetEyeTraceAnchor(anchor)
 
 		local vAngles = self.ov_ViewAngles
 		local vOrigin = anchor

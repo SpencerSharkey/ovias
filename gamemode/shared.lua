@@ -15,8 +15,9 @@ SF.TEAM_CONNECTED = 2
 SF.TEAM_SPEC = 1
 SF.TEAM_JOINING = 0
 
-if (SERVER) then
-	require("json")
+function file.FindDir(path, mode)
+	local f, d = file.Find(path, mode)
+	return d
 end
 
 function GM:CreateTeams()
@@ -92,7 +93,7 @@ end
 
 function SF:GetSides()
 	if(SERVER) then
-		return {"sh_", "sv_", "cl_"} // Include cl_ for now to make autoupdate work
+		return {"sh_", "sv_"}
 	else
 		return {"sh_", "cl_"}
 	end
@@ -105,12 +106,12 @@ end
 function SF:IncludeCS(Dir, Prefix)
 	local Prefix = Prefix or ""
 	self:Msg("Adding Client Folder: ["..self.LoaderDir.."/"..Dir.."]", 1)
-	for k, File in pairs(file.Find(self.LoaderDir.."/"..Dir.."/cl_*.lua", LUA_PATH)) do
+	for k, File in pairs(file.Find(self.LoaderDir.."/"..Dir.."/cl_*.lua", "LUA")) do
 		self:Msg("Found Client File: "..File, 2)
 		AddCSLuaFile(Prefix..Dir.."/"..File)
 	end
 
-	for k, File in pairs(file.Find(self.LoaderDir.."/"..Dir.."/sh_*.lua", LUA_PATH)) do
+	for k, File in pairs(file.Find(self.LoaderDir.."/"..Dir.."/sh_*.lua", "LUA")) do
 		self:Msg("Found Shared File: "..File, 2)
 		AddCSLuaFile(Prefix..Dir.."/"..File)
 	end
@@ -124,7 +125,7 @@ function SF:IncludeDirectory(Dir, Prefix)
 
 	for k, side in pairs(self:GetSides()) do
 		self:Msg("Loading Side: "..side.." ["..self.LoaderDir.."/"..Dir.."/"..side.."*.lua]", 1)
-		for k, File in pairs(file.Find(self.LoaderDir.."/"..Dir.."/"..side.."*.lua", LUA_PATH)) do
+		for k, File in pairs(file.Find(self.LoaderDir.."/"..Dir.."/"..side.."*.lua", "LUA")) do
 			self:Msg("Found File: "..File, 2)
 			self:Include(Dir, File)
 		end
@@ -136,19 +137,19 @@ function SF:IncludeDirectoryRel(Search, Include, t, hide)
 	local t = t or 1
 
 	if (hide) then self:Msg("Adding Client Folder: ["..self.LoaderDir.."/"..Search.."]", t) end
-	for k, File in pairs(file.Find(self.LoaderDir.."/"..Search.."/cl_*.lua", LUA_PATH)) do
+	for k, File in pairs(file.Find(self.LoaderDir.."/"..Search.."/cl_*.lua", "LUA")) do
 		if (hide) then self:Msg("Found Client File: "..File, t+1) end
 		AddCSLuaFile(Include.."/"..File)
 	end
 
-	for k, File in pairs(file.Find(self.LoaderDir.."/"..Search.."/sh_*.lua", LUA_PATH)) do
+	for k, File in pairs(file.Find(self.LoaderDir.."/"..Search.."/sh_*.lua", "LUA")) do
 		if (hide) then self:Msg("Found Shared File: "..File, t+1) end
 		AddCSLuaFile(Include.."/"..File)
 	end
 
 	for k, side in pairs(self:GetSides()) do
 		if (hide) then self:Msg("Loading Side: "..side.." ["..self.LoaderDir.."/"..Search.."/"..side.."*.lua]", t) end
-		for k, File in pairs(file.Find(self.LoaderDir.."/"..Search.."/"..side.."*.lua", LUA_PATH)) do
+		for k, File in pairs(file.Find(self.LoaderDir.."/"..Search.."/"..side.."*.lua", "LUA")) do
 			if (hide) then self:Msg("Found File: "..File, t+1) end
 			self:Include(Include, File)
 		end

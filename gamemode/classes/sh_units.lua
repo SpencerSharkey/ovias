@@ -16,7 +16,7 @@ SF.Units.buffer_dir = {}
 
 function SF.Units:LoadUnits()
 	SF:Msg("Loading Units", 2)
-	local _, dirs = file.Find(SF.LoaderDir.."/units/*", LUA_PATH)
+	local _, dirs = file.Find(SF.LoaderDir.."/units/*", "LUA")
 	for _, unitClass in pairs(dirs) do	
 		self:LoadUnit(unitClass)
 	end
@@ -93,7 +93,7 @@ end
 
 function SF.Units:LoadDirectives()
 	SF:Msg("Loading Directives", 2)
-	for _, dirFile in pairs(file.Find(SF.LoaderDir.."/directives/sh_*.lua", LUA_PATH)) do
+	for _, dirFile in pairs(file.Find(SF.LoaderDir.."/directives/sh_*.lua", "LUA")) do
 		DIRECTIVE = {}
 		if (SERVER) then
 			AddCSLuaFile("../directives/"..dirFile)
