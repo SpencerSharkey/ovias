@@ -3,7 +3,7 @@
 	Copyright © Slidefuse LLC - 2012
 ]]--
 
-require("tmysql4")
+require("tmysql")
 
 SF.Database = {}
 

@@ -29,31 +29,6 @@ function SF.Mouse:CreateMove(cmd)
 		cmd:SetViewAngles(angle)
 	end
 
-	/* Movement /w Right Click + Drag */
-	if (input.IsMouseDown(MOUSE_RIGHT)) then
-		local tr
-		if (dragAnchor) then //Override the pos with the anchor, so we can be pinpoint :)
-			tr = LocalPlayer():GetEyeTraceAnchor(dragAnchor)
-			//print(tr.HitPos)
-		else
-			tr = LocalPlayer():GetEyeTrace()
-			dragAnchor = tr.HitPos
-			self.ent:SetPos(dragAnchor)
-			dragTime = CurTime()
-		end
-
-		local deltaTime = CurTime() - dragTime
-		local deltaPos = tr.HitPos - dragAnchor
-		print(deltaPos)
-		LocalPlayer().ov_DragDelta = Vector(math.Round(deltaPos.x), math.Round(deltaPos.y), math.Round(deltaPos.z))
-		//print(deltaTime, LocalPlayer().ov_DragDelta)
-	else
-		dragAnchor = nil
-		LocalPlayer().ov_DragDelta = nil
-		dragtime = nil
-		self.ent:SetPos(Vector(0))
-	end
-
 	/* Manual Deltas */
 	lastX = x
 	lastY = y

@@ -147,9 +147,14 @@ function SF.Units:GetDirective(id)
 	return nil
 end
 
+/* Functions for spawning new units */
+
+function SF.Units:Spawn(type)
+	local un = self:New(type)
+	return un;
+end
 
 SF:RegisterClass("shUnits", SF.Units)
-
 
 SF.Units:LoadUnits()
 SF.Units:LoadDirectives()

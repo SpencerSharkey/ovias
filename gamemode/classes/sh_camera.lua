@@ -10,8 +10,8 @@ SF:Msg("** Registering drive_ovias **", 3)
 local overrideCalcOrigin = Vector(0)
 
 local A = 90
-local sinA = math.sin(math.Deg2Rad(90))
-local cosA = math.cos(math.Deg2Rad(90))
+local sinA = math.sin(math.rad(90))
+local cosA = math.cos(math.rad(90))
 
 drive.Register( "drive_ovias", 
 {
