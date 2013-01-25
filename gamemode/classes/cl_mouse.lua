@@ -34,6 +34,21 @@ function SF.Mouse:CreateMove(cmd)
 	lastY = y
 end
 
+function worldPanel:OnMousePressed(mc)
+	if (mc == MOUSE_LEFT) then
+		SF:Call("OviasLeftMousePress")
+	elseif (mc == MOUSE_RIGHT) then
+		SF:Call("OviasRightMousePress")
+	end
+end
+
+function worldPanel:OnMouseReleased(mc)
+	if (mc == MOUSE_LEFT) then
+		SF:Call("OviasLeftMouseRelease")
+	elseif (mc == MOUSE_RIGHT) then
+		SF:Call("OviasRightMouseRelease")
+	end
+end
 
 function worldPanel:OnMouseWheeled(delta)
 	if (!LocalPlayer().ov_ZoomDelta) then
