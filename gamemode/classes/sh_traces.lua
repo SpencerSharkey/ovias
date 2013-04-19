@@ -1,4 +1,4 @@
-
+/*
 if (SERVER) then
 	function SF.PlayerMeta:EyeTrace()
 
@@ -9,3 +9,4 @@ if (SERVER) then
 end
 
 SF:RegisterClass("Traces", SF.Traces)
+*/
