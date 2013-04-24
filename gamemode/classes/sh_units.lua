@@ -7,46 +7,38 @@ SF.Units = {}
 SF.Units.stored = {}
 SF.Units.buffer = {}
 
-SF.Units.stored_dir = {}
-SF.Units.buffer_dir = {}
-
 /* 
-	Methods to loading units
+	Unit loading and registering
 */
 
 function SF.Units:LoadUnits()
-	SF:Msg("Loading Units", 2)
-	local files, entityFolders = file.Find(SF.LoaderDir.."/units/*", "LUA", "namedesc");
+	SF:Msg("Loading Units...", 2)
+	local files, folders = file.Find(SF.LoaderDir.."/units/*", "LUA", "namedesc")
 
-	for k, v in pairs(entityFolders) do
+	for k, v in pairs(files) do
 		if (v != ".." and v != ".") then
-			ENT = {Type = "anim", Folder = SF.LoaderDir.."/units/"..v};
+
+			local baseName = string.sub(v, 1, -5)
+
+			ENT = {Base = "base_nextbot_ovias", Folder = SF.LoaderDir.."/units"}
 
 			if (SERVER) then
-				if (file.Exists("gamemodes/"..directory.."/entities/entities/"..v.."/init.lua", "GAME")) then
-					include(directory.."/entities/entities/"..v.."/init.lua");
-				elseif (file.Exists("gamemodes/"..directory.."/entities/entities/"..v.."/shared.lua", "GAME")) then
-					include(directory.."/entities/entities/"..v.."/shared.lua");
-				end;
+				AddCSLuaFile(SF.LoaderDir.."/units/"..v)	
+			end
+			include(SF.LoaderDir.."/units/"..v)
 
-				if (file.Exists("gamemodes/"..directory.."/entities/entities/"..v.."/cl_init.lua", "GAME")) then
-					AddCSLuaFile(directory.."/entities/entities/"..v.."/cl_init.lua");
-				end;
-			elseif (_file.Exists(directory.."/entities/entities/"..v.."/cl_init.lua", "LUA")) then
-				include(directory.."/entities/entities/"..v.."/cl_init.lua");
-			elseif (_file.Exists(directory.."/entities/entities/"..v.."/shared.lua", "LUA")) then
-				include(directory.."/entities/entities/"..v.."/shared.lua");
-			end;
+			SF:Msg("Loading Unit: "..baseName, 3)
+			scripted_ents.Register(ENT, "unit_"..baseName)
 			
-			if (SERVER) then
-				
+			self.stored[baseName] = ENT
 
-			scripted_ents.Register(ENT, v); ENT = nil;
-		end;
-	end;
+			ENT = nil
+		end
+	end
 end
+
+//function SF.Units:
 
 SF:RegisterClass("shUnits", SF.Units)
 
 SF.Units:LoadUnits()
-SF.Units:LoadDirectives()
