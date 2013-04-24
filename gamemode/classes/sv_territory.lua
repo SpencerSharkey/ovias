@@ -1,7 +1,7 @@
---[[
-	Ovias
-	Copyright © Slidefuse LLC - 2012
-]]--
+/*
+--	Ovias
+--	Copyright © Slidefuse LLC - 2012
+*/
 
 
 SF.Territory = {}
@@ -47,6 +47,11 @@ function TCLASS:Init(pos, radius)
 	self.radius = radius
 
 	self:Calculate()
+end
+
+function TCLASS:InArea(position)
+    
+    
 end
 
 function TCLASS:Calculate()
@@ -133,6 +138,17 @@ function TCLASS:Calculate()
 			prevHit = newHit
 		end
 		index = index + 1
+        
+        // Calculate triangle segments out of territory points
+        local tid = 1
+        for k, v in pairs(self.points) do
+            self.triangles[tid] = {
+                self.position,
+                v,
+                self.points[k+1]
+            }
+            tid = tid + 1
+        end
 	end
 
 end
