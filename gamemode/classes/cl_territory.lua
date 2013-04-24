@@ -14,10 +14,10 @@ surface.CreateFont("debug", {
 	additive = false,
 	outline = false
 })
---[[
-	Ovias
-	Copyright © Slidefuse LLC - 2012
-]]--
+/*
+--	Ovias
+--	Copyright © Slidefuse LLC - 2012
+*/
 
 
 SF.Territory = {}

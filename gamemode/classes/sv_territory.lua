@@ -51,7 +51,6 @@ end
 
 function TCLASS:InArea(position)
     
-    
 end
 
 function TCLASS:Calculate()
@@ -111,7 +110,12 @@ function TCLASS:Calculate()
 					start = prevHit + vUp*5,
 					endpos = prevHit + vUp*5 + vOffset*skipDistance
 				})
-		
+		        
+                local testLength = 0
+                while true do
+                    --Here, check for an impossible wall, if it is too long up than termiante. (or gradient too steep) 
+                end
+                
 				if (ut.Hit) then
 					newHit = ut.HitPos
 				else
@@ -162,7 +166,10 @@ function SF.Territory:AddTerritory(team, pos, radius)
 	//o:SetTeam(team)
 	
 	return o
+end
 
+function SF.Territory:FindClosest(pos)
+    -- do math
 end
 
 
