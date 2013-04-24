@@ -1,7 +1,7 @@
-/*
---	Ovias
---	Copyright © Slidefuse LLC - 2012
-*/
+--[[
+	Ovias
+	Copyright © Slidefuse LLC - 2012
+--]]
 
 
 SF.Territory = {}
@@ -15,7 +15,7 @@ concommand.Add("tt", function(ply, cmd, args)
 
 	for k, v in pairs(entss) do
 		v:Remove()
-		entss[k] = nil
+		entss[k] = nil 
 	end
 
 	/*for k, v in pairs(t.points) do
