@@ -105,15 +105,37 @@ function TCLASS:Calculate()
 					newHit = dt.HitPos
 				end
 			else
-				//Only check our vertical slope, above was the bottom.
-				local ut = util.TraceLine({
-					start = prevHit + vUp*5,
-					endpos = prevHit + vUp*5 + vOffset*skipDistance
-				})
+				--Only check our vertical slope, above was the bottom.
+				--local ut = util.TraceLine({
+				--	start = prevHit + vUp*5,
+				--	endpos = prevHit + vUp*5 + vOffset*skipDistance
+				--})
 		        
                 local testLength = 0
+                local ut = 0
                 while true do
                     --Here, check for an impossible wall, if it is too long up than termiante. (or gradient too steep) 
+                    
+                    --Going to try some stuff between here...
+                    
+                    --Check code, going in blind.
+                    
+                    ut = util.TraceLine({
+                        start = prevHit + vUp*5,
+                        endpos = prevHit + vUp*5 + vOffset*100
+                    })
+                    if (ut.Fraction <= 0.1) then
+                        newHit = ut.HitPos 
+                        --This'll end up being some impossible loop :V
+                        --Or not because distance
+                    else
+                        self.points[index] = prevHit
+                        break;
+                    end
+                    
+                    --And this line
+                    
+                    break
                 end
                 
 				if (ut.Hit) then
