@@ -15,6 +15,8 @@ SF.TEAM_CONNECTED = 2
 SF.TEAM_SPEC = 1
 SF.TEAM_JOINING = 0
 
+include("netstream.lua")
+
 function file.FindDir(path, mode)
 	local f, d = file.Find(path, mode)
 	return d
