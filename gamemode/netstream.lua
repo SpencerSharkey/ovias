@@ -45,7 +45,7 @@ netstream.stored = {};
 
 -- A function to hook a data stream.
 function netstream.Hook(name, Callback)
-	self.stored[name] = Callback;
+	netstream.stored[name] = Callback;
 end;
 
 

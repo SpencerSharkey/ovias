@@ -46,7 +46,7 @@ end
 
 
 
-SF:NetHook("territoryTest", function(data)
+netstream.Hook("territoryTest", function(data)
 	SF.Territory.org = data["org"]
 	SF.Territory.points = data["points"]
 end)

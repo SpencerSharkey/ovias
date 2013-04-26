@@ -27,7 +27,7 @@ concommand.Add("tt", function(ply, cmd, args)
 		e:GetPhysicsObject():EnableMotion(false)
 	end*/
 
-	SF:Net(ply, "territoryTest", {
+	netstream.Start(ply, "territoryTest", {
 		org = tr.HitPos,
 		points = t.points
 	})
