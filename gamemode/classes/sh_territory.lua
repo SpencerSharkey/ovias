@@ -218,72 +218,103 @@ function SF.Territory:AddTerritory(team, pos, radius)
 	return o
 end
 
+function SF.Territory:IsTriangleCCW(verts)
+	local p0 = verts[1]
+	local p1 = verts[2]
+	local p2 = verts[3]
 
-function SF.Territory:TrianglesTest(position, trigs)
-    for k, v in pairs(trigs) do
-    	local A = Vector(v[1].x, v[2].y, 0)
-    	local B = Vector(v[2].x, v[2].y, 0)
-    	local C = Vector(v[3].x, v[3].y, 0)
-    	local P = Vector(position.x, position.y, 0)
+	local c1 = Vector(p0.x - p1.x, p0.y - p1.y, p0.z - p1.z)
+	local c2 = Vector(p0.x - p2.x, p0.y - p2.y, p0.z - p2.z)
+	c1 = c1:Cross(c2)
 
-    	local v0 = C - A
-    	local v1 = B - A
-    	local v2 = P - A
+	return n
 
-    	//compute dot vectors
-    	local dot00 = v0:Dot(v0)
-    	local dot01 = v0:Dot(v1)
-    	local dot02 = v0:Dot(v2)
-    	local dot11 = v1:Dot(v1)
-    	local dot12 = v1:Dot(v2)
+end
 
-    	//Compute barycentric coordinates
-		local invDenom = 1 / (dot00 * dot11 - dot01 * dot01)
-		local u = (dot11 * dot02 - dot01 * dot12) * invDenom
-		local v = (dot00 * dot12 - dot01 * dot02) * invDenom
-		print(invDenom, u, v, ((u >= 0) and (v >= 0) and (u + v < 1)))
+function SF.Territory:PointInPolygon(p, v)
 
-		//Check if point is in triangle
-		local r = ((u >= 0) and (v >= 0) and (u + v < 1))
-		if (r) then
-	    	return true
-	    end
-    end
-    
+	local low = 0
+	local high = 0
+	while (low + 1 < high) do
+		local mid = (low+high)/2
+		if (self:TriangleIsCCW(v[1], v[mid], p)) then
+			low = mid
+		else
+			high = mid
+		end
+	end
+
+	if (low == 0 or high == n) then return false end
+
+	return self:TriangleIsCCW(v[low], v[high], p)
+
+end
+
+function SameSign(x, y)
+	if (x <= 0 and y <= 0) then
+		return true
+	elseif (x >= 0 and y >= 0) then
+		return true
+	end
+	return false
+end
+
+function Cross2D(u, v)
+	return u.y * v.x - u.x * v.y
+end
+
+function SF.Territory:PointInTriangle(p, a, b, c)
+	local pab = Cross2D(p - a, b - a)
+	local pbc = Cross2D(p - b, c - b)
+
+	if (!SameSign(pab, pbc)) then return false end
+
+	local pca = Cross2D(p - c, a - c)
+
+	if (!SameSign(pab, pca)) then return false end
+	
+	/*if (Cross2D(p - a, b - a) < 0) then return false end
+	if (Cross2D(p - b, c - b) < 0) then return false end
+	if (Cross2D(p - c, a - c) < 0) then return false end*/
+	return true
 end
 
 function SF.Territory:TriangleTest(position, v)
-	local A = Vector(v[1].x, v[2].y, 0)
+	local C = Vector(v[1].x, v[2].y, 0)
 	local B = Vector(v[2].x, v[2].y, 0)
 	if (!v[3]) then
 		return false
 	end
-	local C = Vector(v[3].x, v[3].y, 0)
+	local A = Vector(v[3].x, v[3].y, 0)
 	local P = Vector(position.x, position.y, 0)
 
-	local v0 = C - A
-	local v1 = B - A
-	local v2 = P - A
+	return self:PointInTriangle(P, A, B, C)
 
-	//compute dot vectors
-	local dot00 = v0:Dot(v0)
-	local dot01 = v0:Dot(v1)
-	local dot02 = v0:Dot(v2)
-	local dot11 = v1:Dot(v1)
-	local dot12 = v1:Dot(v2)
+	/*local u = B - A
+	local v = C - A
+	local w = P - A
 
-	//Compute barycentric coordinates
-	local invDenom = 1 / (dot00 * dot11 - dot01 * dot01)
-	local u = (dot11 * dot02 - dot01 * dot12) * invDenom
-	local v = (dot00 * dot12 - dot01 * dot02) * invDenom
-	print(invDenom, u, v, ((u >= 0) and (v >= 0) and (u + v < 1)))
+	print(A, B, C, P)
 
-	//Check if point is in triangle
-	local r = ((u >= 0) and (v >= 0) and (u + v < 1))
-	if (r) then
-    	return true
-    end
+	local vCrossW = v:Cross(w)
+	local vCrossU = v:Cross(u)
 
+	if (vCrossW:Dot(vCrossU) < 0) then
+		return false
+	end
+
+	local uCrossW = u:Cross(w)
+	local uCrossV = u:Cross(v)
+
+	if (uCrossW:Dot(uCrossV) < 0) then
+		return false
+	end
+
+	local denom = uCrossV:Length()
+	local r = vCrossW:Length() / denom
+	local t = uCrossW:Length() / denom
+
+	return (r <= 1 && t <= 1 && r + t <= 1)*/
 end
 
 function SF.Territory:FindClosest(pos)
