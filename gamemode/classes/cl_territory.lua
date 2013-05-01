@@ -18,11 +18,6 @@ surface.CreateFont("debug", {
 --	Ovias
 --	Copyright © Slidefuse LLC - 2012
 */
-
-if (!SF.Territory) then
-	SF.Territory = {}
-end
-
 SF.Territory.tabs = {}
 SF.Territory.org = false
 SF.Territory.points = {};
@@ -33,39 +28,16 @@ function SF.Territory:PostDrawOpaqueRenderables()
 	render.SetMaterial(Material("vgui/white"))
 
 	local trr = LocalPlayer():GetEyeTraceNoCursor()
-	for k, v in pairs(self.trigs) do
-		for kk, vv in pairs(v) do
+	for k, tr in pairs(self.buffer) do
+		local v = tr.triangles
+		for kk, vv in pairs(tr.points) do
 
-			local drawLines = true
-			for k2, v2 in pairs(self.trigs) do
-				if (k2 == k) then continue end
-				for kk2, vv2 in pairs(v2) do
-					local A = Vector(vv2[1].x, vv2[1].y, 0)
-					local B = Vector(vv2[2].x, vv2[2].y, 0)
-					if (vv2[3]) then
-						local C = Vector(vv2[3].x, vv2[3].y, 0)
-						if (SF.Territory:PointInTriangle(vv[1], A, B, C)) then
-							drawLines = false
+			render.DrawLine(tr.position, vv, Color(0, 255, 0), true)
 
-							break
-						end
-					end
-				end
+			if (!table.HasValue(tr.excludePoints, kk)) then
+				render.DrawBox(vv, Angle(0, 0, 0), Vector(-2, -2, -2), Vector(2, 2, 2), Color(255, 0, 0), true)
 			end
 
-			if (drawLines) then
-				local p2 = vv[1]
-				if (v[3]) then
-					p2 = vv[3]
-				end
-				render.DrawLine(vv[1], vv[2], Color(0, 180, 0), true)
-				if (p2) then
-					render.DrawLine(vv[1], p2, Color(0, 255, 0), true)
-				end
-				render.DrawBox(vv[1], Angle(0, 0, 0), Vector(-2, -2, -2), Vector(2, 2, 2), Color(255, 0, 0), true)
-			end
-			
-			
 		end
 	end
 
@@ -75,7 +47,8 @@ function SF.Territory:HUDPaint()
 
 	local f = false;
 	local trr = LocalPlayer():GetEyeTraceNoCursor()
-	for k, v in pairs(self.trigs) do
+	for k, tr in pairs(self.buffer) do
+		local v = tr.triangles
 		for kk, vv in pairs(v) do
 			local p = vv[1]:ToScreen()
 			local pp = vv[2]:ToScreen()
@@ -103,20 +76,8 @@ function SF.Territory:HUDPaint()
 			
 
 			surface.SetTexture(surface.GetTextureID("vgui/white"))
+			surface.SetDrawColor(Color(255, 0, math.random(0, 150), 100))
 
-			if (SF.Territory:PointInTriangle(trr.HitPos, A, B, C)) then
-				surface.SetDrawColor(Color(0, 0, math.random(100, 200), 255))
-				surface.DrawPoly(poly)
-
-				if (!f) then
-					draw.SimpleText("HIT! (T:1 - TRI:"..kk..")", "debug", ScrW()/2, ScrH()/2 - 180, Color(255, 255, 255), 1, 1)
-
-					f = true
-				end
-			else
-				surface.SetDrawColor(Color(0, 0, 100, 50))
-				surface.DrawPoly(poly)
-			end
 
 		end
 	end
@@ -129,23 +90,10 @@ end
 gui.EnableScreenClicker(false)
 
 
-netstream.Hook("territoryTest", function(data)
-	local key = CurTime()
-	SF.Territory.tabs[key] = data
-	local trig = {}
-	local tid = 1
-	data.points[#data.points+1] = data.points[1]
-    for k, v in pairs(data.points) do
-        trig[tid] = {
-            v,
-            data.org,
-            data.points[k+1]
-        }
-        tid = tid + 1
-
-    end
-
-    SF.Territory.trigs[key] = trig
+netstream.Hook("territoryStream", function(data)
+	local t = SF.Territory:CreateRaw()
+	t:LoadNetworkTable(data)
+	table.insert(SF.Territory.buffer, t)
 end)
 
 SF:RegisterClass("clTerritory", SF.Territory)
