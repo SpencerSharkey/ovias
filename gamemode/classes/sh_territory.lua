@@ -61,13 +61,22 @@ function SF.Territory.metaClass:CalculateTriangles()
 	SF:Call("OnTerritoryTrianglesCalculated", self)
 end
 
+function SF.Territory.metaClass:Draw()
+	for k, point in pairs(self.points) do
+		if (table.HasValue(self.excludePoints, k)) then continue end
+		local normal = (point - self.position):Angle():Right()
+
+		render.DrawBeam(point - normal*2, point + normal*2, 3, 0.5, 0.75, Color(255, 255, 0))
+	end
+end
+
 function SF.Territory.metaClass:FindExclusions()
 	for k, point in pairs(self.points) do
 		for index, territory in pairs(SF.Territory.stored) do
 			if (territory == self) then continue end
+			if (territory.position:Distance(point) >= territory.radius) then continue end
 			if (territory:PointInArea(point)) then
 				table.insert(self.excludePoints, k)
-
 			end
 		end
 	end

@@ -59,12 +59,6 @@ function SF.Territory.metaClass:Calculate()
                 local testLength = 0
                 local ut = 0
                 while true do
-                    --Here, check for an impossible wall, if it is too long up than termiante. (or gradient too steep) 
-                    
-                    --Going to try some stuff between here...
-                    
-                    --Check code, going in blind.
-                    
                     ut = util.TraceLine({
                         start = prevHit + vUp*5,
                         endpos = prevHit + vUp*5 + vOffset*100
@@ -73,7 +67,7 @@ function SF.Territory.metaClass:Calculate()
                         newHit = ut.HitPos 
                         --This'll end up being some impossible loop :V
                         --Or not because distance
-                    else
+           			else
                         self.points[index] = prevHit
                         break;
                     end

@@ -18,15 +18,17 @@ surface.CreateFont("debug", {
 --	Ovias
 --	Copyright © Slidefuse LLC - 2012
 */
-SF.Territory.tabs = {}
-SF.Territory.org = false
-SF.Territory.points = {};
-SF.Territory.trigs = {}
 
+local mat = Material("effects/laser_tracer")
 function SF.Territory:PostDrawOpaqueRenderables()
 
-	render.SetMaterial(Material("vgui/white"))
+	render.SetMaterial(mat)
 
+	for k, v in pairs(self.stored) do
+		v:Draw()
+	end
+
+	/*
 	local trr = LocalPlayer():GetEyeTraceNoCursor()
 	for k, tr in pairs(self.buffer) do
 		local v = tr.triangles
@@ -40,11 +42,13 @@ function SF.Territory:PostDrawOpaqueRenderables()
 
 		end
 	end
+	*/
 
 end
 
-function SF.Territory:HUDPaint()
 
+function SF.Territory:HUDPaint()
+/*
 	local f = false;
 	local trr = LocalPlayer():GetEyeTraceNoCursor()
 	for k, tr in pairs(self.buffer) do
@@ -85,15 +89,13 @@ function SF.Territory:HUDPaint()
 	surface.SetDrawColor(Color(255,255,255))
 	surface.DrawRect(ScrW()/2 - 8, ScrH()/2 - 8, 16, 16)
 
-
+*/
 end
-gui.EnableScreenClicker(false)
-
 
 netstream.Hook("territoryStream", function(data)
 	local t = SF.Territory:CreateRaw()
 	t:LoadNetworkTable(data)
-	table.insert(SF.Territory.buffer, t)
+	table.insert(SF.Territory.stored, t)
 end)
 
 SF:RegisterClass("clTerritory", SF.Territory)
