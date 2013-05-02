@@ -26,24 +26,23 @@ function SF.Territory.metaClass:PointInArea(position)
 
 	local v = self.triangles[triangle]
 
-    //for k, v in pairs(self.triangles) do
-    	local a = Vector(v[1].x, v[1].y)
-    	local b = Vector(v[2].x, v[2].y)
-    	local c = Vector(v[3].x, v[3].y)
-    	local p = Vector(position.x, position.y)
+	local a = Vector(v[1].x, v[1].y)
+	local b = Vector(v[2].x, v[2].y)
+	local c = Vector(v[3].x, v[3].y)
+	local p = Vector(position.x, position.y)
 
-    	local pab = SF.Util:Cross2D(p - a, b - a)
-    	local pbc = SF.Util:Cross2D(p - b, c - b)
+	local pab = SF.Util:Cross2D(p - a, b - a)
+	local pbc = SF.Util:Cross2D(p - b, c - b)
 
-    	if (!SF.Util:SameSign(pab, pbc)) then return false end
+	if (!SF.Util:SameSign(pab, pbc)) then return false end
 
-    	local pca = SF.Util:Cross2D(p - c, a - c)
+	local pca = SF.Util:Cross2D(p - c, a - c)
 
-    	if (!SF.Util:SameSign(pab, pca)) then return false end
+	if (!SF.Util:SameSign(pab, pca)) then return false end
 
 
-    	return true
-    //end
+	return true
+
 end
 
 function math.cosec(val)
