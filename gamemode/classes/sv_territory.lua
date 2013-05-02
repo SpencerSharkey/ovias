@@ -113,7 +113,7 @@ concommand.Add("tt", function(ply, cmd, args)
 	local t = SF.Territory:Create(1, tr.HitPos, 128)
 	t:Calculate()
 
-	t:Network(ply)
+	t:Network()
 
 end)
 

@@ -21,7 +21,12 @@ function SF.Territory.metaClass:Init(pos, radius)
 end
 
 function SF.Territory.metaClass:PointInArea(position)
-    for k, v in pairs(self.triangles) do
+
+	local triangle = self:PredictTriangle(position)
+
+	local v = self.triangles[triangle]
+
+    //for k, v in pairs(self.triangles) do
     	local a = Vector(v[1].x, v[1].y)
     	local b = Vector(v[2].x, v[2].y)
     	local c = Vector(v[3].x, v[3].y)
@@ -30,15 +35,39 @@ function SF.Territory.metaClass:PointInArea(position)
     	local pab = SF.Util:Cross2D(p - a, b - a)
     	local pbc = SF.Util:Cross2D(p - b, c - b)
 
-    	if (!SF.Util:SameSign(pab, pbc)) then continue end
+    	if (!SF.Util:SameSign(pab, pbc)) then return false end
 
     	local pca = SF.Util:Cross2D(p - c, a - c)
 
-    	if (!SF.Util:SameSign(pab, pca)) then continue end
+    	if (!SF.Util:SameSign(pab, pca)) then return false end
 
 
     	return true
-    end
+    //end
+end
+
+function math.cosec(val)
+	return math.sin(val)/1
+end
+
+function math.sec(val)
+	return math.cos(val)/1
+end
+
+function SF.Territory.metaClass:PredictTriangle(pos)
+	local t = SysTime()
+	local ang = math.atan2(pos.x - self.position.x, pos.y - self.position.y)
+	local angle = Angle(0, math.deg(ang), 0)
+	angle:RotateAroundAxis(Vector(0, 0, 1), -90)
+	local y = angle.y
+	if (y < 0) then
+		y = 180 + (y + 180)
+	end
+	y = math.abs(y - 360)
+	local rad = math.rad(y)
+	local r = math.pi*2/32
+	return math.floor(rad/r)+1
+	//return (SysTime() - t)
 end
 
 function SF.Territory.metaClass:CalculateTriangles()
@@ -67,6 +96,9 @@ function SF.Territory.metaClass:Draw()
 		local normal = (point - self.position):Angle():Right()
 
 		render.DrawBeam(point - normal*2, point + normal*2, 3, 0.5, 0.75, Color(255, 255, 0))
+		/*debugoverlay.Axis(point, (point - self.position):Angle(), 15, FrameTime())
+		debugoverlay.Text(point, k, FrameTime())
+		debugoverlay.Line(point, self.position, FrameTime(), Color(255, 0, 0))*/
 	end
 end
 
@@ -106,8 +138,8 @@ function SF.Territory.metaClass:LoadNetworkTable(tbl)
 
 end
 
-function SF.Territory.metaClass:Network(player)
-	netstream.Start(player, "territoryStream", self:GetNetworkTable())
+function SF.Territory.metaClass:Network()
+	netstream.Start(player.GetAll(), "territoryStream", self:GetNetworkTable())
 end
 
 /* End meta functions */
