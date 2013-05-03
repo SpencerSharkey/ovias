@@ -49,7 +49,7 @@ function SF.Territory.metaClass:Calculate()
 				})
 
 				if (!dt.Hit) then
-					print(index, "Terminated on a CLIFF")
+					print(index, "Terminated on a Cliff or Edge")
 					self.points[index] = newHit
 					break;
 				else
@@ -64,23 +64,17 @@ function SF.Territory.metaClass:Calculate()
                         endpos = prevHit + vUp*5 + vOffset*100
                     })
                     if (ut.Fraction <= 0.1) then
-                        newHit = ut.HitPos 
-                        --This'll end up being some impossible loop :V
-                        --Or not because distance
+                        newHit = ut.HitPos
            			else
                         self.points[index] = prevHit
                         break;
                     end
-                    
-                    --And this line
-                    
-                    break
                 end
                 
 				if (ut.Hit) then
 					newHit = ut.HitPos
 				else
-					print(index, "Terminated on a WALL")
+					print(index, "Terminated on a Wall")
 					self.points[index] = prevHit
 					break
 				end
@@ -88,9 +82,8 @@ function SF.Territory.metaClass:Calculate()
 
 			length = length + prevHit:Distance(newHit)
 			
-
 			if (length >= self.radius) then
-				print(index, "terminated proper bast")
+				print(index, "Terminated Regularly")
 				self.points[index] = prevHit
 				//Find Ground
 				local lt = util.TraceLine({
