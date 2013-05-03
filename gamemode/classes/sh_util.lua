@@ -17,3 +17,16 @@ function SF.Util:SameSign(x, y)
 	end
 	return false
 end
+
+function SF.Util:SimpleTrace(startpos, endpos)
+    local t = util.TraceLine({
+    	start = startpos,
+    	endpos = endpos
+    }) 
+
+    if (t.Hit) then
+        return t
+    end
+    
+    return false
+end
