@@ -36,9 +36,11 @@ function SF.Territory.metaClass:Calculate()
 				else
 					newHit = dt.HitPos
 				end
+                
 			else
                 local testLength = 0
                 local ut
+                
                 while true do
                     ut = SF.Util:SimpleTrace(prevHit + vUp*5, prevHit + vUp*5 + vOffset*100)
                     if (ut.Fraction <= 0.1) then
@@ -49,7 +51,7 @@ function SF.Territory.metaClass:Calculate()
                     end
                 end
                 
-				if (ut.Hit) then
+				if (ut) then
 					newHit = ut.HitPos
 				else
 					print(index, "Terminated on a Wall")
@@ -69,7 +71,6 @@ function SF.Territory.metaClass:Calculate()
 			prevHit = newHit
 		end
 		index = index + 1
-       
 	end
 end
 
