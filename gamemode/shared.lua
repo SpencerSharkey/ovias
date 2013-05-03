@@ -189,7 +189,7 @@ function SF:Init(Dir)
 	self:Msg("# "..GM.Name.." by "..GM.Author.." ("..GM.Email..")")
 	
 	if(SERVER) then
-		self:Msg("# Sending Resources to Client")
+		self:Msg("# Sending Resources to Client Buffer")
 		self:AddResourceDirectory("sound")
 		self:AddResourceDirectory("models")
 		self:AddResourceDirectory("materials")
