@@ -11,13 +11,22 @@ SF.Territory.stored = {}
 SF.Territory.metaClass = {}
 SF.Territory.metaClass.__index = SF.Territory.metaClass
 
+local T_INDEX = 0
+
 function SF.Territory.metaClass:Init(pos, radius)
 	self.points = {}
 	self.triangles = {}
+	self.pointsExcluded = {}
+	self.pointsIncluded = {}
+
+	--deprecated
 	self.excludePoints = {}
+	--/d
 
 	self.position = pos
 	self.radius = radius
+	T_INDEX = T_INDEX + 1
+	self.index = T_INDEX
 end
 
 function SF.Territory.metaClass:PointInArea(position)
@@ -26,22 +35,7 @@ function SF.Territory.metaClass:PointInArea(position)
 
 	local v = self.triangles[triangle]
 
-	local a = Vector(v[1].x, v[1].y)
-	local b = Vector(v[2].x, v[2].y)
-	local c = Vector(v[3].x, v[3].y)
-	local p = Vector(position.x, position.y)
-
-	local pab = SF.Util:Cross2D(p - a, b - a)
-	local pbc = SF.Util:Cross2D(p - b, c - b)
-
-	if (!SF.Util:SameSign(pab, pbc)) then return false end
-
-	local pca = SF.Util:Cross2D(p - c, a - c)
-
-	if (!SF.Util:SameSign(pab, pca)) then return false end
-
-
-	return true
+	return SF.Util:TestTriangle(position, v)
 
 end
 
@@ -54,7 +48,6 @@ function math.sec(val)
 end
 
 function SF.Territory.metaClass:PredictTriangle(pos)
-	local t = SysTime()
 	local ang = math.atan2(pos.x - self.position.x, pos.y - self.position.y)
 	local angle = Angle(0, math.deg(ang), 0)
 	angle:RotateAroundAxis(Vector(0, 0, 1), -90)
@@ -66,7 +59,6 @@ function SF.Territory.metaClass:PredictTriangle(pos)
 	local rad = math.rad(y)
 	local r = math.pi*2/32
 	return math.floor(rad/r)+1
-	//return (SysTime() - t)
 end
 
 function SF.Territory.metaClass:CalculateTriangles()
@@ -89,18 +81,6 @@ function SF.Territory.metaClass:CalculateTriangles()
 	SF:Call("OnTerritoryTrianglesCalculated", self)
 end
 
-function SF.Territory.metaClass:Draw()
-	for k, point in pairs(self.points) do
-		if (table.HasValue(self.excludePoints, k)) then continue end
-		local normal = (point - self.position):Angle():Right()
-
-		render.DrawBeam(point - normal*2, point + normal*2, 3, 0.5, 0.75, Color(255, 255, 0))
-		/*debugoverlay.Axis(point, (point - self.position):Angle(), 15, FrameTime())
-		debugoverlay.Text(point, k, FrameTime())
-		debugoverlay.Line(point, self.position, FrameTime(), Color(255, 0, 0))*/
-	end
-end
-
 function SF.Territory.metaClass:FindExclusions()
 	for k, point in pairs(self.points) do
 		for index, territory in pairs(SF.Territory.stored) do
@@ -114,12 +94,16 @@ function SF.Territory.metaClass:FindExclusions()
 end
 
 function SF.Territory.metaClass:GetNetworkTable()
-	local tbl = {}
-	tbl.points = self.points
-	tbl.faction = self.faction
-	tbl.player = self.player
-	tbl.position = self.position
-	tbl.radius = self.radius
+	local tbl = {
+		index = self.index,
+		points = self.points,
+		pointsExcluded = self.pointsExcluded,
+		pointsIncluded = self.pointsIncluded,
+		faction = self.faction,
+		player = self.player,
+		position = self.position,
+		radius = self.radius
+	}
 
 	return tbl
 end
@@ -128,7 +112,10 @@ function SF.Territory.metaClass:LoadNetworkTable(tbl)
 
 	self:Init(tbl.position, tbl.radius)
 
+	self.index = tbl.index
 	self.points = tbl.points
+	self.pointsExcluded = tbl.pointsExcluded
+	self.pointsIncluded = tbl.pointsIncluded	
 	self.player = tbl.player
 	self.faction = tbl.faction
 	self.triangles = {}
@@ -152,19 +139,12 @@ function SF.Territory:CreateRaw()
 end
 
 function SF.Territory:Create(team, pos, radius)
-
 	local o = self:CreateRaw()
 	o:Init(pos, radius)
-
 	return o
 end
 
 function SF.Territory:OnTerritoryTrianglesCalculated(territory)
-
-	for tID, territory in pairs(self.stored) do
-		territory:FindExclusions()
-
-	end
 
 end
 

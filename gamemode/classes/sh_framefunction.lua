@@ -11,6 +11,7 @@ function SF.FrameFunc:Think()
     for k, v in pairs(self.buffer) do
         if (k == self.currentFrame) then
             v(currentFrame)
+            self.buffer[k] = nil
         end
     end
     self.currentFrame = self.currentFrame + 1
@@ -28,7 +29,6 @@ function SF.FrameFunc.frameChain:AddLink(func)
         self.nextStep = 0
     end
     self.nextStep = self.nextStep + self.frameSkip
-    SF.FrameFunc:Create(self.nextStep, func)
 end
 
 function SF.FrameFunc:FrameChain(name, frameSkip)
@@ -38,4 +38,4 @@ function SF.FrameFunc:FrameChain(name, frameSkip)
     return o
 end
 
-
+SF:RegisterClass("shFrameFunc", SF.FrameFunc) 
