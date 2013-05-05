@@ -113,6 +113,10 @@ function SF.Territory.metaClass:Calculate()
 				if (!table.HasValue(self.recheckQueue, territory.index)) then
 					table.insert(self.recheckQueue, territory.index)
 				end
+			else
+				if (!table.HasValue(territory.pointsIncluded, k)) then
+					table.insert(territory.pointsIncluded, k)
+				end
 			end
 		end
 
@@ -127,11 +131,51 @@ function SF.Territory.metaClass:Calculate()
 				if (!table.HasValue(territory.pointsExcluded, k)) then
 					table.insert(territory.pointsExcluded, k)
 				end
+			else
+				if (!table.HasValue(territory.pointsIncluded, k)) then
+					table.insert(territory.pointsIncluded, k)
+				end
 			end
 		end
 		territory:Network()
 	end
 	self:Network()
+
+	SF.Territory:CalculateBoundaries()
+end
+
+function SF.Territory:CalculateBoundaires()
+	local calculated = {}
+	local function checkUncalculated()
+		for kTerritory, territory in pairs(self.stored) do
+			calculated[kTerritory] = {}
+			for _, kPoint in pairs(territory.pointsIncluded) do
+				if (!table.HasValue(calculated[kTerritory], kPoint)) then
+					return kTerritory, kPoint
+					break
+				end
+			end
+		end
+		return false
+	end
+
+	while (checkUncalculated() != false) do
+		local boundary = {}
+		local startTerritory, startPoint = checkUncaculated()
+		local iCheck = startPoint
+		while (startTerritory.pointsIncluded[iCheck]) do
+			
+			table.insert(boundary, {startTerritory, iCheck})
+
+			if (!startTerritory.pointsIncluded[iCheck+1]) then
+				break --Just an early warning <3
+			end
+			iCheck = iCheck + 1
+		end
+		break; --REMOVE THIS
+
+	end
+
 end
 
 concommand.Add("tt", function(ply, cmd, args)

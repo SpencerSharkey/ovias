@@ -7,6 +7,7 @@
 SF.Territory = {}
 SF.Territory.buffer = {}
 SF.Territory.stored = {}
+SF.Territory.boundaries = {}
 
 SF.Territory.metaClass = {}
 SF.Territory.metaClass.__index = SF.Territory.metaClass
