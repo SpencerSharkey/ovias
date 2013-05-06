@@ -82,18 +82,6 @@ function SF.Territory.metaClass:CalculateTriangles()
 	SF:Call("OnTerritoryTrianglesCalculated", self)
 end
 
-function SF.Territory.metaClass:FindExclusions()
-	for k, point in pairs(self.points) do
-		for index, territory in pairs(SF.Territory.stored) do
-			if (territory == self) then continue end
-			if (territory.position:Distance(point) >= territory.radius) then continue end
-			if (territory:PointInArea(point)) then
-				table.insert(self.excludePoints, k)
-			end
-		end
-	end
-end
-
 function SF.Territory.metaClass:GetNetworkTable()
 	local tbl = {
 		index = self.index,
@@ -150,7 +138,12 @@ function SF.Territory:OnTerritoryTrianglesCalculated(territory)
 end
 
 function SF.Territory:FindClosest(pos)
-    -- do math
+    local sortTable = {}
+    for k, v in pairs(self.stored)) do
+        sortTable[k] = pos:Distance(v.position)
+    end
+    table.sort(sortTable)
+    return sortTable[1], sortTable
 end
 
 
