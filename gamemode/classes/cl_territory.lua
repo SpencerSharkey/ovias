@@ -54,4 +54,9 @@ netstream.Hook("territoryStream", function(data)
 	
 end)
 
+netstream.Hook("boundaryStream", function(data)
+	print("Receiving new boundary update")
+	self.boundaries = data
+end)
+
 SF:RegisterClass("clTerritory", SF.Territory)

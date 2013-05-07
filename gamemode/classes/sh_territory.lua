@@ -82,21 +82,6 @@ function SF.Territory.metaClass:CalculateTriangles()
 	SF:Call("OnTerritoryTrianglesCalculated", self)
 end
 
-function SF.Territory.metaClass:GetNetworkTable()
-	local tbl = {
-		index = self.index,
-		points = self.points,
-		pointsExcluded = self.pointsExcluded,
-		pointsIncluded = self.pointsIncluded,
-		faction = self.faction,
-		player = self.player,
-		position = self.position,
-		radius = self.radius
-	}
-
-	return tbl
-end
-
 function SF.Territory.metaClass:LoadNetworkTable(tbl)
 
 	self:Init(tbl.position, tbl.radius)
@@ -111,10 +96,6 @@ function SF.Territory.metaClass:LoadNetworkTable(tbl)
 
 	self:CalculateTriangles()
 
-end
-
-function SF.Territory.metaClass:Network()
-	netstream.Start(player.GetAll(), "territoryStream", self:GetNetworkTable())
 end
 
 /* End meta functions */

@@ -172,10 +172,35 @@ function SF.Territory:CalculateBoundaires()
 			end
 			iCheck = iCheck + 1
 		end
+		table.insert(self.boundaries, boundary)
 		break; --REMOVE THIS
-
 	end
 
+	self:NetworkBoundaries()
+
+end
+
+function SF.Territory:NetworkBoundaries()
+	netstream.Start(player.GetAll(), "boundaryStream", self.boundaries)
+end
+
+function SF.Territory.metaClass:GetNetworkTable()
+	local tbl = {
+		index = self.index,
+		points = self.points,
+		pointsExcluded = self.pointsExcluded,
+		pointsIncluded = self.pointsIncluded,
+		faction = self.faction,
+		player = self.player,
+		position = self.position,
+		radius = self.radius
+	}
+
+	return tbl
+end
+
+function SF.Territory.metaClass:Network()
+	netstream.Start(player.GetAll(), "territoryStream", self:GetNetworkTable())
 end
 
 concommand.Add("tt", function(ply, cmd, args)
