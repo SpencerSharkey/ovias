@@ -28,6 +28,19 @@ function SF.Territory:PostDrawOpaqueRenderables()
 		v:Draw()
 	end
 
+	render.SetMaterial(mat)
+
+	for _, boundary in pairs(self.boundaries) do
+		render.StartBeam(table.Count(boundary))
+		print(table.Count(boundary))
+		for _, pointData in pairs(boundary) do
+			local p = self.stored[pointData[1]].points[pointData[2]]
+			print(p)
+			render.AddBeam(p, 3, CurTime(), Color(255, 255, 0))
+		end
+		render.EndBeam()
+	end
+
 end
 
 function SF.Territory.metaClass:Draw()
@@ -56,7 +69,8 @@ end)
 
 netstream.Hook("boundaryStream", function(data)
 	print("Receiving new boundary update")
-	self.boundaries = data
+	PrintTable(data)
+	SF.Territory.boundaries = data
 end)
 
 SF:RegisterClass("clTerritory", SF.Territory)

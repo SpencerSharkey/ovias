@@ -144,28 +144,29 @@ function SF.Territory.metaClass:Calculate()
 	SF.Territory:CalculateBoundaries()
 end
 
-function SF.Territory:CalculateBoundaires()
-	local calculated = {}
-	local function checkUncalculated()
-		for kTerritory, territory in pairs(self.stored) do
-			calculated[kTerritory] = {}
-			for _, kPoint in pairs(territory.pointsIncluded) do
-				if (!table.HasValue(calculated[kTerritory], kPoint)) then
-					return kTerritory, kPoint
-					break
-				end
+function SF.Territory:_checkUncalculated(calculated)
+	for kTerritory, territory in pairs(self.stored) do
+		calculated[kTerritory] = {}
+		for _, kPoint in pairs(territory.pointsIncluded) do
+			if (!table.HasValue(calculated[kTerritory], kPoint)) then
+				return kTerritory, kPoint
 			end
 		end
-		return false
 	end
+	return false
+end
 
-	while (checkUncalculated() != false) do
+function SF.Territory:CalculateBoundaries()
+	local calculated = {}
+
+	while (self:_checkUncalculated(calculated) != false) do
 		local boundary = {}
-		local startTerritory, startPoint = checkUncaculated()
+		local startTerritory_i, startPoint = self:_checkUncalculated(calculated)
+		local startTerritory = self.stored[startTerritory_i]
 		local iCheck = startPoint
 		while (startTerritory.pointsIncluded[iCheck]) do
 			
-			table.insert(boundary, {startTerritory, iCheck})
+			table.insert(boundary, {startTerritory_i, iCheck})
 
 			if (!startTerritory.pointsIncluded[iCheck+1]) then
 				break --Just an early warning <3

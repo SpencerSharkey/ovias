@@ -120,7 +120,7 @@ end
 
 function SF.Territory:FindClosest(pos)
     local sortTable = {}
-    for k, v in pairs(self.stored)) do
+    for k, v in pairs(self.stored) do
         sortTable[k] = pos:Distance(v.position)
     end
     table.sort(sortTable)
