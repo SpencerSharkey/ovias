@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "jaanus/farm"
+	"$bumpmap" "jaanus/farm_n"
+	"$Model" 1
+}

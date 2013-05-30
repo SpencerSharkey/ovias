@@ -1,0 +1,9 @@
+"VertexlitGeneric"
+{
+	"$basetexture"	"jaanus/shieldblast"
+	"$additive" 1
+	"$nocull" 1
+	//"$vertexcolor" 1
+	//"$model" 1				
+}
+

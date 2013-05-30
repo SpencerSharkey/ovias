@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	"$basetexture" "sassilization/topbar/topbar"
+	"$translucent" 1
+}

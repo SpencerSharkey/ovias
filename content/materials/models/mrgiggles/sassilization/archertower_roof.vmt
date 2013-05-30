@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/mrgiggles/sassilization/archertower_roof"
+	"$bumpmap" "models/mrgiggles/sassilization/archertower_roof_norm"
+	"$blendtintbybasealpha" "1" 
+}

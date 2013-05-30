@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "jaanus/wall"
+	"$blendtintbybasealpha" "1" 
+	"$Model" 1
+}

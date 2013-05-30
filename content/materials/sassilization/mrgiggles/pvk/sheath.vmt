@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "sassilization/mrgiggles/pvk/sheath"
+	"$blendtintbybasealpha" "1" 
+	"$halflambert" 1
+}

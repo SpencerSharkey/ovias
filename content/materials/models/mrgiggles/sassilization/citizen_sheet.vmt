@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/mrgiggles/sassilization/citizen_sheet"
+	"$blendtintbybasealpha" "1"
+}

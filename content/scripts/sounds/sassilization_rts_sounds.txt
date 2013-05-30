@@ -1,0 +1,121 @@
+"SASS_Gate.Open"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"0.5000"
+	"pitch"			"PITCH_NORM"
+
+	"soundlevel"	"SNDLVL_NORM"
+
+	"wave"			"sassilization/gateopen.wav"
+}
+
+"SASS_Gate.Close"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"0.5000"
+	"pitch"			"PITCH_NORM"
+
+	"soundlevel"	"SNDLVL_NORM"
+
+	"wave"			"sassilization/gateclose.wav"
+}
+
+"SASS_Ballista.Load"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"0.5000"
+	"pitch"			"PITCH_NORM"
+
+	"soundlevel"	"SNDLVL_NORM"
+
+	"rndwave"
+	{
+		"wave"	"sassilization/ballista_load01.wav"
+		"wave"	"sassilization/ballista_load02.wav"
+		"wave"	"sassilization/ballista_load03.wav"
+		"wave"	"sassilization/ballista_load04.wav"
+	}
+}
+
+"SASS_Ballista.Fire"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"0.5000"
+	"pitch"			"PITCH_NORM"
+
+	"soundlevel"	"SNDLVL_NORM"
+
+	"rndwave"
+	{
+		"wave"	"sassilization/ballista_fire01.wav"
+		"wave"	"sassilization/ballista_fire02.wav"
+		"wave"	"sassilization/ballista_fire03.wav"
+		"wave"	"sassilization/ballista_fire04.wav"
+		"wave"	"sassilization/ballista_fire05.wav"
+	}
+}
+
+"SASS_Catapult.Crank01"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"0.5000"
+	"pitch"			"PITCH_NORM"
+
+	"soundlevel"	"SNDLVL_NORM"
+
+	"rndwave"
+	{
+		"wave"	"sassilization/catapult_crank01.wav"
+		"wave"	"sassilization/catapult_crank01a.wav"
+		"wave"	"sassilization/catapult_crank01b.wav"
+	}
+}
+
+"SASS_Catapult.Crank02"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"0.5000"
+	"pitch"			"PITCH_NORM"
+
+	"soundlevel"	"SNDLVL_NORM"
+
+	"rndwave"
+	{
+		"wave"	"sassilization/catapult_crank02.wav"
+		"wave"	"sassilization/catapult_crank02a.wav"
+		"wave"	"sassilization/catapult_crank02b.wav"
+	}
+}
+
+"SASS_Catapult.Crank03"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"0.5000"
+	"pitch"			"PITCH_NORM"
+
+	"soundlevel"	"SNDLVL_NORM"
+
+	"rndwave"
+	{
+		"wave"	"sassilization/catapult_crank03.wav"
+		"wave"	"sassilization/catapult_crank03a.wav"
+		"wave"	"sassilization/catapult_crank03b.wav"
+	}
+}
+
+"SASS_Catapult.Fire"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"0.5000"
+	"pitch"			"PITCH_NORM"
+
+	"soundlevel"	"SNDLVL_NORM"
+
+	"rndwave"
+	{
+		"wave"	"sassilization/catapult_fire01.wav"
+		"wave"	"sassilization/catapult_fire02.wav"
+		"wave"	"sassilization/catapult_fire03.wav"
+		"wave"	"sassilization/catapult_fire04.wav"
+	}
+}

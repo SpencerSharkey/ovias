@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/mrgiggles/sassilization/windows"	
+	"$blendtintbybasealpha" "1" 
+	"$blendtintcoloroverbase" "1"  
+}

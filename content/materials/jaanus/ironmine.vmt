@@ -1,0 +1,6 @@
+"Vertexlitgeneric"
+{
+	"$basetexture" "jaanus/ironmine"
+	"$bumpmap" "jaanus/ironmine_n"
+	"$model"	"1"
+}

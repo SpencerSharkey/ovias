@@ -1,0 +1,17 @@
+
+"sass_unit"
+{
+
+	"friction"	"0.01"
+	"elasticity"	"0.01"
+
+	"impacthard"	"DoorSound.Null"
+	"impactsoft"	"DoorSound.Null"
+
+	"audiohardnessfactor" "0.0"
+	"audioroughnessfactor" "0.0"
+
+	"scrapeRoughThreshold" "1.0"
+	"impactHardThreshold" "1.0"
+
+}

@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$basetexture"		"sassilization/food"
+	"$vertexcolor" 1
+	"$vertexalpha" 1
+}

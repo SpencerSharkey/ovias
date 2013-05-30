@@ -204,6 +204,11 @@ function SF.Territory.metaClass:Network()
 	netstream.Start(player.GetAll(), "territoryStream", self:GetNetworkTable())
 end
 
+function SF.Territory.metaClass:Remove()
+	self.stored[self.index] = nil
+	--network it over or w/e
+end
+
 concommand.Add("tt", function(ply, cmd, args)
 	local sys = SysTime()
 	local tr = ply:GetEyeTraceNoCursor()

@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/mrgiggles/sassilization/wall_destruction"
+	"$bumpmap" "models/mrgiggles/sassilization/wall_destruction_norm"
+}

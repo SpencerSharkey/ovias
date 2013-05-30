@@ -1,0 +1,9 @@
+VertexLitGeneric
+{
+	"$basetexture"	"jaanus\sasshands"
+	//"$bumpmap" 	"jaanus\n_sasshands"
+	"$envmaptint" "[0.2 0.2 0.2]"
+	"$envmapcontrast" 0.9
+	"$normalmapalphaenvmapmask" 0
+	"$halflambert" 1
+}

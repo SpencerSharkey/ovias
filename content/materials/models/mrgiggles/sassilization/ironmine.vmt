@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/mrgiggles/sassilization/ironmine"
+	"$bumpmap" "models/mrgiggles/sassilization/ironmine_norm"
+}

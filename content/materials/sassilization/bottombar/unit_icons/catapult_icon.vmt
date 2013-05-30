@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	"$basetexture" "sassilization/bottombar/unit_icons/catapult_icon"
+	"$translucent" 1
+}

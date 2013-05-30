@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "jaanus/altar"
+	"$envmap" "env_cubemap"
+	"$envmapmask" "jaanus/altar_mask"
+	"$envmapcontrast" "1.0"
+}

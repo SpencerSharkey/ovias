@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/mrgiggles/sassilization/monolith"
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models/mrgiggles/sassilization/monolith_spec"
+	"$envmaptint" "[0.5 0.5 0.5]"
+	"$blendtintbybasealpha" "1" 
+}

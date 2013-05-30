@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "sassilization/mrgiggles/farm/wheat"
+	"$translucent" "1"
+	"$nocull" "1"
+	"$Model" 1
+}

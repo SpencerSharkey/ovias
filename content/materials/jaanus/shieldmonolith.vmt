@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "jaanus/shieldmonolith"
+	"$selfillum" 1
+	"$envmap" "env_cubemap"
+	"$envmapmask" "jaanus/shieldmonolith_mask"
+	"$envmapcontrast "1.0"
+	"$envmapsaturation" [1.0 1.0 1.0]
+	"$Model" "1"
+	"$model" 1
+}

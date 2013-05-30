@@ -103,7 +103,6 @@ end
 function SF.Territory:CreateRaw()
 	local o = table.Copy(SF.Territory.metaClass)
 	setmetatable(o, SF.Territory.metaClass)
-	table.insert(self.stored, o)
 	SF:Call("OnTerritoryCreated", o)
 	return o
 end
@@ -111,6 +110,7 @@ end
 function SF.Territory:Create(team, pos, radius)
 	local o = self:CreateRaw()
 	o:Init(pos, radius)
+	self.stored[o.index] = o
 	return o
 end
 

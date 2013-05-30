@@ -18,10 +18,12 @@ function SF.Util:SameSign(x, y)
 	return false
 end
 
-function SF.Util:SimpleTrace(startpos, endpos)
+function SF.Util:SimpleTrace(startpos, endpos, mask)
+	mask = mask or nil
     local t = util.TraceLine({
     	start = startpos,
-    	endpos = endpos
+    	endpos = endpos,
+    	mask = mask
     }) 
 
     if (t.Hit) then
@@ -47,4 +49,40 @@ function SF.Util:TestTriangle(position, v)
 	if (!self:SameSign(pab, pca)) then return false end
 
 	return true
+end
+
+-- Some useful mesh/triangle functions
+
+function SF.Util:Vertex(pos, u, v, normal)
+	return {pos = pos, u = u, v = v, normal = normal}
+end
+
+function SF.Util:Triangle(tbl, p1, p2, p3, normal)
+	table.insert(tbl, self:Vertex(p1, 0, 0, normal))
+	table.insert(tbl, self:Vertex(p2, 0, 1, normal))
+	table.insert(tbl, self:Vertex(p3, 1, 0, normal))
+end
+
+function SF.Util:Quad(tbl, p1, p2, p3, p4)
+
+	local normal = Vector(0, 0, 1)
+	table.insert(tbl, self:Vertex(p1, 0, 0, normal))
+	table.insert(tbl, self:Vertex(p2, 1, 0, normal))
+	table.insert(tbl, self:Vertex(p3, 0, 1, normal))
+
+	table.insert(tbl, self:Vertex(p2, 1, 0, normal))
+	table.insert(tbl, self:Vertex(p4, 1, 1, normal))
+	table.insert(tbl, self:Vertex(p3, 0, 1, normal))
+end
+
+function SF.Util:Plane(tbl, p1, p2, normal)
+
+	local tl = Vector(p1.x, p1.y, p1.z)
+	local tr = Vector(p2.x, p1.y, p1.z)
+	local bl = Vector(p1.x, p2.y, p2.z)
+	local br = Vector(p2.x, p2.y, p2.z)
+
+	self:Triangle(tbl, tl, bl, tr, normal)
+	self:Triangle(tbl, tr, bl, br, normal)
+
 end

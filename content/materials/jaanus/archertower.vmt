@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "jaanus/archertower"
+	"$blendtintbybasealpha" "1" 
+	"$Model" 1
+}

@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	"$basetexture" "sassilization/bottombar/unit_icons/swordsman_icon"
+	"$translucent" 1
+}

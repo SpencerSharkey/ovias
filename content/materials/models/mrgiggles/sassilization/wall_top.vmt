@@ -1,0 +1,17 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/mrgiggles/sassilization/wall_top"
+	"$bumpmap" "models/mrgiggles/sassilization/wall_top_norm"
+
+	"$phong"	 "1"
+	"$phongexponent"	"42"
+	"$phongboost" "0.5"
+	"$phongfresnelranges" "[0 0.5 1]"
+	
+	"$blendtintbybasealpha" "1" 
+	"$blendtintcoloroverbase" "1"  
+
+	"$rimlight" "1"
+	"$rimlightexponent" "2"
+	"$rimlightboost" "0.25"
+}

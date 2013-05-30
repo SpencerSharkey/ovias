@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/mrgiggles/sassilization/archer"
+	"$blendtintbybasealpha" "1"
+}

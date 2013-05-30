@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/mrgiggles/sassilization/farm"
+	"$bumpmap" "models/mrgiggles/sassilization/farm_norm"
+}

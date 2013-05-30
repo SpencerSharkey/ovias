@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "jaanus/wheat"
+	"$translucent" "1"
+	"$Model" 1
+}

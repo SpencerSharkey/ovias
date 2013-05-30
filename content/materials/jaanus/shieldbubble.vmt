@@ -1,0 +1,8 @@
+"UnlitGeneric"
+{
+	"$basetexture" "jaanus/shieldbubble"
+	"$translucent" 1
+	"$additive" 1
+	"$vertexcolor" 1
+	"$model" 1
+}

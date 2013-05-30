@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/mrgiggles/sassilization/wheat"
+	"$alphatest" "1"
+	"$softedges" "1"
+	"$nocull" "1"
+}

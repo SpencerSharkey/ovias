@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$basetexture"		"models/sassilization/wall"
+	"$blendtintbybasealpha"	 "1" 
+}
