@@ -98,6 +98,16 @@ function SF.Territory.metaClass:LoadNetworkTable(tbl)
 
 end
 
+function SF.Territory.metaClass:Remove()
+	--Cleanup our mess
+	
+	self.faction:RemoveTerritory(self)
+	--Remove the territory via this objcet
+	netstream.Start(self.faction:GetPlayers(), "removeTerritory", self.index)
+	
+	SF.Territory.stored[self.index] = nil
+end
+
 /* End meta functions */
 
 function SF.Territory:CreateRaw()
@@ -110,7 +120,10 @@ end
 function SF.Territory:Create(team, pos, radius)
 	local o = self:CreateRaw()
 	o:Init(pos, radius)
+	o.faction = team
 	self.stored[o.index] = o
+	
+	team:AddTerritory(o)
 	return o
 end
 
