@@ -3,6 +3,7 @@
 	Copyright © Slidefuse LLC - 2012
 ]]--
 
+MIN_PLAYERS = 1 --Replace with config var later
 
 function SF.Gamemode:Initialize()
 	self.CurrentState = self.STATE_WAITING
@@ -24,7 +25,7 @@ function SF.Gamemode:Think()
 		end
 	end
 
-	if (self.playerCount > 1 and self:GetState() == self.STATE_WAITING and !self.startPlayTime) then
+	if (self.playerCount >= MIN_PLAYERS and self:GetState() == self.STATE_WAITING and !self.startPlayTime) then
 		self.startPlayTime = CurTime() + 10
 		self:SendCountdown()
 		SF:Msg("Players ready. Starting countdown.")

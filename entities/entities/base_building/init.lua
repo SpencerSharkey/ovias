@@ -21,6 +21,8 @@ function ENT:Initialize()
 
 	self.modelMins, self.modelMaxs = self:OBBMins(), self:OBBMaxs()
 
+	self:SharedInit()
+
 end
 
 function ENT:Think()
@@ -38,12 +40,17 @@ function ENT:Think()
 
 		self:Build()
 
+		if (CurTime() >= self.endBuildTime) then
+			self:SetBuilt(true)
+		end
+
 		return
 	end
 	
 	if (!self.calledPostBuild) then
 		self:PostBuild()
 		self.calledPostBuild = true
+		SF:Msg("Calling postBuild")
 	end
 
 end

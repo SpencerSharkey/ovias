@@ -1,10 +1,21 @@
 
 function ENT:GetOviasModel()
-	return "mmodels/roller"
+	return "mmodels/roller.mdl"
 end
 
 function ENT:GetBuildTime()
-	return 15
+	return 30
+end
+
+-- A function to return a requirements object
+function ENT:SetupRequirements(req)
+	req:AttachBuilding(self)
+
+	req:AddFunction(function(faction, trace, ghost)
+		if (table.Count(faction:GetBuildings()) <= 0) then
+			return false, "Already have a castle"
+		end
+	end)
 end
 
 --Towncenters have territories!

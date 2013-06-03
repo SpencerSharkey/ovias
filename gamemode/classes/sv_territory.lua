@@ -206,19 +206,7 @@ end
 
 function SF.Territory.metaClass:Remove()
 	self.stored[self.index] = nil
-	--network it over or w/e
 end
 
-concommand.Add("tt", function(ply, cmd, args)
-	local sys = SysTime()
-	local tr = ply:GetEyeTraceNoCursor()
-	local t = SF.Territory:Create(1, tr.HitPos, 128)
-	t:Calculate()
-
-	print("Time Elapsed: ", SysTime()-sys)
-	SF.FrameFunc:Create(1, function()
-		print("Last Frame:", FrameTime())
-	end)
-end)
 
 SF:RegisterClass("svTerritory", SF.Territory) 

@@ -13,6 +13,8 @@ function ENT:Initialize()
 	self.modelMins, self.modelMaxs = self:OBBMins(), self:OBBMaxs()
 	self.isBuilding = false
 	self.isBuilt = false
+
+	self:SharedInit()
 end
 
 local mFoundation = CreateMaterial("ovFoundation1", "VertexLitGeneric", {

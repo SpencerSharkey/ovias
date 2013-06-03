@@ -5,6 +5,14 @@
 
 ENT.Type = "anim";
 
+function ENT:SharedInit()
+	self.req = SF.Buildings:NewRequirements()
+
+	if (self.SetupRequirements) then
+		self:SetupRequirements(self.req)
+	end
+end
+
 function ENT:SetupDataTables()
 
 	self.DT = {}
