@@ -204,9 +204,5 @@ function SF.Territory.metaClass:Network()
 	netstream.Start(player.GetAll(), "territoryStream", self:GetNetworkTable())
 end
 
-function SF.Territory.metaClass:Remove()
-	self.stored[self.index] = nil
-end
-
 
 SF:RegisterClass("svTerritory", SF.Territory) 
