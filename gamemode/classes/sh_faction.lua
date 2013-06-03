@@ -39,7 +39,7 @@ end
 function SF.Faction:AddBuilding(building)
 	table.insert(self.buildings, building)
 	if (building:GetClass() == "building_towncenter") then
-		table.insert(self.buildings, manors)
+		table.insert(self.manors, building)
 	end
 end
 
