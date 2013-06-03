@@ -1,16 +1,17 @@
-
-function ENT:GetOviasModel()
-	return "mmodels/roller.mdl"
+-- A function to grab the name
+function ENT:GetOviasName()
+	return "Kingdom Castle"
 end
 
-function ENT:GetBuildTime()
-	return 30
+-- A function to get a table of general info
+function ENT:GetInfo()
+	return {
+		["desc"] = "The central hub of your your territory."
+	}
 end
 
 -- A function to return a requirements object
 function ENT:SetupRequirements(req)
-	req:AttachBuilding(self)
-
 	req:AddFunction(function(faction, trace, ghost)
 		if (table.Count(faction:GetBuildings()) <= 0) then
 			return false, "Already have a castle"
@@ -18,15 +19,34 @@ function ENT:SetupRequirements(req)
 	end)
 end
 
---Towncenters have territories!
+-- A function to grab the model the building uses
+function ENT:GetOviasModel()
+	return "models/roller.mdl"
+end
+
+-- A function to grab the time it takes to build the building in seconds
+function ENT:GetBuildTime()
+	return 10
+end
+
+-- Called before a building starts being built
+function ENT:PreBuild()
+end
+
+-- Called per-tick during the build stage
+function ENT:Build()
+end
+
+-- Called after the building has been completed
 function ENT:PostBuild()
 	self.territory = SF.Territory:Create(self:GetFaction(), self:GetPos(), 240)
 end
 
-function ENT:PostDestruction()
-	self.territory:Remove()
+-- Called before the building is demolished
+function ENT:PreDestruction()
 end
 
-function ENT:PreBuild()
-
+-- Called after the building has been demolished
+function ENT:PostDestruction()
+	self.territory:Remove()
 end
