@@ -38,6 +38,9 @@ function SF.Territory.metaClass:Draw()
 	end
 end
 
+netstream.Hook("territoryRemove", function(data)
+	SF.Territory.stored[data]:Remove()
+end)
 
 netstream.Hook("territoryStream", function(data)
 	print("Receiving new territory: "..data.index)
