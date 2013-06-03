@@ -32,19 +32,44 @@ function SF.Faction.metaClass:Destroy()
 	self:DisassociateColor()
 end
 
-function SF.Faction:GetBuildings()
+function SF.Faction.metaClass:GetBuildings()
 	return self.buildings
 end
 
-function SF.Faction:AddBuilding(building)
+function SF.Faction.metaClass:AddBuilding(building)
 	table.insert(self.buildings, building)
 	if (building:GetClass() == "building_towncenter") then
 		table.insert(self.manors, building)
 	end
 end
 
-function SF.Faction:GetManors()
+function SF.Faction.metaClass:GetManors()
 	return self.manors
+end
+
+function SF.Faction.metaClass:GetGold()
+	return self.gold
+end
+
+function SF.Faction.metaClass:SetGold(gold)
+	self.gold = gold
+end
+
+function SF.Faction.metaClass:TakeGold(amount)
+	self.gold = self.gold - amount
+end
+
+function SF.Faction.metaClass:GiveGold(amount)
+	self.gold = self.gold + amount
+end
+
+function SF.Faction.metaClass:HasGold(amount)
+	return (self.gold >= amount)
+end
+
+function SF.Faction.metaClass:Network()
+	--This is a mega function to detect changes and network them.
+	--self.networkCache = 
 end
 
 function SF.Faction.metaClass:AssociateColor()
