@@ -41,8 +41,29 @@ function SF.Faction.metaClass:Init()
 
 	if (CLIENT) then
 		self.smartnet:AddCallback(function()
-			if (data[3]) then
-				
+			if (data["gold"]) then
+				self.gold = data["gold"]
+			end
+
+			if (data["players"]) then
+				self.players = data["players"]
+			end
+
+			if (data["territories"]) then
+				self.territories = data["territories"]
+			end
+
+			if (data["buildings"]) then
+				self.buildings = data["buildings"]
+				for _, ent in pairs(self.buildings) do
+					if (ent:GetClass() == "building_towncenter") then
+						table.insert(self.manors, ent)
+					end
+				end
+			end
+
+			if (data["color"]) then
+				self:SetColor(data["color"])
 			end
 		end)
 	end
