@@ -20,12 +20,33 @@ SF.Faction.metaClass = {}
 SF.Faction.metaClass.__index = SF.Faction.metaClass
 
 function SF.Faction.metaClass:Init()
+	self.key = SF.Util:Random()
+	self.smartnet = SF.SmartNet:New(key)
+
 	self.players = {}
 	self.territories = {}
 	self.buildings = {}
 	self.manors = {}
+	self.gold = 0
 
-	self:AssociateColor()
+	
+	if (SERVER) then
+		self.smartnet:AddObject("gold")
+		self.smartnet:AddObject("players")
+		self.smartnet:AddObject("territories")
+		self.smartnet:AddObject("buildings")
+		self.smartnet:AddObject("color")
+		self:AssociateColor()
+	end
+
+	if (CLIENT) then
+		self.smartnet:AddCallback(function()
+			if (data[3]) then
+				
+			end
+		end)
+	end
+
 end
 
 function SF.Faction.metaClass:Destroy()
@@ -53,23 +74,24 @@ end
 
 function SF.Faction.metaClass:SetGold(gold)
 	self.gold = gold
+
+	if (SERVER) then
+		self.smartnet:UpdateObject("gold", self.gold, true)
+	end
 end
 
 function SF.Faction.metaClass:TakeGold(amount)
-	self.gold = self.gold - amount
+	self:SetGold(self:GetGold() - amount)
+	return self:GetGold()
 end
 
 function SF.Faction.metaClass:GiveGold(amount)
-	self.gold = self.gold + amount
+	self:SetGold(self:GetGold() + amount)
+	return self:GetGold()
 end
 
 function SF.Faction.metaClass:HasGold(amount)
-	return (self.gold >= amount)
-end
-
-function SF.Faction.metaClass:Network()
-	--This is a mega function to detect changes and network them.
-	--self.networkCache = 
+	return (self:GetGold() >= amount)
 end
 
 function SF.Faction.metaClass:AssociateColor()
@@ -79,6 +101,10 @@ function SF.Faction.metaClass:AssociateColor()
 			if (!tbl[2]) then
 				found = true
 				self:SetColor(name)
+				if (SERVER) then
+					self.smartnet:UpdateObject("color", name)
+				end
+
 				break;
 			end
 		end
@@ -110,13 +136,31 @@ end
 
 function SF.Faction.metaClass:AddPlayer(ply)
 	self.players[ply] = true
+
+	local plytable = {}
+	for ply, add in pairs(self.players) do
+		if (!add) then continue end
+		table.insert(plytable, ply)
+	end
+	self.smartnet:SetPlayers(plytable)
+
+	--Update the player with the low-down ;)
+	self.smartnet:Transfer(ply)
 end
 
 function SF.Faction.metaClass:RemovePlayer(ply)
 	self.players[ply] = nil
+
 	if (table.Count(self.players) <= 0) then
 		SF:Msg("Faction has no players, destroying.")
 		self:Destroy()
+	else
+		local plytable = {}
+		for ply, add in pairs(self.players) do
+			if (!add) then continue end
+			table.insert(plytable, ply)
+		end
+		self.smartnet:SetPlayers(plytable)
 	end
 end
 
@@ -129,8 +173,8 @@ function SF.Faction.metaClass:GetPlayers()
 	return ret
 end
 
---Territory styff
 
+--Territory styff
 function SF.Faction.metaClass:AddTerritory(territory)
 	self.territories[territory] = true
 end

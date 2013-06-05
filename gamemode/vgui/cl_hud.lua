@@ -22,7 +22,7 @@ function PANEL:Init()
 	self.sheet:StretchToParent(1, 1, 1, 1)
 
 	self.tabs = {}
-	for k, v in pairs(SF.Buildings) do
+	/*for k, v in pairs(SF.Buildings) do
 		if (!self.tabs[v.category]) then
 			self.tabs[v.category] = vgui.Create("DPanelList", self.sheet)
 			self.tabs[v.category]:EnableHorizontal(true)
@@ -36,7 +36,7 @@ function PANEL:Init()
 		end
 		self.tabs[v.category]:AddItem(icon)
 
-	end
+	end*/
 end
 
 function PANEL:Paint(w, h)

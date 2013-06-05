@@ -9,10 +9,10 @@ SF.SmartNet.buffer = {}
 SF.SmartNet.meta = {}
 SF.SmartNet.meta.__index = SF.SmartNet.meta
 
-function SF.SmartNet:New()
+function SF.SmartNet:New(key)
     local o = table.Copy(SF.SmartNet.meta)
     setmetatable(o, SF.SmartNet.meta)
-    o:Init()
+    o:Init(key)
 	table.insert(self.buffer, o.index)
 	return o
 end
@@ -23,12 +23,11 @@ function SF.SmartNet:Find(id)
 end
 
 SMARTNET_ID = 1
-function SF.SmartNet.meta:Init()
+function SF.SmartNet.meta:Init(key)
+    self.players = {}
     self.playerCache = {}
-    self.cache = {}
     self.real = {}
-    self.index = SMARTNET_ID
-    SMARTNET_ID = SMARTNET_ID + 1
+    self.index = key
     
     if (CLIENT) then
         netstream.Hook("ovSmartnet"..self.index, function(data)
@@ -41,7 +40,6 @@ function SF.SmartNet.meta:Init()
 end
 
 function SF.SmartNet.meta:AddObject(name)
-    self.cache[name] = "undefined"
     self.real[name] = "undefined"
 end
 
@@ -49,14 +47,21 @@ function SF.SmartNet.meta:RemoveObject(name)
     self.real[name] = nil
 end
 
+function SF.SmartNet.meta:SetPlayers(tbl)
+    self.players = tbl
+end
+
 function SF.SmartNet.meta:UpdateObject(name, value, transfer, players)
     self.real[name] = value
     if (transfer) then
+        if (!players) then
+            players = self.players
+        end
         self:Transfer(players)
     end
 end
 
-function Sf.SmartNet.meta:Transfer(players)
+function SF.SmartNet.meta:Transfer(players)
     if (!players) then players = player.GetAll() end
     
     if (type(players) == "Player") then
@@ -105,3 +110,4 @@ function SF.SmartNet.meta:AddCallback(func)
     table.insert(self.callbacks, func)
 end
     
+SF:RegisterClass("shSmartnet", SF.SmartNet)

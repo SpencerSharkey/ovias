@@ -14,9 +14,9 @@ function SF.Gamemode:PlayerInit()
 end
 
 function SF.Gamemode:SetState(state)
-	local oldState = self.CurrentState
+	local oldState = self.CurrentState or -1
 	self.CurrentState = state
-	SF:Msg("Changing Gamemode State: "..self:GetStateName(oldState).."->"..self:GetStateName(self.CurrentState))
+	SF:Msg("Changing Gamemode State: "..self:GetStateName(oldState).."->"..self:GetStateName(self.CurrentState), 1)
 
 	if (oldState != self.CurrentState) then
 		SF:Msg("And Calling!", 1)

@@ -86,3 +86,11 @@ function SF.Util:Plane(tbl, p1, p2, normal)
 	self:Triangle(tbl, tr, bl, br, normal)
 
 end
+
+
+local RAND_ID = 1
+function SF.Util:Random()
+	local seed = CurTime()..RAND_ID
+	RAND_ID = RAND_ID + 1
+	return util.CRC(seed)
+end
