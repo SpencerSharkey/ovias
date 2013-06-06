@@ -140,7 +140,8 @@ function SF.Territory.metaClass:Calculate()
 		territory:Network()
 	end
 	self:Network()
-
+    
+    --this is a failure and it's wasted computation but we'll make ti work eventually 
 	SF.Territory:CalculateBoundaries()
 end
 
