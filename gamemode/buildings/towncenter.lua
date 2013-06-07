@@ -51,11 +51,9 @@ end
 -- Called after the building has been completed
 function ENT:PostBuild()
 	--We create the territory manually
-	self.territory = SF.Territory:Create(self:GetPos(), 128) --We'll update the radius later
+	print(self:GetFaction():GetName())
+	self.territory = SF.Territory:Create(self:GetFaction(), self:GetPos(), 128) --We'll update the radius later
 	self.territory:Calculate()
-
-	local faction = self:GetFaction()
-	faction:AddTerritory(self.territory)
 end
 
 -- Called before the building is demolished

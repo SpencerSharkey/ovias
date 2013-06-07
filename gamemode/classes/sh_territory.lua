@@ -91,7 +91,7 @@ function SF.Territory.metaClass:LoadNetworkTable(tbl)
 	self.pointsExcluded = tbl.pointsExcluded
 	self.pointsIncluded = tbl.pointsIncluded	
 	self.player = tbl.player
-	self.faction = tbl.faction
+	self.faction = SF.Faction:GetByNetKey(tbl.faction)
 	self.triangles = {}
 
 	self:CalculateTriangles()
@@ -106,6 +106,14 @@ function SF.Territory.metaClass:Remove()
 	netstream.Start(self.faction:GetPlayers(), "removeTerritory", self.index)
 	
 	SF.Territory.stored[self.index] = nil
+end
+
+function SF.Territory.metaClass:SetFaction(faction)
+	self.faction = faction
+end
+
+function SF.Territory.metaClass:GetFaction()
+	return self.faction
 end
 
 /* End meta functions */

@@ -25,16 +25,39 @@ function SF.Territory:PostDrawOpaqueRenderables()
 	render.SetMaterial(mat)
 
 	for k, v in pairs(self.stored) do
+		if (!v.drawCache) then
+			v:CreateDrawCache()
+		end
 		v:Draw()
 	end
 
 end
 
-function SF.Territory.metaClass:Draw()
+function SF.Territory.metaClass:CreateDrawCache()
+	self.drawCache = {}
+
 	for k, point in pairs(self.points) do
 		if (table.HasValue(self.pointsExcluded, k)) then continue end
-		local normal = (point - self.position):Angle():Right()
-		render.DrawBeam(point - normal*2, point + normal*2, 3, 0.5, 0.75, Color(255, 255, 0))
+		local normal
+		local endPoint = point + (point-self.position):Angle():Forward()*5 + Vector(0, 0, 2)
+		local tr = SF.Util:SimpleTrace(point, endPoint)
+		if (!tr) then
+			normal = (point - self.position):Angle():Right()
+		else
+			normal = tr.HitNormal:Angle():Right()
+		end
+		
+		self.drawCache[k] = {point, normal}
+	end
+end
+
+function SF.Territory.metaClass:Draw()
+	for k, pointData in pairs(self.drawCache) do
+		if (table.HasValue(self.pointsExcluded, k)) then continue end
+		local point = pointData[1]
+		local normal = pointData[2]
+		local testPoint = pointData[3]
+		render.DrawBeam(point - normal*2, point + normal*2, 3, 0.5, 0.75, self:GetFaction():GetColor())
 	end
 end
 

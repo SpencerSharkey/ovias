@@ -97,10 +97,9 @@ function SF.Buildings.reqMeta:Check(faction, trace, ghost)
 end
 
 function SF.Buildings:NewRequirements()
-	local o = table.Copy(SF.Faction.metaClass)
-	setmetatable(o, SF.Faction.metaClass)
-	SF:Call("OnFactionCreated", o)
-	table.insert(self.buffer, o)
+	local o = table.Copy(SF.Buildings.reqMeta)
+	setmetatable(o, SF.Buildings.reqMeta)
+	o:Init()
 	return o
 end
 

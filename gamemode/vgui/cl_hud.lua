@@ -10,6 +10,14 @@ function SF.Hud:Initialize()
 	self.panel = vgui.Create("sfCreation")
 end
 
+function SF.Hud:HUDPaint()
+	if (SF.Client:GetFaction()) then
+		//print()
+		surface.SetDrawColor(SF.Client:GetFaction():GetColor())
+		surface.DrawRect(0, 0, ScrW(), 4)
+	end
+end
+
 SF:RegisterClass("clHud", SF.Hud)
 
 local PANEL = {}

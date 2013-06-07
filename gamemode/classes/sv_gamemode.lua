@@ -26,7 +26,7 @@ function SF.Gamemode:Think()
 	end
 
 	if (self.playerCount >= MIN_PLAYERS and self:GetState() == self.STATE_WAITING and !self.startPlayTime) then
-		self.startPlayTime = CurTime() + 10
+		self.startPlayTime = CurTime() + 2
 		self:SendCountdown()
 		SF:Msg("Players ready. Starting countdown.")
 
@@ -58,5 +58,24 @@ end)
 netstream.Hook("requestCountdown", function(ply, data)
 	SF.Gamemode:SendCountdown(ply)
 end)
+
+netstream.Hook("playerReady", function(ply, data)
+	if (!ply.playerInit) then
+		SF:Call("PlayerInit", ply)
+		ply.playerInit = true
+	end
+end)
+
+function SF.Gamemode:PlayerInit(player)
+	self:CreateFaction(player)
+end
+
+function SF.Gamemode:CreateFaction(ply)
+	local faction = SF.Faction:Create()
+	if (SERVER) then
+		faction:AddPlayer(ply)
+	end
+	ply:SetFaction(faction) --SetFaction networks it too!
+end
 
 SF:RegisterClass("svGamemode", SF.Gamemode)

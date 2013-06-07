@@ -192,7 +192,7 @@ function SF.Territory.metaClass:GetNetworkTable()
 		points = self.points,
 		pointsExcluded = self.pointsExcluded,
 		pointsIncluded = self.pointsIncluded,
-		faction = self.faction,
+		faction = self.faction:GetNetKey(),
 		player = self.player,
 		position = self.position,
 		radius = self.radius
@@ -202,7 +202,7 @@ function SF.Territory.metaClass:GetNetworkTable()
 end
 
 function SF.Territory.metaClass:Network()
-	netstream.Start(player.GetAll(), "territoryStream", self:GetNetworkTable())
+	netstream.Start(self:GetFaction():GetPlayers(), "territoryStream", self:GetNetworkTable())
 end
 
 

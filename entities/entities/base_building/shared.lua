@@ -25,6 +25,8 @@ end
 
 function ENT:SetFaction(faction)
 	self.faction = faction
+	print("Setitng bilding faction to "..self.faction:GetName())
+	self.faction:AddBuilding(self)
 end
 
 function ENT:GetFaction(faction)

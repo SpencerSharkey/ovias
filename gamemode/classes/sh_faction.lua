@@ -15,13 +15,17 @@ SF.Faction.Colors = {
 	["Orange"] = {Color(255, 125, 0), false}
 }
 SF.Faction.buffer = {}
+SF.Faction.netBuffer = {}
 
 SF.Faction.metaClass = {}
 SF.Faction.metaClass.__index = SF.Faction.metaClass
 
-function SF.Faction.metaClass:Init()
-	self.key = SF.Util:Random()
-	self.smartnet = SF.SmartNet:New(key)
+function SF.Faction.metaClass:Init(keyO)
+	self.key = keyO or SF.Util:Random()
+	SF.Faction.netBuffer[self.key] = self
+
+	self.smartnet = SF.SmartNet:New(self.key)
+	self.smartnet:SetObject(self)
 
 	self.players = {}
 	self.territories = {}
@@ -31,43 +35,49 @@ function SF.Faction.metaClass:Init()
 
 	
 	if (SERVER) then
-		self.smartnet:AddObject("gold")
-		self.smartnet:AddObject("players")
-		self.smartnet:AddObject("territories")
-		self.smartnet:AddObject("buildings")
-		self.smartnet:AddObject("color")
+		self.smartnet:AddObject("gold", 0)
+		self.smartnet:AddObject("players", {})
+		self.smartnet:AddObject("territories", {})
+		self.smartnet:AddObject("buildings", {})
+		self.smartnet:AddObject("color", Color(0, 0, 0))
 		self:AssociateColor()
 	end
 
 	if (CLIENT) then
-		self.smartnet:AddCallback(function()
+		self.smartnet:AddCallback(function(data, faction)
+			SF:Msg("Receving callback for faction: "..faction:GetNetKey(), 3)
+			PrintTable(data)
 			if (data["gold"]) then
-				self.gold = data["gold"]
+				faction.gold = data["gold"]
 			end
 
 			if (data["players"]) then
-				self.players = data["players"]
+				faction.players = data["players"]
 			end
 
 			if (data["territories"]) then
-				self.territories = data["territories"]
+				faction.territories = data["territories"]
 			end
 
 			if (data["buildings"]) then
-				self.buildings = data["buildings"]
-				for _, ent in pairs(self.buildings) do
+				faction.buildings = data["buildings"]
+				for _, ent in pairs(faction.buildings) do
 					if (ent:GetClass() == "building_towncenter") then
-						table.insert(self.manors, ent)
+						table.insert(faction.manors, ent)
 					end
 				end
 			end
 
 			if (data["color"]) then
-				self:SetColor(data["color"])
+				faction:SetColor(data["color"])
 			end
 		end)
 	end
 
+end
+
+function SF.Faction.metaClass:GetNetKey()
+	return self.key
 end
 
 function SF.Faction.metaClass:Destroy()
@@ -116,18 +126,16 @@ function SF.Faction.metaClass:HasGold(amount)
 end
 
 function SF.Faction.metaClass:AssociateColor()
-	local found = false
-	while (found == false) do
-		for name, tbl in pairs(SF.Faction:GetColors()) do
-			if (!tbl[2]) then
-				found = true
-				self:SetColor(name)
-				if (SERVER) then
-					self.smartnet:UpdateObject("color", name)
-				end
-
-				break;
+	--Bruteforce the colors.
+	while (true) do
+		local tbl = table.Random(SF.Faction:GetColors())
+		local name = table.KeyFromValue(SF.Faction:GetColors(), tbl)
+		if (!tbl[2]) then
+			self:SetColor(name)
+			if (SERVER) then
+				self.smartnet:UpdateObject("color", name)
 			end
+			break
 		end
 	end
 end
@@ -146,12 +154,16 @@ function SF.Faction.metaClass:GetColorName()
 	return self.colorName
 end
 
+function SF.Faction.metaClass:GetName()
+	return self:GetColorName().." Kingdom"
+end
+
 function SF.Faction.metaClass:GetColor()
 	return self.color
 end
 
-function SF.Faction.metaClass:SetColor(name, raw)
-	self.color = SF.Faction:GetColorFromName(raw)
+function SF.Faction.metaClass:SetColor(name)
+	self.color = SF.Faction:GetColorFromName(name)
 	self.colorName = name
 end
 
@@ -198,6 +210,7 @@ end
 --Territory styff
 function SF.Faction.metaClass:AddTerritory(territory)
 	self.territories[territory] = true
+	territory:SetFaction(self)
 end
 
 function SF.Faction.metaClass:RemoveTerritory(territory)
@@ -206,12 +219,18 @@ end
 
 /* End */
 
-function SF.Faction:Create()
+function SF.Faction:Create(keyO)
 	local o = table.Copy(SF.Faction.metaClass)
 	setmetatable(o, SF.Faction.metaClass)
-	SF:Call("OnFactionCreated", o)
 	table.insert(self.buffer, o)
+	o:Init(keyO)
+	SF:Call("OnFactionCreated", o)
+	print("New Faction Created, ID: "..o:GetNetKey())
 	return o
+end
+
+function SF.Faction:GetByNetKey(key)
+	return self.netBuffer[key]
 end
 
 function SF.Faction:GetFactions()
@@ -223,7 +242,8 @@ function SF.Faction:GetColors()
 end
 
 function SF.Faction:GetColorFromName(name)
-	return self.Colors[name]
+	local colTable = self.Colors[name]
+	return colTable[1]
 end
 
 SF:RegisterClass("shFaction", SF.Faction)

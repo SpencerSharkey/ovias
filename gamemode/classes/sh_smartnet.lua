@@ -13,34 +13,43 @@ function SF.SmartNet:New(key)
     local o = table.Copy(SF.SmartNet.meta)
     setmetatable(o, SF.SmartNet.meta)
     o:Init(key)
-	table.insert(self.buffer, o.index)
 	return o
 end
 
 function SF.SmartNet:Find(id)
-    if (!self.buffer[id]) then error("No smartnet buffer found with that ID") end
+    if (!self.buffer[id]) then error("No smartnet buffer found with that ID ("..id..")") end
     return self.buffer[id]
 end
 
 SMARTNET_ID = 1
 function SF.SmartNet.meta:Init(key)
+    self.callbacks = {}
     self.players = {}
     self.playerCache = {}
     self.real = {}
     self.index = key
+    SF.SmartNet.buffer[self.index] = self
     
     if (CLIENT) then
         netstream.Hook("ovSmartnet"..self.index, function(data)
             local id = data.smartnetID
-            local smartNet = Sf.SmartNet:Find(id)
+            local smartNet = SF.SmartNet:Find(id)
             local newData = smartNet:UnpackData(data)
             smartNet:HandleCallback(newData)
         end)
     end
 end
 
-function SF.SmartNet.meta:AddObject(name)
-    self.real[name] = "undefined"
+function SF.SmartNet.meta:SetObject(obj)
+    self.netObject = obj
+end
+
+function SF.SmartNet.meta:GetObject()
+    return self.netObject
+end
+
+function SF.SmartNet.meta:AddObject(name, default)
+    self.real[name] = default or "undefined"
 end
 
 function SF.SmartNet.meta:RemoveObject(name)
@@ -75,7 +84,7 @@ function SF.SmartNet.meta:Transfer(players)
         
         local compiledNetData = {}
         if (!self.playerCache[ply]) then
-            compiledNetData = table.copy(self.real)
+            compiledNetData = table.Copy(self.real)
         else
             local plyCache = self.playerCache[ply]
             for key, value in pairs(self.real) do
@@ -85,7 +94,7 @@ function SF.SmartNet.meta:Transfer(players)
             end
         end
             
-        netTable.dataTable = table.copy(compiledNetData)
+        netTable.dataTable = table.Copy(compiledNetData)
     
         netstream.Start(ply, "ovSmartnet"..self.index, netTable)
             
@@ -102,7 +111,7 @@ end
 
 function SF.SmartNet.meta:HandleCallback(data)
     for _, func in pairs(self.callbacks) do 
-        func(data)
+        func(data, self.netObject)
     end
 end
 

@@ -11,6 +11,7 @@ end
 function SF.Gamemode:PlayerInit()
 	SF:Msg("Requesting Gamemode State")
 	self:RequestState()
+	netstream.Start("playerReady", true)
 end
 
 function SF.Gamemode:SetState(state)
