@@ -12,15 +12,19 @@ end
 
 function SF.Hud:HUDPaint()
 	if (SF.Client:GetFaction()) then
-		//print()
 		surface.SetDrawColor(SF.Client:GetFaction():GetColor())
 		surface.DrawRect(0, 0, ScrW(), 4)
 	end
 end
 
-function SF.Hud:ContextMenuOpen()
-	print("nigga")
-	return true
+function SF.Hud:OnSpawnMenuOpen()
+	RestoreCursorPosition()
+	gui.EnableScreenClicker(true)
+end
+
+function SF.Hud:OnSpawnMenuClose()
+	RememberCursorPosition()
+	gui.EnableScreenClicker(false)
 end
 
 SF:RegisterClass("clHud", SF.Hud)
@@ -47,7 +51,7 @@ function PANEL:Init()
 		local icon = vgui.Create("SpawnIcon")
 		icon:SetModel(v:GetOviasModel())
 		icon.DoClick = function(p)
-			RunConsoleCommand("sfCreate", k)
+			SF.BuildMode:StartBuild(k)
 		end
 		self.tabs[cat]:AddItem(icon)
 

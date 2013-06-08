@@ -5,6 +5,11 @@
 
 SF.Util = {}
 
+function SF.Util:SetColorAlpha(col, alpha)
+	col.a = alpha
+	return col
+end
+
 function SF.Util:Cross2D(u, v)
 	return u.y * v.x - u.x * v.y
 end

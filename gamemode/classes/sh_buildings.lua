@@ -43,6 +43,10 @@ function SF.Buildings:GetBuildings()
 	return self.stored
 end
 
+function SF.Buildings:Get(id)
+	return self.stored[id]
+end
+
 SF.Buildings.reqMeta = {}
 SF.Buildings.reqMeta.__index = SF.Buildings.reqMeta
 AccessorFunc(SF.Buildings.reqMeta, "requiresTerritory", "RequiresTerritory", FORCE_BOOL)
@@ -51,6 +55,7 @@ function SF.Buildings.reqMeta:Init()
 	self.building = false
 	self.resources = {}
 	self.functions = {}
+	self.vFunctions = {}
 	self.gold = 0
 	self:SetRequiresTerritory(true)
 end
@@ -70,6 +75,10 @@ end
 
 function SF.Buildings.reqMeta:AddFunction(func)
 	table.insert(self.functions, func)
+end
+
+function SF.Buildings.reqMeta:AddViewFunction(func)
+	table.insert(self.vFunctions, func)
 end
 
 function SF.Buildings.reqMeta:Check(faction, trace, ghost)

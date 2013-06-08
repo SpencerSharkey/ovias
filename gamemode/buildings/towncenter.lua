@@ -29,6 +29,12 @@ function ENT:SetupRequirements(req)
 			end
 		end
 	end)
+	req:AddViewFunction(function(faction)
+		if (table.Count(faction:GetBuildingsOfType("castle")) > 0) then
+			return true
+		end
+		return false
+	end)
 end
 
 -- A function to grab the model the building uses
