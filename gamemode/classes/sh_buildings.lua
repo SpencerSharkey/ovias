@@ -30,18 +30,22 @@ function SF.Buildings:LoadBuildings()
 			SF:Msg("Loading Building: "..baseName, 3)
 			scripted_ents.Register(ENT, "building_"..baseName)
 			
-			self.stored[baseName] = ENT
+			self.stored[baseName] = table.Merge(scripted_ents.Get("base_building"), ENT) 
 
 			ENT = nil
 		end
 	end
+
+	SF:Call("InitPostBuildings")
 end
 
+function SF.Buildings:GetBuildings()
+	return self.stored
+end
 
 SF.Buildings.reqMeta = {}
 SF.Buildings.reqMeta.__index = SF.Buildings.reqMeta
 AccessorFunc(SF.Buildings.reqMeta, "requiresTerritory", "RequiresTerritory", FORCE_BOOL)
-
 
 function SF.Buildings.reqMeta:Init()
 	self.building = false
@@ -103,7 +107,8 @@ function SF.Buildings:NewRequirements()
 	return o
 end
 
+function SF.Buildings:InitPostEntity()
+	self:LoadBuildings()
+end
 
 SF:RegisterClass("shBuildings", SF.Buildings)
-
-SF.Buildings:LoadBuildings()

@@ -13,10 +13,17 @@ function ENT:SharedInit()
 	end
 end
 
+function ENT:GetRequirements()
+	return self.req
+end
+
+function ENT:PollInfo(key)
+	local info = self:GetInfo()
+	return info[key] or false
+end
+
 function ENT:SetupDataTables()
-
 	self.DT = {}
-
 
 	if (self.PostSetupDTVars) then
 		self.PostSetupDTVars()
@@ -25,7 +32,6 @@ end
 
 function ENT:SetFaction(faction)
 	self.faction = faction
-	print("Setitng bilding faction to "..self.faction:GetName())
 	self.faction:AddBuilding(self)
 end
 

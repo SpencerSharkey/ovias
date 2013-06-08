@@ -6,6 +6,8 @@ end
 -- A function to get a table of general info
 function ENT:GetInfo()
 	return {
+		["hideSpawn"] = true,
+		["category"] = "Dev",
 		["desc"] = ""
 	}
 end

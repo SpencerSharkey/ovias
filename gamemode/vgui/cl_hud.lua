@@ -6,7 +6,7 @@
 
 SF.Hud = {}
 
-function SF.Hud:Initialize()
+function SF.Hud:InitPostBuildings()
 	self.panel = vgui.Create("sfCreation")
 end
 
@@ -18,33 +18,40 @@ function SF.Hud:HUDPaint()
 	end
 end
 
+function SF.Hud:ContextMenuOpen()
+	print("nigga")
+	return true
+end
+
 SF:RegisterClass("clHud", SF.Hud)
 
 local PANEL = {}
 
 function PANEL:Init()
-	self:SetSize(400, 200)
-	self:SetPos(0, ScrH()-200)
+	self:SetSize(400, 120)
+	self:SetPos(0, ScrH()-120)
 
 	self.sheet = vgui.Create("DPropertySheet", self)
 	self.sheet:StretchToParent(1, 1, 1, 1)
 
 	self.tabs = {}
-	/*for k, v in pairs(SF.Buildings) do
-		if (!self.tabs[v.category]) then
-			self.tabs[v.category] = vgui.Create("DPanelList", self.sheet)
-			self.tabs[v.category]:EnableHorizontal(true)
-			self.sheet:AddSheet(v.category, self.tabs[v.category], "icon16/bell.png", false, false, v.category)
+	for k, v in pairs(SF.Buildings:GetBuildings()) do
+		if (v:PollInfo("hideSpawn")) then continue end
+		local cat = v:PollInfo("category")
+		if (!self.tabs[cat]) then
+			self.tabs[cat] = vgui.Create("DPanelList", self.sheet)
+			self.tabs[cat]:EnableHorizontal(true)
+			self.sheet:AddSheet(cat, self.tabs[cat], "icon16/bell.png", false, false, cat)
 		end
 
 		local icon = vgui.Create("SpawnIcon")
-		icon:SetModel(v.model)
+		icon:SetModel(v:GetOviasModel())
 		icon.DoClick = function(p)
 			RunConsoleCommand("sfCreate", k)
 		end
-		self.tabs[v.category]:AddItem(icon)
+		self.tabs[cat]:AddItem(icon)
 
-	end*/
+	end
 end
 
 function PANEL:Paint(w, h)

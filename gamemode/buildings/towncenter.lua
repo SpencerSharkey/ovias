@@ -6,6 +6,7 @@ end
 -- A function to get a table of general info
 function ENT:GetInfo()
 	return {
+		["category"] = "Kingdom",
 		["desc"] = "The control point of a manor in your kingdom."
 	}
 end
