@@ -75,14 +75,10 @@ netstream.Hook("territoryStream", function(data)
 		local t = SF.Territory.stored[data.index]
 		t:LoadNetworkTable(data)
 	end
-
-	PrintTable(data)
-	
 end)
 
 netstream.Hook("boundaryStream", function(data)
-	print("Receiving new boundary update")
-	PrintTable(data)
+	print("Receiving new boundary update...")
 	SF.Territory.boundaries = data
 end)
 

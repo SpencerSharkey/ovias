@@ -44,9 +44,9 @@ function SF.Faction.metaClass:Init(keyO)
 	end
 
 	if (CLIENT) then
+		self.territoryBuffer = {}
 		self.smartnet:AddCallback(function(data, faction)
 			SF:Msg("Receving callback for faction: "..faction:GetNetKey(), 3)
-			PrintTable(data)
 			if (data["gold"]) then
 				faction.gold = data["gold"]
 			end
@@ -56,19 +56,32 @@ function SF.Faction.metaClass:Init(keyO)
 			end
 
 			if (data["territories"]) then
-				faction.territories = data["territories"]
+				faction.territoryBuffer = table.Merge(faction.territoryBuffer, data["territories"])
 			end
 
 			if (data["buildings"]) then
 				faction.buildings = data["buildings"]
-				print("got sent a new building table:")
-				PrintTable(faction.buildings)
+				print("got sent a new building table!")
 			end
 
 			if (data["color"]) then
 				faction:SetColor(data["color"])
 			end
 		end)
+	end
+
+end
+
+function SF.Faction.metaClass:UpdateTerritoryBuffer(territory)
+	local id = territory.index
+	
+
+	for nKey, netID in pairs(self.territoryBuffer) do
+		if (netID == id) then
+			self:AddTerritory(territory)
+			self.territoryBuffer[nKey] = nil
+			print("Got a territory I guess...", id)
+		end
 	end
 
 end
@@ -217,24 +230,39 @@ end
 
 --Territory styff
 function SF.Faction.metaClass:AddTerritory(territory)
-	self.territories[territory] = true
-	territory:SetFaction(self)
+	self.territories[territory.index] = territory
 
 	if (SERVER) then
-		self.smartnet:UpdateObject("territories", self.territories)
+		local netTable = {}
+		for index, territory in pairs(self.territories) do
+			table.insert(netTable, index)
+		end
+
+		self.smartnet:UpdateObject("territories", netTable, true)
+		print("Sending ova these niggaS:")
+		PrintTable(netTable)
 	end
 end
 
 function SF.Faction.metaClass:RemoveTerritory(territory)
-	self.territories[territory] = nil
+	if (type(territory) == "number") then
+		if (self.territries[territory]) then
+			self.territories[territory] = nil
+		else
+			error("Tried removing territory but value was nil")
+		end
+	else
+		local index = territory.index
+		self.territories[index] = nil
+	end
+end
+
+function SF.Faction.metaClass:GetTerritory(index)
+	return self.territories[index]
 end
 
 function SF.Faction.metaClass:GetTerritories()
-	local t = {}
-	for k, v in pairs(self.territories) do
-		table.insert(t, k)
-	end
-	return t
+	return self.territories
 end
 
 function SF.Faction.metaClass:PointInInfluence(point)
@@ -247,6 +275,12 @@ function SF.Faction.metaClass:PointInInfluence(point)
 end
 
 /* End */
+
+function SF.Faction:OnTerritoryNetworked(territory)
+	--Assuming the territory was added to the faction... lets add it finally since we have the data :)
+	local faction = territory:GetFaction()
+	faction:UpdateTerritoryBuffer(territory)
+end
 
 function SF.Faction:Create(keyO)
 	local o = table.Copy(SF.Faction.metaClass)

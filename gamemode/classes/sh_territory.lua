@@ -28,6 +28,10 @@ function SF.Territory.metaClass:Init(pos, radius)
 	self.radius = radius
 	T_INDEX = T_INDEX + 1
 	self.index = T_INDEX
+
+	if (SERVER) then
+		SF.Territory.stored[self.index] = self
+	end
 end
 
 function SF.Territory.metaClass:PointInArea(position)
@@ -96,6 +100,12 @@ function SF.Territory.metaClass:LoadNetworkTable(tbl)
 
 	self:CalculateTriangles()
 
+	SF:Call("OnTerritoryNetworked", self)
+
+end
+
+function SF.Territory:Get(index)
+	return self.stored[index]
 end
 
 function SF.Territory.metaClass:Remove()
@@ -119,19 +129,17 @@ end
 /* End meta functions */
 
 function SF.Territory:CreateRaw()
-	local o = table.Copy(SF.Territory.metaClass)
-	setmetatable(o, SF.Territory.metaClass)
+	local o = setmetatable({}, SF.Territory.metaClass)
 	SF:Call("OnTerritoryCreated", o)
 	return o
 end
 
-function SF.Territory:Create(team, pos, radius)
+function SF.Territory:Create(faction, pos, radius)
 	local o = self:CreateRaw()
 	o:Init(pos, radius)
-	o.faction = team
-	self.stored[o.index] = o
-	
-	team:AddTerritory(o)
+
+	o.faction = faction
+	faction:AddTerritory(o)
 	return o
 end
 

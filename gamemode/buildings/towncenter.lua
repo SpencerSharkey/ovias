@@ -21,14 +21,12 @@ function ENT:SetupRequirements(req)
 	//req:AddGold(20)
 
 	req:AddFunction(function(faction, trace, ghost)
-		for _, manor in pairs(faction:GetManors()) do
-			if (trace.HitPos:Distance(manor:GetPos()) <= 128) then
+		for _, manor in pairs(faction:GetBuildingsOfType("towncenter")) do
+			if (trace.HitPos:Distance(manor:GetPos()) <= 64) then
 				return false, "Too close to existing Manor"
 			end
-			if (trace.HitPos:Distance(manor:GetPos()) >= 256) then
-				return false, "Too far away from your influence!"
-			end
 		end
+		return true
 	end)
 
 	req:AddViewFunction(function(faction)
