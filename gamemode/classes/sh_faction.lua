@@ -219,6 +219,10 @@ end
 function SF.Faction.metaClass:AddTerritory(territory)
 	self.territories[territory] = true
 	territory:SetFaction(self)
+
+	if (SERVER) then
+		self.smartnet:UpdateObject("territories", self.territories)
+	end
 end
 
 function SF.Faction.metaClass:RemoveTerritory(territory)
