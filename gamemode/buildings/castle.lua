@@ -13,14 +13,17 @@ end
 
 -- A function to return a requirements object
 function ENT:SetupRequirements(req)
+
+	req:SetRequiresTerritory(false)
+
 	req:AddFunction(function(faction, trace, ghost)
-		if (table.Count(faction:GetBuildingsOfType("castle")) >= 0) then
+		if (table.Count(faction:GetBuildingsOfType("castle")) > 0) then
 			return false, "Already have a castle"
 		end
 	end)
 
 	req:AddViewFunction(function(faction)
-		if (table.Count(faction:GetBuildingsOfType("castle")) >= 0) then
+		if (table.Count(faction:GetBuildingsOfType("castle")) > 0) then
 			return false
 		end
 	end)
@@ -47,6 +50,7 @@ end
 -- Called after the building has been completed
 function ENT:PostBuild()
 	self.territory = SF.Territory:Create(self:GetFaction(), self:GetPos(), 240)
+	self.territory:Calculate()
 end
 
 -- Called before the building is demolished

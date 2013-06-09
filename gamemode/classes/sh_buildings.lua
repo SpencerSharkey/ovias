@@ -30,7 +30,8 @@ function SF.Buildings:LoadBuildings()
 			SF:Msg("Loading Building: "..baseName, 3)
 			scripted_ents.Register(ENT, "building_"..baseName)
 			
-			self.stored[baseName] = table.Merge(scripted_ents.Get("base_building"), ENT) 
+			ENT.typeID = baseName
+			self.stored[baseName] = table.Merge(scripted_ents.Get("base_building"), ENT)
 
 			ENT = nil
 		end
@@ -61,7 +62,7 @@ function SF.Buildings.reqMeta:Init()
 end
 
 function SF.Buildings.reqMeta:AttachBuilding(ent)
-	if (!IsValid(ent)) then error("AttachBuilding Entity is '"..type(ent).."' Expected Entity") end
+	//if (!IsValid(ent)) then error("AttachBuilding Entity is '"..type(ent).."' Expected Entity") end
 	self.building = ent
 end
 
@@ -81,17 +82,30 @@ function SF.Buildings.reqMeta:AddViewFunction(func)
 	table.insert(self.vFunctions, func)
 end
 
+function SF.Buildings.reqMeta:CanView()
+	if (table.Count(self.vFunctions) <= 0) then return true end
+
+	for _, func in pairs(self.vFunctions) do
+		local pass = func(SF.Client:GetFaction())
+		if (pass == false) then
+			return false
+		end
+	end
+
+	return true
+end
+
 function SF.Buildings.reqMeta:Check(faction, trace, ghost)
 
 	if (self:GetRequiresTerritory()) then
-		if (!faction:PosInTerritory(trace.HitPos)) then
-			return false, "Position not in your territory"
+		if (!faction:PointInInfluence(trace.HitPos)) then
+			return false, "Position not in your influece"
 		end
 	end
 
 	for _, func in pairs(self.functions) do
 		local pass, msg = func(faction, trace, ghost)
-		if (!pass) then
+		if (pass == false) then
 			return false, msg
 		end
 	end

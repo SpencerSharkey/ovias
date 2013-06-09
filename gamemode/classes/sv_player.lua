@@ -3,9 +3,13 @@
 	Copyright © Slidefuse LLC - 2012
 ]]--
 
+function SF.PlayerMeta:CancelBuildMode()
+	SF.BuildMode:Cancel(self)
+end
 
-function SF.PlayerMeta:CreateTown(trace)
-	
+function SF.PlayerMeta:SpawnBuilding(type)
+	local trace = self:GetEyeTrace()
+	self:CreateBuilding(type, trace)
 end
 
 function SF.PlayerMeta:CreateBuilding(type, trace)

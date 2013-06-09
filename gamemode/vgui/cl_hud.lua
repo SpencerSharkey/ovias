@@ -6,7 +6,7 @@
 
 SF.Hud = {}
 
-function SF.Hud:InitPostBuildings()
+function SF.Hud:PostSetFaction()
 	self.panel = vgui.Create("sfCreation")
 end
 
@@ -38,9 +38,12 @@ function PANEL:Init()
 	self.sheet = vgui.Create("DPropertySheet", self)
 	self.sheet:StretchToParent(1, 1, 1, 1)
 
+	self.buildings = {}
+
 	self.tabs = {}
 	for k, v in pairs(SF.Buildings:GetBuildings()) do
 		if (v:PollInfo("hideSpawn")) then continue end
+
 		local cat = v:PollInfo("category")
 		if (!self.tabs[cat]) then
 			self.tabs[cat] = vgui.Create("DPanelList", self.sheet)
@@ -49,12 +52,20 @@ function PANEL:Init()
 		end
 
 		local icon = vgui.Create("SpawnIcon")
+		icon.building = v
 		icon:SetModel(v:GetOviasModel())
 		icon.DoClick = function(p)
 			SF.BuildMode:StartBuild(k)
 		end
 		self.tabs[cat]:AddItem(icon)
+		table.insert(self.buildings, icon)
 
+	end
+end
+
+function PANEL:Think()
+	for k, v in pairs(self.buildings) do
+		v:SetVisible(v.building:GetRequirements():CanView())
 	end
 end
 

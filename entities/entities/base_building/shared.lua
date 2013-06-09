@@ -5,7 +5,15 @@
 
 ENT.Type = "anim";
 
+function ENT:GetTypeID()
+	return self.typeID
+end
+
 function ENT:SharedInit()
+	self:InitializeRequirements()
+end
+
+function ENT:InitializeRequirements()
 	self.req = SF.Buildings:NewRequirements()
 
 	if (self.SetupRequirements) then
@@ -14,6 +22,9 @@ function ENT:SharedInit()
 end
 
 function ENT:GetRequirements()
+	if (!self.req) then
+		self:InitializeRequirements()
+	end
 	return self.req
 end
 
@@ -33,6 +44,7 @@ end
 function ENT:SetFaction(faction)
 	self.faction = faction
 	self.faction:AddBuilding(self)
+	self:SetColor(self:GetFaction():GetColor())
 end
 
 function ENT:GetFaction(faction)

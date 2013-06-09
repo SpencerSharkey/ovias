@@ -61,11 +61,8 @@ function SF.Faction.metaClass:Init(keyO)
 
 			if (data["buildings"]) then
 				faction.buildings = data["buildings"]
-				for _, ent in pairs(faction.buildings) do
-					if (ent:GetClass() == "building_towncenter") then
-						table.insert(faction.manors, ent)
-					end
-				end
+				print("got sent a new building table:")
+				PrintTable(faction.buildings)
 			end
 
 			if (data["color"]) then
@@ -88,10 +85,21 @@ function SF.Faction.metaClass:GetBuildings()
 	return self.buildings
 end
 
+function SF.Faction.metaClass:GetBuildingsOfType(type)
+	if (!self.buildings[type]) then return {} end
+	return self.buildings[type]
+end
+
 function SF.Faction.metaClass:AddBuilding(building)
-	table.insert(self.buildings, building)
-	if (building:GetClass() == "building_towncenter") then
-		table.insert(self.manors, building)
+	local btype = building:GetTypeID()
+	if (!self.buildings[btype]) then
+		self.buildings[btype] = {}
+	end
+
+	table.insert(self.buildings[btype], building)
+
+	if (SERVER) then
+		self.smartnet:UpdateObject("buildings", self.buildings, true)
 	end
 end
 
@@ -215,6 +223,23 @@ end
 
 function SF.Faction.metaClass:RemoveTerritory(territory)
 	self.territories[territory] = nil
+end
+
+function SF.Faction.metaClass:GetTerritories()
+	local t = {}
+	for k, v in pairs(self.territories) do
+		table.insert(t, k)
+	end
+	return t
+end
+
+function SF.Faction.metaClass:PointInInfluence(point)
+	for _, territory in pairs(self:GetTerritories()) do
+		if (territory:PointInArea(point)) then
+			return true, territory
+		end
+	end
+	return false
 end
 
 /* End */

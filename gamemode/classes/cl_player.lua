@@ -11,8 +11,8 @@ end
 
 netstream.Hook("ovPlayerFaction", function(data)
 	local faction = SF.Faction:GetByNetKey(data)
-	print(SF.Client)
 	SF.Client:SetFaction(faction)
+	SF:Call("PostSetFaction")
 end)
 
 netstream.Hook("ovFactionCreated", function(data)

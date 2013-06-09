@@ -15,10 +15,11 @@ end
 function ENT:SetupRequirements(req)
 	req:AttachBuilding(self)
 
-	req:SetRequiresTerritory(false)
-	req:AddResource("wood", 10)
-	req:AddResource("iron", 8)
-	req:AddGold(20)
+	req:SetRequiresTerritory(true)
+	//req:AddResource("wood", 10)
+	//req:AddResource("iron", 8)
+	//req:AddGold(20)
+
 	req:AddFunction(function(faction, trace, ghost)
 		for _, manor in pairs(faction:GetManors()) do
 			if (trace.HitPos:Distance(manor:GetPos()) <= 128) then
@@ -29,6 +30,7 @@ function ENT:SetupRequirements(req)
 			end
 		end
 	end)
+
 	req:AddViewFunction(function(faction)
 		if (table.Count(faction:GetBuildingsOfType("castle")) > 0) then
 			return true
