@@ -29,26 +29,22 @@ function PANEL:Init( )
 	self:SetSize(800, ScrH() - 100) -- Pretty much the parent size.
 	self:Center() -- Pretty much the parent pos.
 
-	self.PlayerList = vgui.Create("DPanelList", self)
-	self.PlayerList:SetSize(self:GetWide(), self:GetTall())
-	self.PlayerList:SetPos(10, self:GetTall() / 5)
-	self.PlayerList:SetSpacing(5)
-	self.PlayerList:EnableHorizontal( false )
-	self.PlayerList:EnableVerticalScrollbar( true )
+	self.PlayerList = vgui.Create("DScrollPanel", self)
+	self.PlayerList:SetSize(self:GetWide() - 20, self:GetTall() / 1.32)
+	self.PlayerList:SetPos(10, self:GetTall() / 5 + 20)
 
 	for k, v in pairs(player.GetAll()) do
 		self.PlayerCard = vgui.Create("ovias_playercard", self.PlayerList)
 		self.PlayerCard:Choose(v)
-		self.PlayerCard:SetPos(5, 20 + self.PlayerHeight)
-		self.PlayerCard:SetSize(500, 20)
+		self.PlayerCard:SetPos(5, 0 + self.PlayerHeight)
 
-		self.PlayerHeight = self.PlayerHeight + 20
+		self.PlayerHeight = self.PlayerHeight + 50
 	end
 
 	self.HostName = vgui.Create("DLabel", self)
 	self.HostName:SetText( GetHostName() )
 	self.HostName:SetFont("ScoreboardNorm")
-	self.HostName:SetPos(15, 10)
+	self.HostName:SetPos(self:GetWide() / 3 + 30, 10)
 	self.HostName:SizeToContents()
 
 end
@@ -58,11 +54,11 @@ function PANEL:Paint( )
 	surface.SetDrawColor(0, 0, 0, 255)
 	surface.DrawRect(0, 0, self:GetWide(), self:GetTall())
 
-	surface.SetDrawColor(SF.Client:GetFaction():GetColor())
-	surface.DrawRect(5, 5, self:GetWide() - 10, self:GetTall() - 10)
+	surface.SetDrawColor(50, 50, 50, 255)
+	surface.DrawRect(10, 10, self:GetWide() / 3, self:GetTall() / 5)		
 
 	surface.SetDrawColor(50, 50, 50, 255)
-	surface.DrawRect(10, 10, self:GetWide() - 20, self:GetTall() / 5)
+	surface.DrawRect(self:GetWide() / 3 + 20, 10, self:GetWide() / 1.585, self:GetTall() / 5)
 
 	surface.SetDrawColor(40, 40, 40, 255)
 	surface.DrawRect(10, self:GetTall() / 4.5, self:GetWide() - 20, self:GetTall() / 1.31)
@@ -102,8 +98,23 @@ local PANEL = {}
 
 function PANEL:Init()
 
-	self.HostName = vgui.Create("DLabel", self	)
-	self.HostName:SetFont( "ScoreboardNorm" )
+	self:SetSize(770, 45)
+	self:SizeToContents()
+
+	self.Card = vgui.Create("DPanel", self)
+	self.Card:SetSize(self:GetWide(), self:GetTall())	
+	self.Card.Paint = function()
+		if self.Player:IsBot() then
+			draw.RoundedBox(0, 0, 0, self:GetWide(), self:GetTall(), Color(0, 100, 0, 255))
+		else
+			draw.RoundedBox(0, 0, 0, self:GetWide(), self:GetTall(), self.Player:GetFaction():GetColor())
+		end
+	end
+
+	self.PlayerName = vgui.Create("DLabel", self.Card)
+	self.PlayerName:SetFont( "ScoreboardNorm" )
+
+	self.PlayerAvatar = vgui.Create("AvatarImage", self.Card)
 
 end
 
@@ -112,6 +123,8 @@ function PANEL:Choose( ply )
 	self.Player = ply
 	self:UpdatePlayerData()
 
+	self.PlayerAvatar:SetPlayer(self.Player)
+
 end
 
 function PANEL:UpdatePlayerData()
@@ -119,10 +132,13 @@ function PANEL:UpdatePlayerData()
 	if !self.Player then return end
 	if !self.Player:IsValid() then return end
 
-	self.HostName:SetText( self.Player:Nick() )
-	self.HostName:SizeToContents()
+	self.PlayerName:SetText( self.Player:Nick() )
 	
-	self:InvalidateLayout()
+	//self:InvalidateLayout()
+
+end
+
+function PANEL:Paint()
 
 end
 
@@ -137,8 +153,11 @@ end
 
 function PANEL:PerformLayout()
 
-	surface.SetDrawColor(255, 0, 0, 255)
-	surface.DrawRect(5, 5, self:GetWide() - 10, self:GetTall() - 10)
+	self.PlayerName:SetPos(50, 0)
+	self.PlayerName:SizeToContents()
+
+	self.PlayerAvatar:SetPos(2, 2)
+	self.PlayerAvatar:SetSize(40, 40)
 
 end
 
@@ -147,4 +166,4 @@ function PANEL:Paint()
 end
 
 
-vgui.Register( "ovias_playercard", PANEL )
+vgui.Register( "ovias_playercard", PANEL, "Panel" )
