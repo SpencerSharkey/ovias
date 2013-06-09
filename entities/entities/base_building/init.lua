@@ -22,7 +22,10 @@ function ENT:Initialize()
 	self.modelMins, self.modelMaxs = self:OBBMins(), self:OBBMaxs()
 
 	self:SharedInit()
+end
 
+function ENT:PostClientsideInit()
+	self.faction:AddBuilding(self)
 end
 
 function ENT:Think()

@@ -43,7 +43,6 @@ end
 
 function ENT:SetFaction(faction)
 	self.faction = faction
-	self.faction:AddBuilding(self)
 	self:SetColor(self:GetFaction():GetColor())
 end
 

@@ -15,6 +15,8 @@ function ENT:Initialize()
 	self.isBuilt = false
 
 	self:SharedInit()
+
+	SF.Entity:ClientsideInit(self)
 end
 
 local mFoundation = CreateMaterial("ovFoundation1", "VertexLitGeneric", {
