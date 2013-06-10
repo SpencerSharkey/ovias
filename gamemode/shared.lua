@@ -1,7 +1,7 @@
 --[[
 	Ovias
 	Copyright © Slidefuse LLC - 2012
-]]--
+--]]
 
 GM.Name			= "Ovias"
 GM.Author		= "Slidefuse LLC"
@@ -125,6 +125,16 @@ function SF:IncludeCS(Dir, Prefix)
 	end
 end
 
+function SF:IncludeDirectoryRecursive(Dir, Prefix)
+    local Prefix = Prefix or ""
+    for k, v in pairs(file.FindDir(self.LoaderDir.."/"..Dir.."/*", "LUA")) do
+        local File = Dir.."/"..v
+		self:IncludeDirectoryRecursive(File)
+	end
+
+    self:IncludeDirectory(Dir, Prefix)
+end
+
 function SF:IncludeDirectory(Dir, Prefix)
 	local Prefix = Prefix or ""
 	if (SERVER) then
@@ -203,7 +213,7 @@ function SF:Init(Dir)
 	end
 	
 	self:Msg("# Loading LUA Files")
-	self:IncludeDirectory("classes")
+	self:IncludeRecursiveDirectory("classes")
 	self:IncludeDirectory("vgui")
 
 	self:Msg("Setting up NetHooks", 1)
