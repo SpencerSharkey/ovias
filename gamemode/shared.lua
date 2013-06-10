@@ -22,12 +22,19 @@ function file.FindDir(path, mode)
 	return d
 end
 
+// Name: Creating Teams Function
+// Description: To create teams that will run smoothly with the gamemode.
+
 function GM:CreateTeams()
 	team.SetUp(SF.TEAM_CONNECTED, "Connected", Color(200, 0, 200, 255))
 
 	team.SetUp(SF.TEAM_JOINING, "Joining", Color(20, 20, 20, 255))
 	team.SetSpawnPoint(SF.TEAM_JOINING, "info_player_counterterrorist")
 end
+
+
+// Name: Get Game Description
+// Description: A function used to return the description in a later date.
 
 function GM:GetGameDescription()
 	return "Ovias"
@@ -36,6 +43,9 @@ end
 function GM:GetGamemodeDescription()
 	return self:GetGameDescription()
 end
+
+// Name: Start of the SF Classes.
+// Description: n/a
 
 function SF:Msg(s, t)
 	s = tostring(s)
