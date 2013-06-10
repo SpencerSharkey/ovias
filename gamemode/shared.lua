@@ -314,7 +314,7 @@ function SF:Init(Dir)
 	end
 	
 	self:Msg("# Loading LUA Files")
-	self:IncludeRecursiveDirectory("classes")
+	self:IncludeDirectoryRecursive("classes")
 	self:IncludeDirectory("vgui")
 
 	self:Msg("###############################################")
