@@ -11,8 +11,8 @@ function SF.BuildMode:Cancel(ply)
 end
 
 netstream.Hook("ovPlaceBuilding", function(ply, data)
-	local building = SF.Buildings:Get(data)
-	if (!building) then error("Not the right building fgt") end
+	assert(SF.Buildings:Get(data), "Player "..ply:Nick().." sent a building that does't exist.")
+
 	ply:SpawnBuilding(data)
 	ply:CancelBuildMode()
 end)

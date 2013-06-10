@@ -14,8 +14,7 @@ end
 
 if (SERVER) then
 	netstream.Hook("ovClientsideInit", function(ply, data)
-		local ent = Entity(data)
-		ent:PostClientsideInit()
+		Entity(data):PostClientsideInit()
 	end)
 end
 

@@ -8,7 +8,7 @@ SF.FrameFunc.buffer = {}
 SF.FrameFunc.currentFrame = 1
 
 function SF.FrameFunc:Think()
-    for k, v in pairs(self.buffer) do
+    for k, v in next, self.buffer do
         if (k == self.currentFrame) then
             v(currentFrame)
             self.buffer[k] = nil
@@ -32,8 +32,7 @@ function SF.FrameFunc.frameChain:AddLink(func)
 end
 
 function SF.FrameFunc:FrameChain(name, frameSkip)
-    local o = {}
-    setmetatable(o, self.frameChain)
+    local o = setmetatable({}, self.frameChain)
     o.frameSkip = frameSkip
     return o
 end

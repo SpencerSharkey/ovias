@@ -24,5 +24,3 @@ end
 function SF.Gamemode:GetStateName(state)
 	return self.StateNames[state] or state
 end
-
-//Registered in scope-specific files

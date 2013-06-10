@@ -1,42 +1,23 @@
-surface.CreateFont("debug", {
-	font = "Arial",
-	size = 48,
-	weight = 500,
-	blursize = 0,
-	scanlines = 0,
-	antialias = true,
-	underline = false,
-	italic = false,
-	strikeout = false,
-	symbol = false,
-	rotary = false,
-	shadow = false,
-	additive = false,
-	outline = false
-})
 /*
 --	Ovias
 --	Copyright © Slidefuse LLC - 2012
 */
 
-local mat = Material("effects/laser_tracer")
+local mBoundary = Material("effects/laser_tracer")
 function SF.Territory:PostDrawOpaqueRenderables()
-
-	render.SetMaterial(mat)
-
-	for k, v in pairs(self.stored) do
+	render.SetMaterial(mBoundary)
+	for k, v in next, self.stored do
 		if (!v.drawCache) then
 			v:CreateDrawCache()
 		end
 		v:Draw()
 	end
-
 end
 
 function SF.Territory.metaClass:CreateDrawCache()
 	self.drawCache = {}
 
-	for k, point in pairs(self.points) do
+	for k, point in next, self.points do
 		if (table.HasValue(self.pointsExcluded, k)) then continue end
 		local normal
 		local endPoint = point + (point-self.position):Angle():Forward()*5 + Vector(0, 0, 2)
@@ -47,17 +28,14 @@ function SF.Territory.metaClass:CreateDrawCache()
 			normal = tr.HitNormal:Angle():Right()
 		end
 		
-		self.drawCache[k] = {point, normal}
+		self.drawCache[k] = {point - normal*2, point + normal*2, normal}
 	end
 end
 
 function SF.Territory.metaClass:Draw()
-	for k, pointData in pairs(self.drawCache) do
+	for k, pointData in next, self.drawCache do
 		if (table.HasValue(self.pointsExcluded, k)) then continue end
-		local point = pointData[1]
-		local normal = pointData[2]
-		local testPoint = pointData[3]
-		render.DrawBeam(point - normal*2, point + normal*2, 3, 0.5, 0.75, self:GetFaction():GetColor())
+		render.DrawBeam(pointData[1], pointData[2], 3, 0.5, 0.75, self:GetFaction():GetColor())
 	end
 end
 
@@ -78,7 +56,6 @@ netstream.Hook("territoryStream", function(data)
 end)
 
 netstream.Hook("boundaryStream", function(data)
-	print("Receiving new boundary update...")
 	SF.Territory.boundaries = data
 end)
 

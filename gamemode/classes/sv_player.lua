@@ -8,8 +8,7 @@ function SF.PlayerMeta:CancelBuildMode()
 end
 
 function SF.PlayerMeta:SpawnBuilding(type)
-	local trace = self:GetEyeTrace()
-	self:CreateBuilding(type, trace)
+	self:CreateBuilding(type, self:GetEyeTrace())
 end
 
 function SF.PlayerMeta:CreateBuilding(type, trace)
@@ -32,14 +31,10 @@ function SF.PlayerMeta:CreateBuilding(type, trace)
 end
 
 netstream.Hook("ovSpawnBuilding", function(ply, data)
-	local buildtype = data["building"]
-	local trace = ply:GetEyeTraceNoCursor()
-	local building = ply:CreateBuilding(buildtype, trace)
-	--we try.
+	ply:CreateBuilding(data.building, ply:GetEyeTraceNoCursor())
 end)
 
 function SF.Player:OnFactionCreated(faction)
-	local key = faction:GetNetKey()
 	netstream.Start(player.GetAll(), "ovFactionCreated", faction:GetNetKey())
 end
 

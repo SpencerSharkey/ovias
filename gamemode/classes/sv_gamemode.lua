@@ -29,7 +29,6 @@ function SF.Gamemode:Think()
 		self.startPlayTime = CurTime() + 2
 		self:SendCountdown()
 		SF:Msg("Players ready. Starting countdown.")
-
 	end
 
 	if (self:GetState() == self.STATE_WAITING and self.startPlayTime and CurTime() >= self.startPlayTime) then
@@ -52,7 +51,6 @@ end
 
 netstream.Hook("requestGameState", function(ply, data)
 	netstream.Start(ply, "updateGameState", SF.Gamemode.CurrentState)
-	SF:Msg("Sending player "..ply:Nick().." Game State")
 end)
 
 netstream.Hook("requestCountdown", function(ply, data)

@@ -37,8 +37,6 @@ function SF.Units:LoadUnits()
 	end
 end
 
-//function SF.Units:
-
 SF:RegisterClass("shUnits", SF.Units)
 
 SF.Units:LoadUnits()

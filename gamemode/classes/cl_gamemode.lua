@@ -9,18 +9,17 @@ function SF.Gamemode:Initialize()
 end
 
 function SF.Gamemode:PlayerInit()
-	SF:Msg("Requesting Gamemode State")
 	self:RequestState()
 	netstream.Start("playerReady", true)
 end
 
 function SF.Gamemode:SetState(state)
 	local oldState = self.CurrentState or -1
+
 	self.CurrentState = state
 	SF:Msg("Changing Gamemode State: "..self:GetStateName(oldState).."->"..self:GetStateName(self.CurrentState), 1)
 
 	if (oldState != self.CurrentState) then
-		SF:Msg("And Calling!", 1)
 		SF:Call("OviasGameStateChanged", oldState, self.CurrentState)
 	end
 
@@ -48,28 +47,23 @@ end)
 
 function SF.Gamemode:Think()
 
-	if (IsValid(LocalPlayer())) then
+	if (!self.playerInit and IsValid(LocalPlayer())) then
 		if (!self.playerInit) then
 			SF:Call("PlayerInit")
 			self.playerInit = true
 		end
 	end
 
-	if (self.countdownEnabled) then
-		if (CurTime() <= SF.Gamemode.countdownEnd) then
-			self.countdownTime = self.countdownEnd - CurTime()
-			if (self.countdownTime <= 0) then
-				self.countdownEnabled = false
-			end
+	if (self.countdownEnabled and CurTime() <= SF.Gamemode.countdownEnd) then
+		self.countdownTime = self.countdownEnd - CurTime()
+		if (self.countdownTime <= 0) then
+			self.countdownEnabled = false
 		end
 	end
 end
 
 function SF.Gamemode:GetCountdown()
-	if (self.countdownTime) then
-		return math.ceil(self.countdownTime)
-	end
-	return 0
+	return math.ceil(self.countdownTime or 0)
 end
 
 function SF.Gamemode:OviasGameStateChanged(old, new)

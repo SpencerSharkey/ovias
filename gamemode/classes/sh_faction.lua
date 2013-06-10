@@ -46,26 +46,24 @@ function SF.Faction.metaClass:Init(keyO)
 	if (CLIENT) then
 		self.territoryBuffer = {}
 		self.smartnet:AddCallback(function(data, faction)
-			SF:Msg("Receving callback for faction: "..faction:GetNetKey(), 3)
-			if (data["gold"]) then
-				faction.gold = data["gold"]
+			if (data.gold) then
+				faction.gold = data.gold
 			end
 
-			if (data["players"]) then
-				faction.players = data["players"]
+			if (data.player) then
+				faction.players = data.players
 			end
 
-			if (data["territories"]) then
-				faction.territoryBuffer = table.Merge(faction.territoryBuffer, data["territories"])
+			if (data.territories) then
+				faction.territoryBuffer = table.Merge(faction.territoryBuffer, data.territories)
 			end
 
-			if (data["buildings"]) then
-				faction.buildings = data["buildings"]
-				print("got sent a new building table!")
+			if (data.buildings) then
+				faction.buildings = data.buildings
 			end
 
-			if (data["color"]) then
-				faction:SetColor(data["color"])
+			if (data.color) then
+				faction:SetColor(data.color)
 			end
 		end)
 	end
@@ -74,13 +72,11 @@ end
 
 function SF.Faction.metaClass:UpdateTerritoryBuffer(territory)
 	local id = territory.index
-	
 
-	for nKey, netID in pairs(self.territoryBuffer) do
+	for nKey, netID in next, self.territoryBuffer do
 		if (netID == id) then
 			self:AddTerritory(territory)
 			self.territoryBuffer[nKey] = nil
-			print("Got a territory I guess...", id)
 		end
 	end
 
@@ -133,21 +129,19 @@ function SF.Faction.metaClass:SetGold(gold)
 end
 
 function SF.Faction.metaClass:TakeGold(amount)
-	self:SetGold(self:GetGold() - amount)
-	return self:GetGold()
+	self.gold = self.gold - amount
 end
 
 function SF.Faction.metaClass:GiveGold(amount)
-	self:SetGold(self:GetGold() + amount)
-	return self:GetGold()
+	self.gold = self.gold + amount
 end
 
 function SF.Faction.metaClass:HasGold(amount)
-	return (self:GetGold() >= amount)
+	return (self.gold >= amount)
 end
 
 function SF.Faction.metaClass:AssociateColor()
-	--Bruteforce the colors.
+	--Bruteforce the colors. Worst code in gamemode.
 	while (true) do
 		local tbl = table.Random(SF.Faction:GetColors())
 		local name = table.KeyFromValue(SF.Faction:GetColors(), tbl)
@@ -162,9 +156,7 @@ function SF.Faction.metaClass:AssociateColor()
 end
 
 function SF.Faction.metaClass:DisassociateColor()
-	local colorTable = self:GetColorTable()
-	colorTable[2] = false
-	return true
+	self:GetColorTable()[2] = false
 end
 
 function SF.Faction.metaClass:GetColorTable()
@@ -180,7 +172,7 @@ function SF.Faction.metaClass:GetName()
 end
 
 function SF.Faction.metaClass:GetColor()
-	return self.color
+	return table.Copy(self.color)
 end
 
 function SF.Faction.metaClass:SetColor(name)
@@ -190,15 +182,7 @@ end
 
 function SF.Faction.metaClass:AddPlayer(ply)
 	self.players[ply] = true
-
-	local plytable = {}
-	for ply, add in pairs(self.players) do
-		if (!add) then continue end
-		table.insert(plytable, ply)
-	end
-	self.smartnet:SetPlayers(plytable)
-
-	--Update the player with the low-down ;)
+	self:UpdateSmartnetPlayers()
 	self.smartnet:Transfer(ply)
 end
 
@@ -209,19 +193,21 @@ function SF.Faction.metaClass:RemovePlayer(ply)
 		SF:Msg("Faction has no players, destroying.")
 		self:Destroy()
 	else
-		local plytable = {}
-		for ply, add in pairs(self.players) do
-			if (!add) then continue end
-			table.insert(plytable, ply)
-		end
-		self.smartnet:SetPlayers(plytable)
+		self:UpdateSmartnetPlayers()
 	end
+end
+
+function SF.Faction.metaClass:UpdateSmartnetPlayers()
+	local plytable = {}
+	for ply in next, self.players do
+		table.insert(plytable, ply)
+	end
+	self.smartnet:SetPlayers(plytable)
 end
 
 function SF.Faction.metaClass:GetPlayers()
 	local ret = {}
-	for k, v in pairs(self.players) do
-		if (!v) then continue end
+	for k in next, self.players do
 		table.insert(ret, k)
 	end
 	return ret
@@ -234,26 +220,19 @@ function SF.Faction.metaClass:AddTerritory(territory)
 
 	if (SERVER) then
 		local netTable = {}
-		for index, territory in pairs(self.territories) do
+		for index in next, self.territories do
 			table.insert(netTable, index)
 		end
 
 		self.smartnet:UpdateObject("territories", netTable, true)
-		print("Sending ova these niggaS:")
-		PrintTable(netTable)
 	end
 end
 
 function SF.Faction.metaClass:RemoveTerritory(territory)
 	if (type(territory) == "number") then
-		if (self.territries[territory]) then
-			self.territories[territory] = nil
-		else
-			error("Tried removing territory but value was nil")
-		end
+		self.territories[territory] = nil
 	else
-		local index = territory.index
-		self.territories[index] = nil
+		self.territories[territory.index] = nil
 	end
 end
 
@@ -266,7 +245,7 @@ function SF.Faction.metaClass:GetTerritories()
 end
 
 function SF.Faction.metaClass:PointInInfluence(point)
-	for _, territory in pairs(self:GetTerritories()) do
+	for _, territory in next, self.territories do
 		if (territory:PointInArea(point)) then
 			return true, territory
 		end
@@ -278,17 +257,14 @@ end
 
 function SF.Faction:OnTerritoryNetworked(territory)
 	--Assuming the territory was added to the faction... lets add it finally since we have the data :)
-	local faction = territory:GetFaction()
-	faction:UpdateTerritoryBuffer(territory)
+	territory:GetFaction():UpdateTerritoryBuffer(territory)
 end
 
 function SF.Faction:Create(keyO)
-	local o = table.Copy(SF.Faction.metaClass)
-	setmetatable(o, SF.Faction.metaClass)
+	local o = setmetatable({}, SF.Faction.metaClass)
 	table.insert(self.buffer, o)
 	o:Init(keyO)
 	SF:Call("OnFactionCreated", o)
-	print("New Faction Created, ID: "..o:GetNetKey())
 	return o
 end
 
@@ -305,8 +281,7 @@ function SF.Faction:GetColors()
 end
 
 function SF.Faction:GetColorFromName(name)
-	local colTable = self.Colors[name]
-	return colTable[1]
+	return self.Colors[name][1]
 end
 
 SF:RegisterClass("shFaction", SF.Faction)
