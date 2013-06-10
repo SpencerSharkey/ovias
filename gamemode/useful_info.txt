@@ -1,0 +1,32 @@
+Ovias is a pretty cool gamemode.
+===========================================
+Besides entities, all the code for the gamemode is done in the classes folder.
+This allows for an easily scalable gamemode structure, where imports aren't technically important. 
+All files in the class folder are loaded automatically, obviously respecting their scope.
+- sv_ files are loaded on the server
+- cl_ files are loaded on the client
+- sh_ files are loaded on both scopes.
+The order files are loaded in is: Shared, Server, Client. This means sh_ files are loaded before the specific scope file is.
+
+Classes are objects created that contain methods and variables to seperate gamemode features.
+
+You have to intialize a class with an empty table, and register it when you've completed. 
+For example:
+
+
+==========
+SF.Foobar = {}
+
+SF.Foobar:Initialize()
+    print("The gamemode initialized!")
+end
+
+SF:RegisterClass("svFoobar", SF.Foobar)
+==========
+
+Notice how an initialize function has been added, this is because all gmod hooks are also passed down and called on the class objects.
+A class can be called anything, so long that it does not conflict with other class names.
+
+A helpful hint:
+Because sh_ files are loaded prior to sv_ and cl_, you can get away with starting a shared class, then registering each class seperately in the desired scope.
+This can be seen used in the territory class.
