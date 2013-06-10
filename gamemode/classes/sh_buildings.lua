@@ -12,7 +12,8 @@ SF.Buildings.buffer = {}
 */
 
 function SF.Buildings:LoadBuildings()
-	SF:Msg("Loading Buildings...", 2)
+	SF:Msg("###############################################")
+	SF:Msg("# Loading Buildings...")
 	local files, folders = file.Find(SF.LoaderDir.."/buildings/*", "LUA", "namedesc")
 
 	for k, v in next, files do
@@ -27,7 +28,7 @@ function SF.Buildings:LoadBuildings()
 			end
 			include(SF.LoaderDir.."/buildings/"..v)
 
-			SF:Msg("Loading Building: "..baseName, 3)
+			SF:Msg("Loading Building: "..baseName, 1)
 			scripted_ents.Register(ENT, "building_"..baseName)
 			
 			ENT.typeID = baseName
@@ -35,8 +36,10 @@ function SF.Buildings:LoadBuildings()
 
 			ENT = nil
 		end
-	end
 
+		
+	end
+	SF:Msg("###############################################")
 	SF:Call("InitPostBuildings")
 end
 

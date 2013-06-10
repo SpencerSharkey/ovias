@@ -124,7 +124,7 @@ function SF.Territory.metaClass:Calculate()
 	end
 
 
-	for _, tid in next, self.recheckQueueF do
+	for _, tid in next, self.recheckQueue do
 		local territory = SF.Territory.stored[tid]
 		for k, point in next, territory.points do
 			if (self:PointInArea(point)) then

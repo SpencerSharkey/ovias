@@ -24,6 +24,12 @@ local mFoundation = CreateMaterial("ovFoundation1", "VertexLitGeneric", {
 	["$model"] = 1
 })
 
+local mBuilder = CreateMaterial("ovBuildMesh3", "VertexLitGeneric", {
+	["$basetexture"] = "ovias/buildframe",
+	["$translucent"] = 1,
+	["$model"] = 1
+})
+
 local mWire = Material("models/wireframe")
 
 function ENT:Draw()
@@ -56,19 +62,26 @@ function ENT:Draw()
 			render.PopCustomClipPlane()
 		render.EnableClipping(false)
 
-		render.MaterialOverride(mWire)
 
 		local clipNormal = Vector(0, 0, 1)
 		local distance = clipNormal:Dot(Vector(0, 0, self:GetPos().z + clipHeight))
-		render.MaterialOverride(mWire)
+		render.MaterialOverride(mBuilder)
+		render.SetColorModulation(1, 1, 1, 1)
 		render.EnableClipping(true)
 			render.PushCustomClipPlane(clipNormal, distance)
 			self:DrawModel()
 			render.PopCustomClipPlane()
 		render.EnableClipping(false)
 		render.MaterialOverride(false)
+
+
+		render.SetColorModulation(1, 1, 1, 1)
+
+		
+
 	else
 		self:DrawModel()
+
 	end
 
 end
@@ -81,7 +94,9 @@ function ENT:Think()
 			self.isBuilding = false
 			self.isBuilt = true
 		end
+		effects.halo.Add({self}, Color(0, 0, 0), 1, 1, 1, false, true)
 	end
+
 
 end
 
