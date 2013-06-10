@@ -15,16 +15,25 @@ SF.TEAM_CONNECTED = 2
 SF.TEAM_SPEC = 1
 SF.TEAM_JOINING = 0
 
+AddCSLuaFile("netstream.lua")
 include("netstream.lua")
 
+--[[
+@class File
+@name FindDir
+@args string Path, string Mode
+@desc Returns the directories from a file search
+--]]
 function file.FindDir(path, mode)
 	local f, d = file.Find(path, mode)
 	return d
 end
 
-// Name: Creating Teams Function
-// Description: To create teams that will run smoothly with the gamemode.
-
+--[[
+@class GM
+@name CreateTeams
+@desc To create teams that will run smoothly with the gamemode.
+--]]
 function GM:CreateTeams()
 	team.SetUp(SF.TEAM_CONNECTED, "Connected", Color(200, 0, 200, 255))
 
@@ -33,20 +42,30 @@ function GM:CreateTeams()
 end
 
 
-// Name: Get Game Description
-// Description: A function used to return the description in a later date.
-
+--[[
+@class GM
+@name GetGameDescription
+@desc A gamemode hook to get the gamemode name
+--]]
 function GM:GetGameDescription()
 	return "Ovias"
 end
 
+--[[
+@class GM
+@name GetGamemodeDescription
+@desc An alias of `GM:GetGameDescription`
+--]]
 function GM:GetGamemodeDescription()
 	return self:GetGameDescription()
 end
 
-// Name: Start of the SF Classes.
-// Description: n/a
-
+--[[
+@class SF
+@name Msg
+@args string Message, [number Tabs]
+@desc Prints a tabbed message
+--]]
 function SF:Msg(s, t)
 	s = tostring(s)
 	
@@ -63,10 +82,17 @@ function SF:Msg(s, t)
 	Msg(s)
 end
 
+--[[
+@class SF
+@name Print
+@args string Message
+@desc An alias of `Print`
+--]]
 function SF:Print(s)
 	print(s)
 end
 
+-- This is a hackish method to detour default hooks in Garry's Mod to call our own
 local oldHook = hook.Call
 function hook.Call(name, gamemode, ...)
 	if (CLIENT) then
@@ -89,10 +115,22 @@ function hook.Call(name, gamemode, ...)
 	return returnvalue
 end
 
+--[[
+@class SF
+@name Call
+@args string Hook Name, {var args}
+@desc A function that calls a hook with the arguments given
+--]]
 function SF:Call(name, ...)
 	return hook.Call(name, self, ...)
 end
 
+--[[
+@class SF
+@name RandomString
+@args number Length, [string Haystack]
+@desc Returns a randmized string with a specific length
+--]]
 function SF:RandomString(length, sHaystack)
 	local haystack = sHaystack or "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 	local returnval = ""
@@ -102,6 +140,12 @@ function SF:RandomString(length, sHaystack)
 	return returnval
 end
 
+--[[
+@class SF
+@name RegisterClass
+@args string ClassName, table ClassTable
+@desc Registers a class with the specified name
+--]]
 function SF:RegisterClass(s, t)
 	if (!self.CLASSES[s]) then
 		self.CLASSES[s] = t
@@ -109,6 +153,11 @@ function SF:RegisterClass(s, t)
 	end
 end
 
+--[[
+@class SF
+@name GetSides
+@desc Returns the scope prefixes for the given runtime
+--]]
 function SF:GetSides()
 	if(SERVER) then
 		return {"sh_", "sv_"}
@@ -117,10 +166,22 @@ function SF:GetSides()
 	end
 end
 
+--[[
+@class SF
+@name Include
+@args string Directory, string File
+@desc Runs include(Directory/File)
+--]]
 function SF:Include(Dir, File)
 	include(Dir.."/"..File)
 end
 
+--[[
+@class SF
+@name IncludeCS
+@args string Directory, string Prefix
+@desc Adds clientside files to the client buffer in a directory
+--]]
 function SF:IncludeCS(Dir, Prefix)
 	local Prefix = Prefix or ""
 	self:Msg("Adding Client Folder: ["..self.LoaderDir.."/"..Dir.."]", 1)
@@ -135,6 +196,12 @@ function SF:IncludeCS(Dir, Prefix)
 	end
 end
 
+--[[
+@class SF
+@name IncludeDirectoryRecursive
+@args string Directory, string Prefix
+@desc Recursively includes a directory
+--]]
 function SF:IncludeDirectoryRecursive(Dir, Prefix)
     local Prefix = Prefix or ""
     for k, v in pairs(file.FindDir(self.LoaderDir.."/"..Dir.."/*", "LUA")) do
@@ -145,6 +212,12 @@ function SF:IncludeDirectoryRecursive(Dir, Prefix)
     self:IncludeDirectory(Dir, Prefix)
 end
 
+--[[
+@class SF
+@name IncludeDirectory
+@args string Directory, string Prefix
+@desc Includes all the files in a directory non-recursive
+--]]
 function SF:IncludeDirectory(Dir, Prefix)
 	local Prefix = Prefix or ""
 	if (SERVER) then
@@ -160,6 +233,12 @@ function SF:IncludeDirectory(Dir, Prefix)
 	end
 end
 
+--[[
+@class SF
+@name IncludeDirectoryRel
+@args string Unknown, string Unknown, [number Tabs=1], [bool Hide=false]
+@desc No idea to be honest.
+--]]
 function SF:IncludeDirectoryRel(Search, Include, t, hide)
 	local hide = hide or false
 	local t = t or 1
@@ -184,6 +263,12 @@ function SF:IncludeDirectoryRel(Search, Include, t, hide)
 	end
 end
 
+--[[
+@class SF
+@name AddResourceDirectory
+@args string Directory
+@desc Adds a recursive directory to the resource buffer
+--]]
 function SF:AddResourceDirectory(Dir)
 	local FoundDir = false
  	for k, v in pairs(file.FindDir(self.ResourceDir.."/"..Dir.."/*", "MOD")) do
@@ -202,6 +287,12 @@ end
 SF.PlayerMeta = FindMetaTable("Player")
 SF.EntityMeta = FindMetaTable("Entity")
 
+--[[
+@class SF
+@name Init
+@args string GamemodeDirectory
+@desc Includes and starts the gamemode given the GamemodeDirectory
+--]]
 function SF:Init(Dir)
 	if(SERVER) then
 		self.LoaderDir = Dir.."/gamemode"
@@ -226,8 +317,6 @@ function SF:Init(Dir)
 	self:IncludeRecursiveDirectory("classes")
 	self:IncludeDirectory("vgui")
 
-	self:Msg("Setting up NetHooks", 1)
-	self:Call("SetupNetHooks")
 	self:Msg("###############################################")
 end
 
