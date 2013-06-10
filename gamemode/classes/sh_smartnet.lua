@@ -77,7 +77,7 @@ function SF.SmartNet.meta:Transfer(players)
         players = {players}
     end
     
-    for _, ply in pairs(players) do
+    for _, ply in next, players do
         
         local netTable = {}
         netTable.smartnetID = self.index
@@ -87,7 +87,7 @@ function SF.SmartNet.meta:Transfer(players)
             compiledNetData = table.Copy(self.real)
         else
             local plyCache = self.playerCache[ply]
-            for key, value in pairs(self.real) do
+            for key, value in next, self.real do
                 if (plyCache[key] != value) then
                     compiledNetData[key] = value
                 end
@@ -110,7 +110,7 @@ function SF.SmartNet.meta:UnpackData(data)
 end
 
 function SF.SmartNet.meta:HandleCallback(data)
-    for _, func in pairs(self.callbacks) do 
+    for _, func in next, self.callbacks do 
         func(data, self.netObject)
     end
 end

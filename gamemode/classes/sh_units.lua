@@ -15,7 +15,7 @@ function SF.Units:LoadUnits()
 	SF:Msg("Loading Units...", 2)
 	local files, folders = file.Find(SF.LoaderDir.."/units/*", "LUA", "namedesc")
 
-	for k, v in pairs(files) do
+	for k, v in next, files do
 		if (v != ".." and v != ".") then
 
 			local baseName = string.sub(v, 1, -5)

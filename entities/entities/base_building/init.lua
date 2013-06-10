@@ -73,7 +73,7 @@ function ENT:CreateFoundation()
 	local distance = (maxs.z - mins.z)*2
 
 	local maxHeight = -10000
-		for _, tp in pairs(testPoints) do
+		for _, tp in next, testPoints do
 		local t = SF.Util:SimpleTrace(tp, tp - Vector(0, 0, distance))
 		if (t.HitPos.z >= maxHeight) then
 			maxHeight = t.HitPos.z

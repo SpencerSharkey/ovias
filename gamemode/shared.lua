@@ -63,7 +63,7 @@ function hook.Call(name, gamemode, ...)
 		SF.Client = LocalPlayer()
 	end
 	local returnvalue = true
-	for _, v in pairs(SF.CLASSES) do
+	for _, v in next, SF.CLASSES do
 		if (v[name]) then
 			returnvalue = v[name](v, ...)
 		end

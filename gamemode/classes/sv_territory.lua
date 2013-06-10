@@ -106,7 +106,7 @@ function SF.Territory.metaClass:Calculate()
 
 		--Check for excluded bbz
 		local finalPos = self.points[index]
-		for tid, territory in pairs(SF.Territory.stored) do
+		for tid, territory in next, SF.Territory.stored do
 			if (territory == self) then continue end
 			if (territory:PointInArea(finalPos)) then
 				table.insert(self.pointsExcluded, index)
@@ -124,9 +124,9 @@ function SF.Territory.metaClass:Calculate()
 	end
 
 
-	for _, tid in pairs(self.recheckQueue) do
+	for _, tid in next, self.recheckQueueF do
 		local territory = SF.Territory.stored[tid]
-		for k, point in pairs(territory.points) do
+		for k, point in next, territory.points do
 			if (self:PointInArea(point)) then
 				if (!table.HasValue(territory.pointsExcluded, k)) then
 					table.insert(territory.pointsExcluded, k)
@@ -146,9 +146,9 @@ function SF.Territory.metaClass:Calculate()
 end
 
 function SF.Territory:_checkUncalculated(calculated)
-	for kTerritory, territory in pairs(self.stored) do
+	for kTerritory, territory in next, self.stored do
 		calculated[kTerritory] = {}
-		for _, kPoint in pairs(territory.pointsIncluded) do
+		for _, kPoint in next, territory.pointsIncluded do
 			if (!table.HasValue(calculated[kTerritory], kPoint)) then
 				return kTerritory, kPoint
 			end

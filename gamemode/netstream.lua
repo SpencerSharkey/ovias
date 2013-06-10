@@ -66,7 +66,7 @@ if (SERVER) then
 			end;
 		end;
 		
-		for k, v in pairs(player) do
+		for k, v in next, player do
 			if (type(v) == "Player") then
 				recipients[#recipients + 1] = v;
 				

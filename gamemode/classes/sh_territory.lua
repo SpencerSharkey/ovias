@@ -68,7 +68,7 @@ end
 
 function SF.Territory.metaClass:CalculateTriangles()
 	local tid = 1
-	for k, point in pairs(self.points) do
+	for k, point in next, self.points do
 		local i = k + 1
 		if (k >= #self.points) then
 			i = 1
@@ -149,7 +149,7 @@ end
 
 function SF.Territory:FindClosest(pos)
     local sortTable = {}
-    for k, v in pairs(self.stored) do
+    for k, v in next, self.stored do
         sortTable[k] = pos:Distance(v.position)
     end
     table.sort(sortTable)

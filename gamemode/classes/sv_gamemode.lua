@@ -19,7 +19,7 @@ end
 
 function SF.Gamemode:Think()
 	self.playerCount = 0
-	for _, ply in pairs(player.GetAll()) do
+	for _, ply in next, player.GetAll() do
 		if (ply:IsConnected()) then
 			self.playerCount = self.playerCount + 1
 		end

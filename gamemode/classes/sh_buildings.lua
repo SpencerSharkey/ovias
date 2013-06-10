@@ -15,7 +15,7 @@ function SF.Buildings:LoadBuildings()
 	SF:Msg("Loading Buildings...", 2)
 	local files, folders = file.Find(SF.LoaderDir.."/buildings/*", "LUA", "namedesc")
 
-	for k, v in pairs(files) do
+	for k, v in next, files do
 		if (v != ".." and v != ".") then
 
 			local baseName = string.sub(v, 1, -5)
@@ -85,7 +85,7 @@ end
 function SF.Buildings.reqMeta:CanView()
 	if (table.Count(self.vFunctions) <= 0) then return true end
 
-	for _, func in pairs(self.vFunctions) do
+	for _, func in next, self.vFunctions do
 		local pass = func(SF.Client:GetFaction())
 		if (pass == false) then
 			return false
@@ -103,14 +103,14 @@ function SF.Buildings.reqMeta:Check(faction, trace, ghost)
 		end
 	end
 
-	for _, func in pairs(self.functions) do
+	for _, func in next, self.functions do
 		local pass, msg = func(faction, trace, ghost)
 		if (pass == false) then
 			return false, msg
 		end
 	end
 
-	for res, amnt in pairs(self.resources) do
+	for res, amnt in next, self.resources do
 		if (!faction:HasResource(res, amnt)) then
 			return false, "Not enough "..res
 		end
@@ -124,8 +124,7 @@ function SF.Buildings.reqMeta:Check(faction, trace, ghost)
 end
 
 function SF.Buildings:NewRequirements()
-	local o = table.Copy(SF.Buildings.reqMeta)
-	setmetatable(o, SF.Buildings.reqMeta)
+	local o = setmetatable({}, SF.Buildings.reqMeta)
 	o:Init()
 	return o
 end
