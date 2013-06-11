@@ -23,7 +23,7 @@ function SF.Hud:HUDPaint()
 		surface.DrawRect(0, 0, ScrW(), 4)
 	end	
 	
-	draw.RoundedBox(5, 5, 10, 200, 150, Color(0,0,0,255))
+	draw.RoundedBox(1, 5, 10, 250, 100, Color(0,0,0,190))
 	draw.SimpleText("Faction: Colour HERE" ,"TargetID", 25, 30, Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 	draw.SimpleText("Faction Gold: N/A" ,"TargetID", 25, 45, Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
