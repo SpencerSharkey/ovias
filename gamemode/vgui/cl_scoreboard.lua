@@ -6,10 +6,10 @@
 surface.CreateFont( "ScoreboardNorm", {
 	font = "Trebuchet24",
 	size = ScreenScale(8),
-	weight = 500,
+	weight = 900,
 	blursize = 0,
 	scanlines = 0,
-	antialias = true,
+	antialias = false,
 	underline = false,
 	italic = false,
 	strikeout = false,
@@ -116,6 +116,9 @@ function PANEL:Init()
 
 	self.PlayerAvatar = vgui.Create("AvatarImage", self.Card)
 
+	self.PlayerPing = vgui.Create("DLabel", self.Card)
+	self.PlayerPing:SetFont( "ScoreboardNorm" )
+
 end
 
 function PANEL:Choose( ply )
@@ -133,6 +136,7 @@ function PANEL:UpdatePlayerData()
 	if !self.Player:IsValid() then return end
 
 	self.PlayerName:SetText( self.Player:Nick() )
+	self.PlayerPing:SetText( self.Player:Ping() )
 	
 	//self:InvalidateLayout()
 
@@ -154,10 +158,15 @@ end
 function PANEL:PerformLayout()
 
 	self.PlayerName:SetPos(50, 0)
+	self.PlayerName:SetColor( Color(0, 0, 0, 255) )
 	self.PlayerName:SizeToContents()
 
 	self.PlayerAvatar:SetPos(2, 2)
 	self.PlayerAvatar:SetSize(40, 40)
+
+	self.PlayerPing:SetPos(self:GetWide() - 30, 0)
+	self.PlayerPing:SetColor( Color(0, 0, 0, 255) )
+	self.PlayerPing:SizeToContents()
 
 end
 
