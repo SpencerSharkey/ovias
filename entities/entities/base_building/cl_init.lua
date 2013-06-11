@@ -88,6 +88,7 @@ end
 
 function ENT:Think()
 	if (self.isBuilding) then
+        self.buildProgress = self:GetBuildTicks()/self.buildTicks * 100
 		/*self.buildProgress = 100-(((self.endBuildTime - CurTime())/self:GetBuildTime())*100)
 		if (CurTime() >= self.endBuildTime) then
 			self.isBuilding = false
@@ -98,12 +99,13 @@ end
 
 function ENT:ProgressBuild()
 	if (!self.isBuilding) then return end
-	if (!self.buildTicks == self:GetBuildTicks()) then 
+	if (!self.buildTicks >= self:GetBuildTicks()) then 
 		self.isBuilding = false
 		self.isBuilt = true
+        print("Finishing build for "..self:GetClass())
 	end
+    SF:Call("BuildingProgressBuild", self)
 	self.buildTicks = self.buildTicks + 1
-	self.buildProgress = self:GetBuildTicks()/self.buildTicks * 100
 end
 
 netstream.Hook("ovB_ProgressBuild", function(data)
@@ -114,19 +116,11 @@ end)
 netstream.Hook("ovB_StartBuild", function(data)
 	local ent = data.ent
 	ent.startBuildTime = CurTime()
-	ent.endBuildTime = CurTime() + ent:GetBuildTime()
 	ent.isBuilding = true
 end)
 
-netstream.Hook("ovB_PauseBuild", function(data)
-	local ent = data.ent
+netstream.Hook("ovB_FinishBuild", function(data)
+    local ent = data.ent
+	ent.endBuildTime = CurTime()
 	ent.isBuilding = false
-	ent.buildTimeLeft = ent.endBuildTime - CurTime()
-end)
-
-netstream.Hook("ovB_UnPauseBuild", function(data)
-	local ent = data.ent
-	ent.isBuilding = true
-	ent.endBuildTime = CurTime() + ent.buildTimeLeft
-	ent.buildTimeLeft = nil
 end)

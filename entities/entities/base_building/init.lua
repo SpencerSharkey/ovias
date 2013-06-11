@@ -9,6 +9,7 @@ AddCSLuaFile("cl_init.lua")
 include("shared.lua")
 
 function ENT:Initialize()
+    self.buildTicks = 0
 	self:SetModel(self:GetOviasModel())
 	self.isBuilt = false
 	self:SetAngles(Angle(0, math.random(-180, 180), 0))
@@ -44,19 +45,34 @@ function ENT:Think()
 		self:Build()
 
 		if (self:GetBuildTicks() >= self.buildTicks) then
+            --This only gets called the tick before building is finished... if return ftw
 			self:SetBuilt(true)
 		end
 
 		return
 	end
 	
-	if (!self.calledPostBuild) then
+	if (!self.calledPostBuild) then   
 		self:PostBuild()
 		self.calledPostBuild = true
 		SF:Msg("Calling postBuild")
+        netstream.Start(player.GetAll(), "ovB_FinishBuild", {ent = self})
 	end
 
 end
+
+function ENT:ProgressBuild()
+    if (!self:GetBuilt()) then
+        self.buildTicks = self.buildTicks + 1
+        SF:Call("BuildingProgressBuild", self)
+        netstream.Start(player.GetAll(), "ovB_ProgressBuild", self)
+    end
+end
+
+function ENT:GetBuildTicks()
+    return self.buildTicks
+end
+
 
 function ENT:CreateFoundation()
 

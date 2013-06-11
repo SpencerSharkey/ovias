@@ -55,6 +55,16 @@ end
 
 -- Called per-tick during the build stage
 function ENT:Build()
+    --this is so we don't need builder units to build the castle - it jsut goes up automatically
+    if (!self:GetBuilt()) then
+        if (!self.nextBuildTick) then
+            self.nextBuildTick = CurTime()
+        end
+        if (CurTime() >= self.nextBuildTick) then
+            self:ProgressBuild()
+            self.nextBuildTick = CurTime() + 0.75
+        end
+    end
 end
 
 -- Called after the building has been completed

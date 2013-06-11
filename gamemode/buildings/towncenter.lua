@@ -52,6 +52,11 @@ function ENT:GetBuildTime()
 	return 10
 end
 
+-- A function to return the amount of build ticks ti takes for the building to complete
+function ENT:GetBuildTicks()
+    return 10
+end
+
 -- Called before a building starts being built
 function ENT:PreBuild()
 end
