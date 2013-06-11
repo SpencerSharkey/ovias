@@ -8,11 +8,14 @@ include("shared.lua")
 function ENT:Initialize()
 
 	self.foundationMatrix = Matrix()
+	self.modifyMatrix = Matrix()
 	self:CalculateFoundation()
 
 	self.modelMins, self.modelMaxs = self:OBBMins(), self:OBBMaxs()
-	self.isBuilding = false
+	self.isBuilding = true
 	self.isBuilt = false
+	self.buildProgress = 0
+	self.buildTicks = 0
 
 	self:SharedInit()
 
@@ -45,10 +48,12 @@ function ENT:Draw()
 		self.foundationMesh:Draw()
 	cam.PopModelMatrix()
 	render.SuppressEngineLighting(false)
-	--
 
 	--Building Rendering
 	if (self.isBuilding) then
+
+
+
 		local buildProgress = self.buildProgress
 		local height = self.modelMaxs.z
 		local clipHeight = (buildProgress/100)*height
@@ -74,11 +79,6 @@ function ENT:Draw()
 		render.EnableClipping(false)
 		render.MaterialOverride(false)
 
-
-		render.SetColorModulation(1, 1, 1, 1)
-
-		
-
 	else
 		self:DrawModel()
 
@@ -87,18 +87,29 @@ function ENT:Draw()
 end
 
 function ENT:Think()
-
 	if (self.isBuilding) then
-		self.buildProgress = 100-(((self.endBuildTime - CurTime())/self:GetBuildTime())*100)
+		/*self.buildProgress = 100-(((self.endBuildTime - CurTime())/self:GetBuildTime())*100)
 		if (CurTime() >= self.endBuildTime) then
 			self.isBuilding = false
 			self.isBuilt = true
-		end
-		effects.halo.Add({self}, Color(0, 0, 0), 1, 1, 1, false, true)
+		end*/
 	end
-
-
 end
+
+function ENT:ProgressBuild()
+	if (!self.isBuilding) then return end
+	if (!self.buildTicks == self:GetBuildTicks()) then 
+		self.isBuilding = false
+		self.isBuilt = true
+	end
+	self.buildTicks = self.buildTicks + 1
+	self.buildProgress = self:GetBuildTicks()/self.buildTicks * 100
+end
+
+netstream.Hook("ovB_ProgressBuild", function(data)
+	local ent = data
+	ent:ProgressBuild()
+end)
 
 netstream.Hook("ovB_StartBuild", function(data)
 	local ent = data.ent

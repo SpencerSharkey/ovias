@@ -43,7 +43,7 @@ function ENT:Think()
 
 		self:Build()
 
-		if (CurTime() >= self.endBuildTime) then
+		if (self:GetBuildTicks() >= self.buildTicks) then
 			self:SetBuilt(true)
 		end
 
@@ -91,6 +91,6 @@ function ENT:PostBuild() end
 
 function ENT:PreBuild() end
 
-function ENT:Build() 
-
+function ENT:Build()
+	
 end

@@ -41,7 +41,12 @@ end
 
 -- A function to grab the time it takes to build the building in seconds
 function ENT:GetBuildTime()
-	return 3
+	return 10
+end
+
+-- A function to get the amount of build actions required to build this object
+function ENT:GetBuildTicks()
+	return 10
 end
 
 -- Called before a building starts being built
