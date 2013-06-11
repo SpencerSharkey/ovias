@@ -3,6 +3,22 @@
 	Copyright © Slidefuse LLC - 2012
 --]]
 
+surface.CreateFont( "plyInfo", {
+	font = "Trebuchet24",
+	size = ScreenScale(13),
+	weight = 900,
+	blursize = 0,
+	scanlines = 0,
+	antialias = false,
+	underline = false,
+	italic = false,
+	strikeout = false,
+	symbol = false,
+	rotary = false,
+	shadow = false,
+	additive = false,
+	outline = false
+} )
 
 SF.Hud = {}
 
@@ -21,9 +37,28 @@ function SF.Hud:HUDPaint()
 	if (SF.Client:GetFaction()) then
 		surface.SetDrawColor(SF.Client:GetFaction():GetColor())
 		surface.DrawRect(0, 0, ScrW(), 4)
+
+		// Too lazy to make my own
+		surface.SetMaterial( Material("gui/gradient_down.png") )
+		surface.SetDrawColor(51, 204, 255)
+		surface.DrawTexturedRect(- 10, 70, 200, 40)
+
+		surface.SetMaterial( Material("gui/gradient_up.png") )
+		surface.SetDrawColor(0, 138, 184)
+		surface.DrawTexturedRect(- 10, 70, 200, 40)
+		// End of lazyness
+
+		surface.SetMaterial( Material("ovias/gold.png") )
+		surface.SetDrawColor(255, 255, 255)
+		surface.DrawTexturedRect(2, 72.5, 40, 33)
+
+		surface.SetDrawColor(255, 255, 255, 255)
+		surface.SetFont("HudNorm")
+		surface.SetTextPos(50, 72)
+		surface.DrawText("0")
 	end	
 	
-	draw.RoundedBox(1, 5, 10, 250, 100, Color(0,0,0,190))
+	draw.RoundedBox(1, 5, 10, 250, 40, Color(0,0,0,190))
 	draw.SimpleText("Faction: Colour HERE" ,"TargetID", 25, 30, Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 	draw.SimpleText("Faction Gold: N/A" ,"TargetID", 25, 45, Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
