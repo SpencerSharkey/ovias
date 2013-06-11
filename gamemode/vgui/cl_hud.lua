@@ -33,14 +33,14 @@ function SF.Hud:OnSpawnMenuOpen()
 	RestoreCursorPosition()
 	gui.EnableScreenClicker(true)
 
-	BuildingMenu:MoveTo(0, ScrH() - 120, 1, 0, 1)
+	BuildingMenu:MoveTo(0, ScrH() - 120, 0.5, 0, 1)
 end
 
 function SF.Hud:OnSpawnMenuClose()
 	RememberCursorPosition()
 	gui.EnableScreenClicker(false)
 
-	BuildingMenu:MoveTo(0, ScrH(), 1, 0, 1)
+	BuildingMenu:MoveTo(0, ScrH(), 0.5, 0, 1)
 end
 
 SF:RegisterClass("clHud", SF.Hud)
