@@ -38,9 +38,12 @@ end
 
 -- A function to grab the time it takes to build the building in seconds
 function ENT:GetBuildTime()
-	return 600
+	return 6
 end
 
+function ENT:GetBuildTicks()
+	return 6
+end
 -- Called before a building starts being built
 function ENT:PreBuild()
 end
