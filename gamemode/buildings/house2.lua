@@ -1,6 +1,6 @@
 -- A function to grab the name
 function ENT:GetOviasName()
-  return "Home"
+  return "Home 2"
 end
 
 -- A function to get a table of general info
@@ -41,7 +41,7 @@ function ENT:GetBuildTime()
 	return 400
 end
 
-function ENT:GetBuildTick()
+function ENT:GetBuildTicks()
 	return 4
 end
 
