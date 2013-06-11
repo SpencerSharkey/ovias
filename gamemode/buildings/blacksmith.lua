@@ -1,13 +1,13 @@
 -- A function to grab the name
 function ENT:GetOviasName()
-  return "Barracks"
+  return "Blacksmith"
 end
 
 -- A function to get a table of general info
 function ENT:GetInfo()
 	return {
-		["category"] = "Offensive",
-		["desc"] = "Used to spawn offensive units"
+		["category"] = "Research",
+		["desc"] = "Used to upgrade current units"
 	}
 end
 
@@ -23,7 +23,7 @@ function ENT:SetupRequirements(req)
 	req:AddResource("stone", 10)
 
 	--Requires moneh
-	req:AddGold(500)
+	req:AddGold(350)
 	
 	--Example of a function that runs during requirements
 	req:AddFunction(function(faction, trace, ghost)
@@ -38,7 +38,7 @@ end
 
 -- A function to grab the time it takes to build the building in seconds
 function ENT:GetBuildTime()
-	return 6
+	return 9
 end
 
 -- Called before a building starts being built
@@ -51,9 +51,6 @@ end
 
 -- Called after the building has been completed
 function ENT:PostBuild()
-	self.territory = SF.Territory:Create(self:GetFaction(), self:GetPos(), 135)
-	self.territory:Calculate()
-
 end
 
 -- Called before the building is demolished
@@ -63,3 +60,5 @@ end
 -- Called after the building has been demolished
 function ENT:PostDestruction()
 end
+
+
