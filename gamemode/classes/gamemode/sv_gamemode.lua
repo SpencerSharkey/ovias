@@ -1,7 +1,7 @@
 --[[
-	Ovias
+    Ovias
 	Copyright © Slidefuse LLC - 2012
-]]--
+--]]
 
 MIN_PLAYERS = 1 --Replace with config var later
 

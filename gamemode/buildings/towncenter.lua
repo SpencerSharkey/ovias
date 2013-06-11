@@ -1,3 +1,8 @@
+--[[
+    Ovias
+	Copyright © Slidefuse LLC - 2012
+--]]
+
 -- A function to grab the name
 function ENT:GetOviasName()
 	return "Manor Hall"

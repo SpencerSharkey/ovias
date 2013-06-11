@@ -1,8 +1,7 @@
 --[[
-	Ovias
-	Copyright © Slidefuse LLC - 2013
-]]--
-
+    Ovias
+	Copyright © Slidefuse LLC - 2012
+--]]
 
 SF.BuildMode = {}
 

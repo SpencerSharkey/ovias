@@ -1,3 +1,8 @@
+--[[
+    Ovias
+	Copyright © Slidefuse LLC - 2012
+--]]
+
 function ENT:Initialize()
 	self:SetModel( "models/mrgiggles/sassilization/swordsman.mdl" );
 end

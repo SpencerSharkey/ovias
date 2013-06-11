@@ -1,7 +1,7 @@
 --[[
-	Ovias
-	Copyright © Slidefuse LLC - 2013
-]]--
+    Ovias
+	Copyright © Slidefuse LLC - 2012
+--]]
 
 surface.CreateFont( "pregameCountdown", {
 	font = "Arial",

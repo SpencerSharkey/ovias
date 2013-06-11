@@ -1,7 +1,7 @@
-/*
---	Ovias
---	Copyright © Slidefuse LLC - 2012
-*/
+--[[
+    Ovias
+	Copyright © Slidefuse LLC - 2012
+--]]
 
 local mBoundary = Material("effects/laser_tracer")
 function SF.Territory:PostDrawOpaqueRenderables()
