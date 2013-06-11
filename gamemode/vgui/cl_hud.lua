@@ -10,12 +10,27 @@ function SF.Hud:PostSetFaction()
 	self.panel = vgui.Create("sfCreation")
 end
 
+function hidehud(name)
+	for k, v in pairs({"CHudHealth", "CHudBattery"})do
+		if name == v then return false end
+	end
+end
+
+
 function SF.Hud:HUDPaint()
 	if (SF.Client:GetFaction()) then
 		surface.SetDrawColor(SF.Client:GetFaction():GetColor())
 		surface.DrawRect(0, 0, ScrW(), 4)
 	end
 end
+hook.Add("HUDShouldDraw", "HideOurHud:D", hidehud)
+	
+	draw.RoundedBox(5, 25, ScrH() - 20, 200, 150, Color(SF.Client:GetFaction():GetColor()))
+draw.SimpleText("Faction: " .. SF.Client:GetFaction(),"TargetID", 25 + 30,ScrH() - 35, Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+draw.SimpleText("Faction Gold: N/A" ,"TargetID", 25 + 30,ScrH() - 25, Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+
+end
+
 
 function SF.Hud:OnSpawnMenuOpen()
 	RestoreCursorPosition()
