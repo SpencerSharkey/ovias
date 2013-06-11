@@ -33,11 +33,15 @@ end
 function SF.Hud:OnSpawnMenuOpen()
 	RestoreCursorPosition()
 	gui.EnableScreenClicker(true)
+
+	BuildingMenu:MoveTo(0, ScrH() - 120, 1, 0, 1)
 end
 
 function SF.Hud:OnSpawnMenuClose()
 	RememberCursorPosition()
 	gui.EnableScreenClicker(false)
+
+	BuildingMenu:MoveTo(0, ScrH(), 1, 0, 1)
 end
 
 SF:RegisterClass("clHud", SF.Hud)
@@ -46,7 +50,9 @@ local PANEL = {}
 
 function PANEL:Init()
 	self:SetSize(400, 120)
-	self:SetPos(0, ScrH()-120)
+	self:SetPos(0, ScrH())
+
+	BuildingMenu = self
 
 	self.sheet = vgui.Create("DPropertySheet", self)
 	self.sheet:StretchToParent(1, 1, 1, 1)
