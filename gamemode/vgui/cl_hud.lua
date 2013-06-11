@@ -29,7 +29,6 @@ function SF.Hud:HUDPaint()
 
 end
 
-
 function SF.Hud:OnSpawnMenuOpen()
 	RestoreCursorPosition()
 	gui.EnableScreenClicker(true)
