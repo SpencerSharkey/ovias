@@ -3,6 +3,8 @@
 	Copyright © Slidefuse LLC - 2012
 --]]
 
+SF.Hud = {}
+
 surface.CreateFont( "plyInfo", {
 	font = "Trebuchet24",
 	size = ScreenScale(13),
@@ -20,8 +22,6 @@ surface.CreateFont( "plyInfo", {
 	outline = false
 } )
 
-SF.Hud = {}
-
 function SF.Hud:PostSetFaction()
 	self.panel = vgui.Create("sfCreation")
 end
@@ -37,26 +37,39 @@ function SF.Hud:HUDPaint()
 	if (SF.Client:GetFaction()) then
 		surface.SetDrawColor(SF.Client:GetFaction():GetColor())
 		surface.DrawRect(0, 0, ScrW(), 4)
-
-		// Too lazy to make my own
-		surface.SetMaterial( Material("gui/gradient_down.png") )
-		surface.SetDrawColor(51, 204, 255)
-		surface.DrawTexturedRect(- 10, 70, 200, 40)
-
-		surface.SetMaterial( Material("gui/gradient_up.png") )
-		surface.SetDrawColor(0, 138, 184)
-		surface.DrawTexturedRect(- 10, 70, 200, 40)
-		// End of lazyness
-
-		surface.SetMaterial( Material("ovias/gold.png") )
-		surface.SetDrawColor(255, 255, 255)
-		surface.DrawTexturedRect(2, 72.5, 40, 33)
-
-		surface.SetDrawColor(255, 255, 255, 255)
-		surface.SetFont("HudNorm")
-		surface.SetTextPos(50, 72)
-		surface.DrawText("0")
 	end	
+
+	local iconwidth = 10
+	local barwidth = 80 + surface.GetTextSize("0") * 2 + 80
+
+	// Too lazy to make my own
+	surface.SetMaterial( Material("gui/gradient_down.png") )
+	surface.SetDrawColor(51, 204, 255)
+	surface.DrawTexturedRect(- 10, 70, barwidth, 40)
+
+	surface.SetMaterial( Material("gui/gradient_up.png") )
+	surface.SetDrawColor(0, 138, 184)
+	surface.DrawTexturedRect(- 10, 70, barwidth, 40)
+	// End of lazyness
+
+	surface.SetDrawColor(255, 255, 255, 255)
+	surface.SetFont("plyInfo")
+	surface.SetTextPos(50, 72)
+	surface.DrawText("0")
+
+	surface.SetDrawColor(255, 255, 255, 255)
+	surface.SetFont("plyInfo")
+	surface.SetTextPos(iconwidth + 42 * 3, 72)
+	surface.DrawText("0")
+
+	surface.SetMaterial( Material("ovias/gold.png") )
+	surface.SetDrawColor(255, 255, 255)
+	surface.DrawTexturedRect(2, 72.5, 40, 33)
+
+	surface.SetMaterial( Material("ovias/wood.png") )
+	surface.SetDrawColor(255, 255, 255)
+	surface.DrawTexturedRect(iconwidth * 7 + surface.GetTextSize("0"), 72.5, 40, 33)
+
 	
 	draw.RoundedBox(1, 5, 10, 250, 40, Color(0,0,0,190))
 	draw.SimpleText("Faction: Colour HERE" ,"TargetID", 25, 30, Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
