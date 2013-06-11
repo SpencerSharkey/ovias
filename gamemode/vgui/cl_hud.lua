@@ -22,9 +22,10 @@ function SF.Hud:HUDPaint()
 		surface.SetDrawColor(SF.Client:GetFaction():GetColor())
 		surface.DrawRect(0, 0, ScrW(), 4)
 	end	
-	draw.RoundedBox(5, 25, ScrH() - 20, 200, 150, Color(0,0,0,255))
-draw.SimpleText("Faction: Colour HERE" ,"TargetID", 25 + 30,ScrH() - 35, Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-draw.SimpleText("Faction Gold: N/A" ,"TargetID", 25 + 30,ScrH() - 25, Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	
+	draw.RoundedBox(5, 5, 10, 200, 150, Color(0,0,0,255))
+	draw.SimpleText("Faction: Colour HERE" ,"TargetID", 25, 30, Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+	draw.SimpleText("Faction Gold: N/A" ,"TargetID", 25, 45, Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
 end
 
