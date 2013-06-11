@@ -51,6 +51,9 @@ end
 
 -- Called after the building has been completed
 function ENT:PostBuild()
+	self.territory = SF.Territory:Create(self:GetFaction(), self:GetPos(), 135)
+	self.territory:Calculate()
+
 end
 
 -- Called before the building is demolished
