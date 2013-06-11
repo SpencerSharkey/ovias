@@ -33,12 +33,16 @@ end
 
 -- A function to grab the model the building uses
 function ENT:GetOviasModel()
-	return "models/mrgiggles/sassilization/shack.mdl"
+	return "models/mrgiggles/sassilization/house02.mdl"
 end
 
 -- A function to grab the time it takes to build the building in seconds
 function ENT:GetBuildTime()
 	return 400
+end
+
+function ENT:GetBuildTick()
+	return 4
 end
 
 -- Called before a building starts being built
@@ -60,5 +64,6 @@ end
 
 -- Called after the building has been demolished
 function ENT:PostDestruction()
+	self:Remove()
 
 end
