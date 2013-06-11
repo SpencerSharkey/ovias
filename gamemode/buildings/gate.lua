@@ -1,13 +1,13 @@
 -- A function to grab the name
 function ENT:GetOviasName()
-  return "Blacksmith"
+  return "Portcullis"
 end
 
 -- A function to get a table of general info
 function ENT:GetInfo()
 	return {
-		["category"] = "Research",
-		["desc"] = "Used to upgrade current units"
+		["category"] = "Defence",
+		["desc"] = "To protect your kingdom!"
 	}
 end
 
@@ -19,11 +19,11 @@ function ENT:SetupRequirements(req)
 	req:SetRequiresTerritory(true)
 	
 	--Add an obtainable resource
-	req:AddResource("wood", 10)
-	req:AddResource("stone", 10)
+	//req:AddResource("wood", 10)
+
 
 	--Requires moneh
-	req:AddGold(350)
+	//req:AddGold(500)
 	
 	--Example of a function that runs during requirements
 	req:AddFunction(function(faction, trace, ghost)
@@ -33,12 +33,12 @@ end
 
 -- A function to grab the model the building uses
 function ENT:GetOviasModel()
-	return "models/roller.mdl"
+	return "models/mrgiggles/sassilization/gate.mdl"
 end
 
 -- A function to grab the time it takes to build the building in seconds
 function ENT:GetBuildTime()
-	return 9
+	return 6
 end
 
 -- Called before a building starts being built
@@ -51,6 +51,7 @@ end
 
 -- Called after the building has been completed
 function ENT:PostBuild()
+
 end
 
 -- Called before the building is demolished
@@ -59,6 +60,5 @@ end
 
 -- Called after the building has been demolished
 function ENT:PostDestruction()
+
 end
-
-
