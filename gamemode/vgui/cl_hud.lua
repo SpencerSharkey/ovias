@@ -30,6 +30,7 @@ function SF.Hud:HUDShouldDraw(name)
 	for k, v in next, {"CHudHealth", "CHudBattery"} do
 		if name == v then return false end
 	end
+	return true
 end
 
 local mGradDown = Material("gui/gradient_down.png")
