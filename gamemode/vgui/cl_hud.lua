@@ -26,7 +26,7 @@ function SF.Hud:PostSetFaction()
 	self.panel = vgui.Create("sfCreation")
 end
 
-function SF:Hud:HUDShouldDraw(name)
+function SF.Hud:HUDShouldDraw(name)
 	for k, v in next, {"CHudHealth", "CHudBattery"} do
 		if name == v then return false end
 	end
