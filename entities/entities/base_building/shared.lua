@@ -39,7 +39,7 @@ function ENT:SharedInit()
 end
 
 function ENT:InitializeRequirements()
-	self.req = SF.Buildings:NewRequirements()
+	self.req = SF.Requirements:New()
 
 	if (self.SetupRequirements) then
 		self:SetupRequirements(self.req)
