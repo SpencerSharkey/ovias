@@ -86,3 +86,5 @@ function SF.Requirements:New()
 	o:Init()
 	return o
 end
+
+SF:RegisterClass("shRequirements", SF.Requirements)
