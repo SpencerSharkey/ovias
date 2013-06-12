@@ -7,10 +7,6 @@ SF.Units = {}
 SF.Units.stored = {}
 SF.Units.buffer = {}
 
-/* 
-	Unit loading and registering
-*/
-
 function SF.Units:LoadUnits()
 	SF:Msg("###############################################")
 	SF:Msg("# Loading Units...")
@@ -20,7 +16,7 @@ function SF.Units:LoadUnits()
 		if (v != ".." and v != ".") then
 
 			local baseName = string.sub(v, 1, -5)
-
+			
 			ENT = {Base = "base_nextbot_ovias", Folder = SF.LoaderDir.."/units"}
 
 			if (SERVER) then
@@ -29,10 +25,18 @@ function SF.Units:LoadUnits()
 			include(SF.LoaderDir.."/units/"..v)
 
 			SF:Msg("Loading Unit: "..baseName, 1)
-			scripted_ents.Register(ENT, "unit_"..baseName)
-			
+			if (SERVER) then
+
+				scripted_ents.Register(ENT, "unit_"..baseName)
+			else
+				local tbl = table.Merge(scripted_ents.Get("base_nextbot_ovias"), ENT)
+				scripted_ents.Register(tbl, "unit_"..baseName)
+			end
+
 			ENT.typeID = baseName
+
 			self.stored[baseName] = table.Merge(scripted_ents.Get("base_nextbot_ovias"), ENT)
+
 
 			ENT = nil
 		end
@@ -41,22 +45,10 @@ function SF.Units:LoadUnits()
 	SF:Call("InitPostUnits")
 end
 
-function SF.Units:FindUnitEnts()
-	return ents.FindByClass("unit_*")
-end
-
-function SF.Units:NewUnit(type, faction, pos, ang)
-	local ent = ents.Create("unit_"..type)
-		ent:SetFaction(faction)
-
-		ent:SetPos(pos)
-		ent:SetAngles(ang)
-		ent:Spawn()
-	if (!self.buffer[type]) then self.buffer[type] = {} end
-	self.buffer[type] = ent
-	return ent
-end
-
 function SF.Units:InitPostEntity()
 	self:LoadUnits()
+end
+
+function SF.Units:FindUnitEnts()
+	return ents.FindByClass("unit_*")
 end
