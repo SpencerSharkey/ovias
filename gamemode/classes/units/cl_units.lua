@@ -3,12 +3,11 @@
 	Copyright © Slidefuse LLC - 2012
 --]]
 
-
-function SF.Units:PreDrawOpaqueRenderables()
+local UnitCircle = Material("sassilization/circle")
+function SF.Units:PostDrawOpaqueRenderables()
 	print("srsly")
 	for id, ent in next, self:FindUnitEnts() do
 		print("id: ", id, ent)
-		local UnitCircle = Material("sassilization/circle")
 		render.SetMaterial(UnitCircle)
 		render.DrawQuadEasy(ent:GetGroundPos() + vector_up * 0.1, ent:GetGroundNormal(), ent:GetSize(), ent:GetSize(), ent:GetFaction():GetColor())
 		ent:DrawModel()
