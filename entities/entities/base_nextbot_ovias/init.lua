@@ -9,11 +9,10 @@ AddCSLuaFile("cl_init.lua")
 include("shared.lua")
 
 function ENT:Initialize()
-	self:SetModel(self.data.model)
-
-	local r = self.data.size/2
-	self:PhysicsInitSphere(r)
-	self:SetCollisionBounds(Vector(-r, -r, -r), Vector(r, r, r))
+	self:SetModel(self:GetOviasModel())
+	self:SetNoDraw(true)
+	
+	self:SharedInit()
 end
 
 

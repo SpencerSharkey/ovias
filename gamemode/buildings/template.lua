@@ -1,12 +1,7 @@
---[[
-    Ovias
-	Copyright © Slidefuse LLC - 2012
---]]
+ENT.BuildTime = 10
+ENT.BuildTicks = 10
 
--- A function to grab the name
-function ENT:GetOviasName()
-	return ""
-end
+ENT.OviasName = "NIGGER"
 
 -- A function to get a table of general info
 function ENT:GetInfo()
@@ -39,11 +34,6 @@ end
 -- A function to grab the model the building uses
 function ENT:GetOviasModel()
 	return ""
-end
-
--- A function to grab the time it takes to build the building in seconds
-function ENT:GetBuildTime()
-	return 10
 end
 
 -- Called before a building starts being built

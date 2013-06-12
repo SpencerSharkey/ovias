@@ -5,6 +5,31 @@
 
 ENT.Type = "anim";
 
+-- A function to grab the time it takes to build the building in seconds
+function ENT:GetBuildTime()
+	return self.BuildTime
+end
+
+function ENT:GetBuildTicks()
+    return self.BuildTicks
+end
+
+function ENT:GetOviasName()
+	return self.OviasName
+end
+
+function ENT:GetInfo()
+	return self.OviasInfo
+end
+
+function ENT:GetOviasModel()
+	return self.OviasModel
+end
+
+function ENT:GetOviasRuinModel()
+	return self.OviasRuinModel
+end
+
 function ENT:GetTypeID()
 	return self.typeID
 end

@@ -1,15 +1,14 @@
 -- A function to grab the name
-function ENT:GetOviasName()
-  return "Archer Tower"
-end
 
--- A function to get a table of general info
-function ENT:GetInfo()
-	return {
-		["category"] = "Defence",
-		["desc"] = "To protect your kingdom!"
-	}
-end
+ENT.BuildTime = 11
+ENT.BuildTicks = 11
+
+ENT.OviasName = "Archer Tower"
+ENT.OviasModel = "models/mrgiggles/sassilization/archertower02.mdl"
+ENT.OviasInfo = {
+	["category"] = "Defence",
+	["desc"] = "To protect your kingdom!"
+}
 
 -- A function to return a requirements object
 function ENT:SetupRequirements(req)
@@ -29,20 +28,6 @@ function ENT:SetupRequirements(req)
 	req:AddFunction(function(faction, trace, ghost)
 		return true
 	end)
-end
-
--- A function to grab the model the building uses
-function ENT:GetOviasModel()
-	return "models/mrgiggles/sassilization/archertower02.mdl"
-end
-
--- A function to grab the time it takes to build the building in seconds
-function ENT:GetBuildTime()
-	return 11
-end
-
-function ENT:GetBuildTicks()
-    return 11
 end
 
 -- Called before a building starts being built

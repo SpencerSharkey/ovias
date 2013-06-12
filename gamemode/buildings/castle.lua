@@ -3,18 +3,14 @@
     Copyright © Slidefuse LLC - 2012
 --]]
 
--- A function to grab the name
-function ENT:GetOviasName()
-    return "Kingdom Castle"
-end
+ENT.BuildTicks = 3
 
--- A function to get a table of general info
-function ENT:GetInfo()
-	return {
+ENT.OviasName = "Kingdom Castle"
+ENT.OviasModel = "models/roller.mdl"
+ENT.OviasInfo = {
 		["category"] = "Kingdom",
 		["desc"] = "The central hub of your your territory."
 	}
-end
 
 -- A function to return a requirements object
 function ENT:SetupRequirements(req)
@@ -34,21 +30,6 @@ function ENT:SetupRequirements(req)
 	end)
 end
 
--- A function to grab the model the building uses
-function ENT:GetOviasModel()
-	return "models/roller.mdl"
-end
-
--- A function to grab the time it takes to build the building in seconds
-function ENT:GetBuildTime()
-	return 10
-end
-
--- A function to get the amount of build actions required to build this object
-function ENT:GetBuildTicks()
-	return 10
-end
-
 -- Called before a building starts being built
 function ENT:PreBuild()
 end
@@ -61,6 +42,7 @@ function ENT:Build()
             self.nextBuildTick = CurTime()
         end
         if (CurTime() >= self.nextBuildTick) then
+
             self:ProgressBuild()
             self.nextBuildTick = CurTime() + 0.75
         end
@@ -69,8 +51,14 @@ end
 
 -- Called after the building has been completed
 function ENT:PostBuild()
-	self.territory = SF.Territory:Create(self:GetFaction(), self:GetPos(), 240)
-	self.territory:Calculate()
+	if (SERVER) then
+		self.territory = SF.Territory:Create(self:GetFaction(), self:GetPos(), 240)
+		self.territory:Calculate()
+
+		for i=1,4 do
+			self:SpawnUnit("builder")
+		end
+	end
 end
 
 -- Called before the building is demolished

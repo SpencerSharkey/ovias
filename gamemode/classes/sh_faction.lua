@@ -30,7 +30,7 @@ function SF.Faction.metaClass:Init(keyO)
 	self.players = {}
 	self.territories = {}
 	self.buildings = {}
-	self.manors = {}
+	self.units = {}
 	self.gold = 0
 
 	
@@ -38,6 +38,7 @@ function SF.Faction.metaClass:Init(keyO)
 		self.smartnet:AddObject("gold", 0)
 		self.smartnet:AddObject("players", {})
 		self.smartnet:AddObject("territories", {})
+		self.smartnet:AddObject("units", {})
 		self.smartnet:AddObject("buildings", {})
 		self.smartnet:AddObject("color", Color(0, 0, 0))
 		self:AssociateColor()
@@ -60,6 +61,10 @@ function SF.Faction.metaClass:Init(keyO)
 
 			if (data.buildings) then
 				faction.buildings = data.buildings
+			end
+
+			if (data.units) then
+				faction.units = data.units
 			end
 
 			if (data.color) then
@@ -112,6 +117,28 @@ function SF.Faction.metaClass:AddBuilding(building)
 	end
 end
 
+function SF.Faction.metaClass:GetUnits()
+	return self.units
+end
+
+function SF.Faction.metaClass:GetUnitsOfType(type)
+	if (!self.units[type]) then return {} end
+	return self.units[type]
+end
+
+function SF.Faction.metaClass:AddUnit(unit)
+	local utype = unit:GetTypeID()
+	if (!self.units[utype]) then
+		self.units[utype] = {}
+	end
+
+	table.insert(self.units[utype], unit)
+
+	if (SERVER) then
+		self.smartnet:UpdateObject("units", self.units, true)
+	end
+end
+
 function SF.Faction.metaClass:GetManors()
 	return self.manors
 end
@@ -120,20 +147,26 @@ function SF.Faction.metaClass:GetGold()
 	return self.gold
 end
 
-function SF.Faction.metaClass:SetGold(gold)
-	self.gold = gold
+if SERVER then
+	function SF.Faction.metaClass:SetGold(gold)
+		self.gold = gold
 
-	if (SERVER) then
-		self.smartnet:UpdateObject("gold", self.gold, true)
+		if SERVER then
+			self.smartnet:UpdateObject("gold", self.gold, true)
+		end
+	end
+else
+	function SF.Faction.metaClass:SetGold(gold)
+		self.gold = gold
 	end
 end
 
 function SF.Faction.metaClass:TakeGold(amount)
-	self.gold = self.gold - amount
+	self:SetGold(self.gold - amount)
 end
 
 function SF.Faction.metaClass:GiveGold(amount)
-	self.gold = self.gold + amount
+	self:SetGold(self.gold + amount)
 end
 
 function SF.Faction.metaClass:HasGold(amount)
@@ -208,7 +241,7 @@ end
 function SF.Faction.metaClass:GetPlayers()
 	local ret = {}
 	for k in next, self.players do
-		table.insert(ret, k)
+		ret[#ret+1] = k
 	end
 	return ret
 end
@@ -221,7 +254,7 @@ function SF.Faction.metaClass:AddTerritory(territory)
 	if (SERVER) then
 		local netTable = {}
 		for index in next, self.territories do
-			table.insert(netTable, index)
+			netTable[#netTable+1] = index
 		end
 
 		self.smartnet:UpdateObject("territories", netTable, true)

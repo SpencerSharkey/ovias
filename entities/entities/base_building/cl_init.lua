@@ -17,6 +17,8 @@ function ENT:Initialize()
 	self.buildProgress = 0
 	self.buildTicks = 0
 
+	
+
 	self:SharedInit()
 
 	SF.Entity:ClientsideInit(self)
@@ -34,6 +36,10 @@ local mBuilder = CreateMaterial("ovBuildMesh3", "VertexLitGeneric", {
 })
 
 local mWire = Material("models/wireframe")
+
+local up = Vector(0, 0, 1)
+
+local down = Vector(0, 0, -1)
 
 function ENT:Draw()
 
@@ -58,23 +64,37 @@ function ENT:Draw()
 		local height = self.modelMaxs.z
 		local clipHeight = (buildProgress/100)*height
 
-		local clipNormal = Vector(0, 0, -1)
-		local distance = clipNormal:Dot(Vector(0, 0, self:GetPos().z + clipHeight))
+		local pos = self:GetPos()
+		pos.z = pos.z + clipHeight
+		pos.x = 0
+		pos.y = 0
+
+
+		local distance = down:Dot(pos)
 		render.MaterialOverride("")
 		render.EnableClipping(true)
-			render.PushCustomClipPlane(clipNormal, distance)
+			render.PushCustomClipPlane(down, distance)
+			render.CullMode(MATERIAL_CULLMODE_CW)
 			self:DrawModel()
+			render.CullMode(MATERIAL_CULLMODE_CCW)
+			self:DrawModel()
+
 			render.PopCustomClipPlane()
-		render.EnableClipping(false)
 
+			distance = up:Dot(pos)
+			render.MaterialOverride(mBuilder)
+			render.SetColorModulation(1, 1, 1, 1)
+			render.PushCustomClipPlane(up, distance)
 
-		local clipNormal = Vector(0, 0, 1)
-		local distance = clipNormal:Dot(Vector(0, 0, self:GetPos().z + clipHeight))
-		render.MaterialOverride(mBuilder)
-		render.SetColorModulation(1, 1, 1, 1)
-		render.EnableClipping(true)
-			render.PushCustomClipPlane(clipNormal, distance)
+			render.CullMode(MATERIAL_CULLMODE_CW)
+			render.SuppressEngineLighting(true)
+			render.SetColorModulation(0, 0, 0, 1)
 			self:DrawModel()
+			render.SetColorModulation(1, 1, 1, 1)
+			render.SuppressEngineLighting(false)
+			render.CullMode(MATERIAL_CULLMODE_CCW)
+			self:DrawModel()
+
 			render.PopCustomClipPlane()
 		render.EnableClipping(false)
 		render.MaterialOverride(false)
@@ -88,21 +108,15 @@ end
 
 function ENT:Think()
 	if (self.isBuilding) then
-        self.buildProgress = self:GetBuildTicks()/self.buildTicks * 100
-		/*self.buildProgress = 100-(((self.endBuildTime - CurTime())/self:GetBuildTime())*100)
-		if (CurTime() >= self.endBuildTime) then
-			self.isBuilding = false
-			self.isBuilt = true
-		end*/
+        self.buildProgress = (self.buildTicks/self:GetBuildTicks()) * 100
 	end
 end
 
 function ENT:ProgressBuild()
 	if (!self.isBuilding) then return end
-	if (!self.buildTicks >= self:GetBuildTicks()) then 
+	if (self.buildTicks >= self:GetBuildTicks()) then 
 		self.isBuilding = false
 		self.isBuilt = true
-        print("Finishing build for "..self:GetClass())
 	end
     SF:Call("BuildingProgressBuild", self)
 	self.buildTicks = self.buildTicks + 1

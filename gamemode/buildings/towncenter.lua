@@ -1,20 +1,17 @@
+ENT.BuildTime = 10
+ENT.BuildTicks = 10
+
+ENT.OviasName = "Manor Hall"
+ENT.OviasModel = "models/mrgiggles/sassilization/TownCenter.mdl"
+ENT.OviasInfo = {
+		["category"] = "Kingdom",
+		["desc"] = "The control point of a manor in your kingdom."
+	}
+
 --[[
     Ovias
 	Copyright © Slidefuse LLC - 2012
 --]]
-
--- A function to grab the name
-function ENT:GetOviasName()
-	return "Manor Hall"
-end
-
--- A function to get a table of general info
-function ENT:GetInfo()
-	return {
-		["category"] = "Kingdom",
-		["desc"] = "The control point of a manor in your kingdom."
-	}
-end
 
 -- A function to return a requirements object
 function ENT:SetupRequirements(req)
@@ -40,21 +37,6 @@ function ENT:SetupRequirements(req)
 		end
 		return false
 	end)
-end
-
--- A function to grab the model the building uses
-function ENT:GetOviasModel()
-	return "models/mrgiggles/sassilization/TownCenter.mdl"
-end
-
--- A function to grab the time it takes to build the building in seconds
-function ENT:GetBuildTime()
-	return 10
-end
-
--- A function to return the amount of build ticks ti takes for the building to complete
-function ENT:GetBuildTicks()
-    return 10
 end
 
 -- Called before a building starts being built

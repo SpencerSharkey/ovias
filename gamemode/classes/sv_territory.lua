@@ -7,7 +7,6 @@ function SF.Territory.metaClass:Calculate()
 
 	local position = self.position + Vector(0, 0, 5)
 	local zPos = position.z
-	local s = (math.pi*2)/32
 	local index = 1
 
 	local vUp = Vector(0, 0, 1)
@@ -16,8 +15,11 @@ function SF.Territory.metaClass:Calculate()
 	local org = position
 	self.recheckQueue = {}
 
-	for i = 0, math.pi*2, s do
-		local vOffset = Vector(math.cos(i), math.sin(i), 0)
+	local vOffset = Vector()
+
+	for i = 0, math.pi*2, math.pi/16 do
+		vOffset.x = math.cos(i)
+		vOffset.y = math.sin(i)
 		local length = 0
 		local tr = SF.Util:SimpleTrace(org, org + vOffset*self.radius)	 
 		local prevHit = position

@@ -40,11 +40,12 @@ function ENT:Think()
 			self.startBuildTime = CurTime()
 			self.endBuildTime = CurTime() + self:GetBuildTime()
 			netstream.Start(player.GetAll(), "ovB_StartBuild", {ent = self})
+			print("SWET")
 		end
 
 		self:Build()
 
-		if (self:GetBuildTicks() >= self.buildTicks) then
+		if (self:GetBuildTicks() <= self.buildTicks) then
             --This only gets called the tick before building is finished... if return ftw
 			self:SetBuilt(true)
 		end
@@ -61,18 +62,19 @@ function ENT:Think()
 
 end
 
+function ENT:SpawnUnit(type)
+	local pos = self:GetPos() + Vector(self.modelMaxs.x+math.random(0, 20), self.modelMaxs.y+math.random(0, 20), 0)
+	SF.Units:NewUnit(type, self:GetFaction(), pos, Angle(0, 0, 0))
+end
+
 function ENT:ProgressBuild()
     if (!self:GetBuilt()) then
         self.buildTicks = self.buildTicks + 1
+        print("Building ", self.buildTicks)
         SF:Call("BuildingProgressBuild", self)
         netstream.Start(player.GetAll(), "ovB_ProgressBuild", self)
     end
 end
-
-function ENT:GetBuildTicks()
-    return self.buildTicks
-end
-
 
 function ENT:CreateFoundation()
 

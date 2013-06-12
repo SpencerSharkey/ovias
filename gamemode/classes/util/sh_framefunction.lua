@@ -8,11 +8,9 @@ SF.FrameFunc.buffer = {}
 SF.FrameFunc.currentFrame = 1
 
 function SF.FrameFunc:Think()
-    for k, v in next, self.buffer do
-        if (k == self.currentFrame) then
-            v(currentFrame)
-            self.buffer[k] = nil
-        end
+    if(self.buffer[self.currentFrame]) then
+        self.buffer[self.currentFrame](currentFrame)
+        self.buffer[self.currentFramek] = nil
     end
     self.currentFrame = self.currentFrame + 1
 end

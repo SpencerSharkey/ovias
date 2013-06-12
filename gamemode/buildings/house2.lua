@@ -1,15 +1,12 @@
--- A function to grab the name
-function ENT:GetOviasName()
-  return "Home 2"
-end
+ENT.BuildTime = 400
+ENT.BuildTicks = 4
 
--- A function to get a table of general info
-function ENT:GetInfo()
-  return {
-		["category"] = "Population",
-		["desc"] = "Cater to your populace!"
-	}
-end
+ENT.OviasName = "Home 2"
+ENT.OviasModel = "models/mrgiggles/sassilization/house02.mdl"
+ENT.OviasInfo = {
+	["category"] = "Population",
+	["desc"] = "Cater to your populace!"
+}
 
 -- A function to return a requirements object
 function ENT:SetupRequirements(req)
@@ -31,20 +28,6 @@ function ENT:SetupRequirements(req)
 	end)
 end
 
--- A function to grab the model the building uses
-function ENT:GetOviasModel()
-	return "models/mrgiggles/sassilization/house02.mdl"
-end
-
--- A function to grab the time it takes to build the building in seconds
-function ENT:GetBuildTime()
-	return 400
-end
-
-function ENT:GetBuildTicks()
-	return 4
-end
-
 -- Called before a building starts being built
 function ENT:PreBuild()
 end
@@ -64,6 +47,4 @@ end
 
 -- Called after the building has been demolished
 function ENT:PostDestruction()
-	self:Remove()
-
 end

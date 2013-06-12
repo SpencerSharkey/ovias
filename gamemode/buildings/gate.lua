@@ -1,15 +1,12 @@
--- A function to grab the name
-function ENT:GetOviasName()
-  return "Portcullis"
-end
+ENT.BuildTime = 600
+ENT.BuildTicks = 6
 
--- A function to get a table of general info
-function ENT:GetInfo()
-	return {
+ENT.OviasName = "Portcullis"
+ENT.OviasModel = "models/mrgiggles/sassilization/gate.mdl"
+ENT.OviasInfo = {
 		["category"] = "Defence",
 		["desc"] = "To protect your kingdom!"
 	}
-end
 
 -- A function to return a requirements object
 function ENT:SetupRequirements(req)
@@ -31,19 +28,6 @@ function ENT:SetupRequirements(req)
 	end)
 end
 
--- A function to grab the model the building uses
-function ENT:GetOviasModel()
-	return "models/mrgiggles/sassilization/gate.mdl"
-end
-
--- A function to grab the time it takes to build the building in seconds
-function ENT:GetBuildTime()
-	return 600
-end
-
-function ENT:GetBuildTicks()
-	return 6
-end
 -- Called before a building starts being built
 function ENT:PreBuild()
 end

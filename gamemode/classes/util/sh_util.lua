@@ -15,12 +15,7 @@ function SF.Util:Cross2D(u, v)
 end
 
 function SF.Util:SameSign(x, y)
-	if (x >= 0 and y >= 0) then
-		return true
-	elseif (x < 0 and y < 0) then
-		return true
-	end
-	return false
+	return (x >= 0 and y >= 0) or (x < 0 and y < 0)
 end
 
 function SF.Util:SimpleTrace(startpos, endpos, mask)

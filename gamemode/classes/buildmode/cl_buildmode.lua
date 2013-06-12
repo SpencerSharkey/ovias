@@ -73,7 +73,7 @@ end
 function SF.BuildMode:HUDPaint()
 	if (self.isBuilding and !self.canPlace and self.placePos) then
 		local pos = self.placePos:ToScreen()
-		surface.SetDrawColor(Color(255, 0, 0))
+		surface.SetDrawColor(255, 0, 0, 255)
 		surface.DrawRect(pos.x-10, pos.y-10, 20, 20)
 	end
 end
