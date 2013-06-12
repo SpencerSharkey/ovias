@@ -32,6 +32,11 @@ function SF:Hud:HUDShouldDraw(name)
 	end
 end
 
+local mGradDown = Material("gui/gradient_down.png")
+local mGradUp = Material("gui/gradient_up.png")
+local mGold = Material("ovias/gold.png")
+local mWood = Material("ovias/wood.png")
+
 function SF.Hud:HUDPaint()
 	if (SF.Client:GetFaction()) then
 		surface.SetDrawColor(SF.Client:GetFaction():GetColor())
@@ -41,15 +46,15 @@ function SF.Hud:HUDPaint()
 	local iconwidth = 10
 	local barwidth = 80 + surface.GetTextSize("0") * 2 + 80
 
-	// Too lazy to make my own
-	surface.SetMaterial( Material("gui/gradient_down.png") )
+	-- Too lazy to make my own
+	surface.SetMaterial(mGradDown)
 	surface.SetDrawColor(51, 204, 255)
 	surface.DrawTexturedRect(- 10, 70, barwidth, 40)
 
-	surface.SetMaterial( Material("gui/gradient_up.png") )
+	surface.SetMaterial(mGradUp)
 	surface.SetDrawColor(0, 138, 184)
 	surface.DrawTexturedRect(- 10, 70, barwidth, 40)
-	// End of lazyness
+	-- End of lazyness
 
 	surface.SetDrawColor(255, 255, 255, 255)
 	surface.SetFont("plyInfo")
@@ -61,11 +66,11 @@ function SF.Hud:HUDPaint()
 	surface.SetTextPos(iconwidth + 42 * 3, 72)
 	surface.DrawText("0")
 
-	surface.SetMaterial( Material("ovias/gold.png") )
+	surface.SetMaterial(mGold)
 	surface.SetDrawColor(255, 255, 255)
 	surface.DrawTexturedRect(2, 72.5, 40, 33)
 
-	surface.SetMaterial( Material("ovias/wood.png") )
+	surface.SetMaterial(mWood)
 	surface.SetDrawColor(255, 255, 255)
 	surface.DrawTexturedRect(iconwidth * 7 + surface.GetTextSize("0"), 72.5, 40, 33)
 
@@ -113,7 +118,10 @@ function PANEL:Init()
 		if (!self.tabs[cat]) then
 			self.tabs[cat] = vgui.Create("DPanelList", self.sheet)
 			self.tabs[cat]:EnableHorizontal(true)
-			self.sheet:AddSheet(cat, self.tabs[cat], "icon16/bell.png", false, false, cat)
+			local tab = self.sheet:AddSheet(cat, self.tabs[cat], "icon16/bell.png", false, false, cat)
+            if (cat == "Kingdom") then
+                self.sheet:SetActiveTab(tab.Tab)
+            end
 		end
 
 		local icon = vgui.Create("SpawnIcon")
