@@ -31,6 +31,7 @@ function SF.Faction.metaClass:Init(keyO)
 	self.territories = {}
 	self.buildings = {}
 	self.units = {}
+    self.resources = {}
 	self.gold = 0
 
 	
@@ -41,6 +42,7 @@ function SF.Faction.metaClass:Init(keyO)
 		self.smartnet:AddObject("units", {})
 		self.smartnet:AddObject("buildings", {})
 		self.smartnet:AddObject("color", Color(0, 0, 0))
+        self.smartnet:AddObject("resources", {})
 		self:AssociateColor()
 	end
 
@@ -66,6 +68,10 @@ function SF.Faction.metaClass:Init(keyO)
 			if (data.units) then
 				faction.units = data.units
 			end
+            
+            if (data.resources) then
+                faction.resources = data.resources
+            end
 
 			if (data.color) then
 				faction:SetColor(data.color)
@@ -139,8 +145,31 @@ function SF.Faction.metaClass:AddUnit(unit)
 	end
 end
 
-function SF.Faction.metaClass:GetManors()
-	return self.manors
+function SF.Faction.metaClass:GetResources()
+    return self.resources
+end
+
+function SF.Faction.metaClass:GetResource(rtype)
+    if (self.resources[rtype]) then
+        return self.resources[rtype]
+    end
+    return 0
+end
+
+function SF.Faction.metaClass:SetResource(rtype, amount)
+    self.resources[rtype] = amount
+    
+    if (SERVER) then
+        self.smartnet:UpdateObject("resources", self.resources, true)
+    end
+end
+
+function SF.Faction.metaClass:AddResource(rtype, amount)
+    self:SetResource(rtype, self.resources[rtype] + amount)
+end
+
+function SF.Faction.metaClass:TakeResource(rtype, amount)
+    self:SetResource(rtype, self.resources[rtype] - amount)
 end
 
 function SF.Faction.metaClass:GetGold()
