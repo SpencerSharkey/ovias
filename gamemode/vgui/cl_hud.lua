@@ -26,12 +26,11 @@ function SF.Hud:PostSetFaction()
 	self.panel = vgui.Create("sfCreation")
 end
 
-function hidehud(name)
-	for k, v in pairs({"CHudHealth", "CHudBattery"})do
+function SF:Hud:HUDShouldDraw(name)
+	for k, v in next, {"CHudHealth", "CHudBattery"} do
 		if name == v then return false end
 	end
 end
-hook.Add("HUDShouldDraw", "HideOurHud:D", hidehud)
 
 function SF.Hud:HUDPaint()
 	if (SF.Client:GetFaction()) then
