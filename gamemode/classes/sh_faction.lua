@@ -81,18 +81,6 @@ function SF.Faction.metaClass:Init(keyO)
 
 end
 
-function SF.Faction.metaClass:UpdateTerritoryBuffer(territory)
-	local id = territory.index
-
-	for nKey, netID in next, self.territoryBuffer do
-		if (netID == id) then
-			self:AddTerritory(territory)
-			self.territoryBuffer[nKey] = nil
-		end
-	end
-
-end
-
 function SF.Faction.metaClass:GetNetKey()
 	return self.key
 end
@@ -100,6 +88,10 @@ end
 function SF.Faction.metaClass:Destroy()
 	self:DisassociateColor()
 end
+
+--[[
+    Buildings/Units
+--]]
 
 function SF.Faction.metaClass:GetBuildings()
 	return self.buildings
@@ -145,6 +137,10 @@ function SF.Faction.metaClass:AddUnit(unit)
 	end
 end
 
+--[[
+    Resources
+--]]
+
 function SF.Faction.metaClass:GetResources()
     return self.resources
 end
@@ -157,6 +153,7 @@ function SF.Faction.metaClass:GetResource(rtype)
 end
 
 function SF.Faction.metaClass:SetResource(rtype, amount)
+    if (!SF.Resource:Get(rtype)) then error("Not a real resource") end
     self.resources[rtype] = amount
     
     if (SERVER) then
@@ -171,6 +168,12 @@ end
 function SF.Faction.metaClass:TakeResource(rtype, amount)
     self:SetResource(rtype, self.resources[rtype] - amount)
 end
+
+-- End Resources
+
+--[[
+    Gold 
+--]]
 
 function SF.Faction.metaClass:GetGold()
 	return self.gold
@@ -201,6 +204,12 @@ end
 function SF.Faction.metaClass:HasGold(amount)
 	return (self.gold >= amount)
 end
+
+-- End Gold
+
+--[[
+    Color Stuff
+--]]
 
 function SF.Faction.metaClass:AssociateColor()
 	--Bruteforce the colors. Worst code in gamemode.
@@ -242,6 +251,12 @@ function SF.Faction.metaClass:SetColor(name)
 	self.colorName = name
 end
 
+-- End Color Stuff
+
+--[[
+    Smartnet Players
+--]]
+
 function SF.Faction.metaClass:AddPlayer(ply)
 	self.players[ply] = true
 	self:UpdateSmartnetPlayers()
@@ -275,8 +290,12 @@ function SF.Faction.metaClass:GetPlayers()
 	return ret
 end
 
+-- End Smartnet Players
 
---Territory styff
+--[[
+    Start Territory
+--]]
+
 function SF.Faction.metaClass:AddTerritory(territory)
 	self.territories[territory.index] = territory
 
@@ -315,7 +334,20 @@ function SF.Faction.metaClass:PointInInfluence(point)
 	return false
 end
 
-/* End */
+function SF.Faction.metaClass:UpdateTerritoryBuffer(territory)
+    local id = territory.index
+
+	for nKey, netID in next, self.territoryBuffer do
+		if (netID == id) then
+			self:AddTerritory(territory)
+			self.territoryBuffer[nKey] = nil
+		end
+	end
+
+end
+
+-- End Territories
+-- End MetaClass
 
 function SF.Faction:OnTerritoryNetworked(territory)
 	--Assuming the territory was added to the faction... lets add it finally since we have the data :)
