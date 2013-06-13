@@ -30,6 +30,7 @@ function SF.Units:LoadUnits()
 				scripted_ents.Register(ENT, "unit_"..baseName)
 			else
 				local tbl = table.Merge(scripted_ents.Get("base_nextbot_ovias"), ENT)
+				PrintTable(tbl)
 				scripted_ents.Register(tbl, "unit_"..baseName)
 			end
 

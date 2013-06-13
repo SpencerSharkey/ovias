@@ -11,13 +11,18 @@ else
 end
 
 function ENT:GetSize()
+	if (!self.size) then
+		self.modelMins, self.modelMaxs = self:OBBMins(), self:OBBMaxs()
+    	self.size = self.modelMaxs.x
+	end
+
     return self.size
 end
 
 function ENT:SetFaction(faction)
     self.faction = faction
 	if (SERVER) then
-		netstream.Start("ovUnitFaction", {ent = self, fid = self:GetFaction():GetNetKey()})
+		netstream.Start(player.GetAll(), "ovUnitFaction", {ent = self:EntIndex(), fid = self:GetFaction():GetNetKey()})
 	end
 end
 
@@ -40,3 +45,4 @@ end
 function ENT:GetGroundNormal()
 	return self:GetGroundTrace().HitNormal
 end
+
