@@ -11,22 +11,21 @@ function ENT:BehaveAct()
 end
 
 function ENT:RunBehaviour()
-	self.loco:SetDesiredSpeed(25)
-	self.loco:SetJumpHeight(25)
-	self.loco:SetStepHeight(25)
+	self.loco:SetDesiredSpeed(20)
+	self.loco:SetJumpHeight(3)
+	self.loco:SetStepHeight(2)
 
 	while ( true ) do
-		//if (!self.faction) then continue end
 		self.buildingEnt = nil
 		for k, v in pairs(self.faction:GetAllBuildings()) do
 			if (!v:GetBuilt()) then
-				self:MoveToPos(v:GetPos(), {repath = 2, tolerance = 20})
+				self:MoveToPos(v:GetUnitPos(self), {repath = 2, tolerance = 20})
 				self.buildingEnt = v
 				break;
 			end
 		end
 		if (!self.buildingEnt) then
-			self:MoveToPos(self.faction:GetCastle():GetPos(), {repath = 2, tolerance = 20})
+			self:MoveToPos(self.faction:GetCastle():GetUnitPos(self), {repath = 2, tolerance = 20})
 		end
 		
 		self:StartActivity(self:LookupSequence("idle"))

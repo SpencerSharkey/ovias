@@ -44,7 +44,6 @@ function ENT:Think()
 			self.startBuildTime = CurTime()
 			self.endBuildTime = CurTime() + self:GetBuildTime()
 			netstream.Start(player.GetAll(), "ovB_StartBuild", {ent = self})
-			print("SWET")
 		end
 
 		self:Build()
@@ -60,7 +59,6 @@ function ENT:Think()
 	if (!self.calledPostBuild) then   
 		self:PostBuild()
 		self.calledPostBuild = true
-		SF:Msg("Calling postBuild")
         netstream.Start(player.GetAll(), "ovB_FinishBuild", {ent = self})
 	end
 
@@ -74,7 +72,6 @@ end
 function ENT:ProgressBuild()
     if (!self:GetBuilt()) then
         self.buildTicks = self.buildTicks + 1
-        print("Building ", self.buildTicks)
         SF:Call("BuildingProgressBuild", self)
         netstream.Start(player.GetAll(), "ovB_ProgressBuild", self)
     end

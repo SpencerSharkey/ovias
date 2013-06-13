@@ -129,3 +129,7 @@ function ENT:CalculateFoundation()
 	self.foundationMeshTabe = tri
 
 end
+
+function ENT:FindUnitPosition(unit)
+    return self:NearestPoint(unit:GetPos())
+end

@@ -19,10 +19,8 @@ end
 function ENT:BehaveAct()
 end
 
-
 function ENT:RunBehaviour()
 	while ( true ) do
-		//whatever
 		coroutine.yield()
 	end
 end
