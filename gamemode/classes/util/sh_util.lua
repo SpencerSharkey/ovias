@@ -23,7 +23,7 @@ function SF.Util:SimpleTrace(startpos, endpos, mask)
     local t = util.TraceLine({
     	start = startpos,
     	endpos = endpos,
-    	mask = mask
+    	mask = MASK_SOLID_BRUSHONLY
     }) 
 
     if (t.Hit) then

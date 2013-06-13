@@ -21,8 +21,12 @@ function ENT:Initialize()
 	self.foundationHull:Activate()
 
 	self.modelMins, self.modelMaxs = self:OBBMins(), self:OBBMaxs()
+	self:PhysicsInitBox(self.modelMins, self.modelMaxs)
+	self:SetSolid(SOLID_VPHYSICS)  
+	self:SetMoveType(MOVETYPE_NONE)
 
 	self:SharedInit()
+
 end
 
 function ENT:PostClientsideInit()
@@ -63,7 +67,7 @@ function ENT:Think()
 end
 
 function ENT:SpawnUnit(type)
-	local pos = self:GetPos() + Vector(self.modelMaxs.x+math.random(0, 20), self.modelMaxs.y+math.random(0, 20), 0)
+	local pos = self:GetPos() + Vector(self.modelMaxs.x+math.random(-self.modelMaxs.x, self.modelMaxs.x), self.modelMaxs.y+math.random(0, 20), 0)
 	SF.Units:NewUnit(type, self:GetFaction(), pos, Angle(0, 0, 0))
 end
 

@@ -97,9 +97,24 @@ function SF.Faction.metaClass:GetBuildings()
 	return self.buildings
 end
 
+function SF.Faction.metaClass:GetAllBuildings()
+	local tbl = {}
+	for type, cont in pairs(self.buildings) do
+		for _, ent in pairs(cont) do
+			table.insert(tbl, ent)
+		end
+	end
+	
+	return tbl
+end
+
 function SF.Faction.metaClass:GetBuildingsOfType(type)
 	if (!self.buildings[type]) then return {} end
 	return self.buildings[type]
+end
+
+function SF.Faction.metaClass:GetCastle()
+	return self.buildings["castle"][1]
 end
 
 function SF.Faction.metaClass:AddBuilding(building)

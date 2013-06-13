@@ -1,5 +1,5 @@
 ENT.BuildTime = 10
-ENT.BuildTicks = 10
+ENT.BuildTicks = 30
 
 ENT.OviasName = "Manor Hall"
 ENT.OviasModel = "models/mrgiggles/sassilization/TownCenter.mdl"
