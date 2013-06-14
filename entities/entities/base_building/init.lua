@@ -65,7 +65,7 @@ function ENT:Think()
 end
 
 function ENT:SpawnUnit(type)
-	local pos = self:GetPos() + Vector(self.modelMaxs.x+math.random(-self.modelMaxs.x, self.modelMaxs.x), self.modelMaxs.y+math.random(0, 20), 0)
+	local pos = self:GetPos() + Vector(self.modelMaxs.x+math.random(50, 150), self.modelMaxs.y+math.random(50, 150), 3)
 	SF.Units:NewUnit(type, self:GetFaction(), pos, Angle(0, 0, 0))
 end
 

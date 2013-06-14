@@ -19,13 +19,13 @@ function ENT:RunBehaviour()
 		self.buildingEnt = nil
 		for k, v in pairs(self.faction:GetAllBuildings()) do
 			if (!v:GetBuilt()) then
-				self:MoveToPos(v:GetUnitPos(self), {repath = 2, tolerance = 20})
+				self:MoveToPos(v:FindUnitPosition(self), {lookahead = 5, repath = 0.5, tolerance = 20})
 				self.buildingEnt = v
 				break;
 			end
 		end
 		if (!self.buildingEnt) then
-			self:MoveToPos(self.faction:GetCastle():GetUnitPos(self), {repath = 2, tolerance = 20})
+			self:MoveToPos(self.faction:GetCastle():FindUnitPosition(self), {lookahead = 5, repath = 0.5, tolerance = 20})
 		end
 		
 		self:StartActivity(self:LookupSequence("idle"))
