@@ -119,12 +119,12 @@ function ENT:ProgressBuild()
 		self.isBuilt = true
 	end
     SF:Call("BuildingProgressBuild", self)
-	self.buildTicks = self.buildTicks + 1
+	self.buildTicks = self.buildTicks + data
 end
 
 netstream.Hook("ovB_ProgressBuild", function(data)
-	local ent = data
-	ent:ProgressBuild()
+	local ent = data.ent
+	ent:ProgressBuild(data.buildTicks)
 end)
 
 netstream.Hook("ovB_StartBuild", function(data)

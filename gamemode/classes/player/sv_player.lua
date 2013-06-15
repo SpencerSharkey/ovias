@@ -30,6 +30,7 @@ function SF.PlayerMeta:CreateBuilding(type, trace)
 
 end
 
+
 function SF.PlayerMeta:SpawnUnit(type)
 	self:CreateUnit(type, self:GetEyeTrace())
 end
@@ -51,6 +52,15 @@ end)
 
 function SF.Player:OnFactionCreated(faction)
 	netstream.Start(player.GetAll(), "ovFactionCreated", faction:GetNetKey())
+end
+
+function SF.Player:PlayerInit(ply)
+	--Update le buildings & units
+	for k, v in next, ents.FindByClass("building_*") do
+		if (v.NewPlayer) then
+			v:NewPlayer(ply)
+		end
+	end
 end
 
 SF:RegisterClass("svPlayer", SF.Player)

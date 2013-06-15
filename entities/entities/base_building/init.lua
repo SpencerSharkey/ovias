@@ -73,8 +73,12 @@ function ENT:ProgressBuild()
     if (!self:GetBuilt()) then
         self.buildTicks = self.buildTicks + 1
         SF:Call("BuildingProgressBuild", self)
-        netstream.Start(player.GetAll(), "ovB_ProgressBuild", self)
+        self:NetworkBuildTicks()
     end
+end
+
+function ENT:NetworkBuildTicks()
+	netstream.Start(player.GetAll(), "ovB_ProgressBuild", {ent = self, buildTicks = self.buildTicks})
 end
 
 function ENT:CreateFoundation()
@@ -104,6 +108,13 @@ function ENT:CreateFoundation()
 
 	self:CalculateFoundation()
 	self.foundationHull:ApplyPhysicsMesh(self.foundationPhysicsMeshTable)
+end
+
+-- A function that gets called when a new player joins
+function ENT:NewPlayer(ply)
+	-- send buildprogress
+	self:NetworkBuildTicks()
+
 end
 
 function ENT:PostBuild() end
