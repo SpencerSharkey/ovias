@@ -24,6 +24,7 @@ function ENT:Initialize()
 	self:PhysicsInitBox(self.modelMins, self.modelMaxs)
 	self:SetSolid(SOLID_VPHYSICS)  
 	self:SetMoveType(MOVETYPE_NONE)
+	self:SetCollisionGroup(COLLISION_GROUP_IN_VEHICLE)
 
 	self:SharedInit()
 

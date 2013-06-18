@@ -112,14 +112,14 @@ function ENT:Think()
 	end
 end
 
-function ENT:ProgressBuild()
+function ENT:ProgressBuild(data)
 	if (!self.isBuilding) then return end
 	if (self.buildTicks >= self:GetBuildTicks()) then 
 		self.isBuilding = false
 		self.isBuilt = true
 	end
     SF:Call("BuildingProgressBuild", self)
-	self.buildTicks = self.buildTicks + data
+	self.buildTicks = data
 end
 
 netstream.Hook("ovB_ProgressBuild", function(data)

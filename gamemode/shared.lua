@@ -94,25 +94,42 @@ end
 
 -- This is a hackish method to detour default hooks in Garry's Mod to call our own
 local oldHook = hook.Call
+SF.HookTimings = {}
 function hook.Call(name, gamemode, ...)
 	if (CLIENT) then
 		SF.Client = LocalPlayer()
 	end
-	local returnvalue = true
-	for _, v in next, SF.CLASSES do
-		if (v[name]) then
-			returnvalue = v[name](v, ...)
-		end
-		if (v["HookCall"]) then
-			returnvalue = v:HookCall(name, gamemode, ...)
-		end
-	end
 
-	if (returnvalue) then
-		returnvalue = oldHook(name, gamemode, ...)
-	end
+	local startTime = SysTime()
+		for _, v in next, SF.CLASSES do
+			if (v[name]) then
+				local bSuccess, value = pcall(v[name], v, ...)
+				if (!bSuccess) then
+					ErrorNoHalt("[OVIAS HOOK '"..name.."'] FAILED\n\t"..value.."\n")
+				elseif (value != nil) then
+					return value
+				end
+			end
+		end
+	local timeTook = SysTime() - startTime
 
-	return returnvalue
+	SF.HookTimings[name] = timeTook
+
+	if (value == nil) then
+		local startTime = SysTime()
+			local bStatus, a, b, c = pcall(oldHook, name, gamemode, ...)
+		local timeTook = SysTime() - startTime
+
+		SF.HookTimings[name] = timeTook
+
+		if (!bStatus) then
+			ErrorNoHalt("[GENERIC HOOK '"..name.."'] FAILED\n\t"..a.."\n")
+		else
+			return a, b, c
+		end
+	else
+		return value
+	end
 end
 
 --[[

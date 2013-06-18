@@ -10,9 +10,19 @@ end
 function ENT:BehaveAct()
 end
 
+function ENT:BehaveUpdate(interval)
+	if (!self.BehaveThread) then return end
+
+	local ok, message = coroutine.resume(self.BehaveThread)
+	if (ok == false) then
+		self.BehaveThread = nil
+		Msg(self, "OviasBotError: \n\t"..message.."\n")
+	end
+end
+
 function ENT:RunBehaviour()
-	self.loco:SetDesiredSpeed(20)
-	self.loco:SetJumpHeight(3)
+	self.loco:SetDesiredSpeed(40)
+	self.loco:SetJumpHeight(50)
 	self.loco:SetStepHeight(2)
 
 	while ( true ) do
@@ -40,7 +50,6 @@ function ENT:Think()
 		end
 		if (CurTime() >= self.nextBuildTick) then
 			self.buildingEnt:ProgressBuild()
-			print("Progressssing")
 			self.nextBuildTick = CurTime() + math.Rand(0.75, 1.25)
 		end
 	end

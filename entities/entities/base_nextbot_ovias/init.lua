@@ -14,7 +14,7 @@ function ENT:Initialize()
     self.size = self.modelMaxs.x*2
 
     self:SetCollisionBounds(self.modelMins, self.modelMaxs)
-    self:SetCollisionGroup(COLLISION_GROUP_IN_VEHICLE)
+    //self:SetCollisionGroup(COLLISION_GROUP_IN_VEHICLE)
 end
 
 function ENT:BehaveAct()

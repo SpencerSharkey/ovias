@@ -26,11 +26,12 @@ function SF.Hud:PostSetFaction()
 	self.panel = vgui.Create("sfCreation")
 end
 
+local exclude = {"CHudHealth", "CHudBattery"}
 function SF.Hud:HUDShouldDraw(name)
-	for k, v in next, {"CHudHealth", "CHudBattery"} do
+	for k, v in next, exclude do
 		if name == v then return false end
 	end
-	return true
+	return true 
 end
 
 local mGradDown = Material("gui/gradient_down.png")
@@ -39,6 +40,9 @@ local mGold = Material("ovias/gold.png")
 local mWood = Material("ovias/wood.png")
 
 function SF.Hud:HUDPaint()
+
+	if (!SF.Client:GetFaction()) then return end
+
 	if (SF.Client:GetFaction()) then
 		surface.SetDrawColor(SF.Client:GetFaction():GetColor())
 		surface.DrawRect(0, 0, ScrW(), 4)

@@ -46,3 +46,24 @@ function ENT:GetGroundNormal()
 	return self:GetGroundTrace().HitNormal
 end
 
+local mCircle = Material("sassilization/circle")
+function ENT:Draw()
+	self:DrawCircle(self:GetSize())
+end
+
+function ENT:DrawCircle(size, color)
+	render.SetMaterial(mCircle)
+	local color = color or self:GetFaction():GetColor()
+	render.DrawQuadEasy(self:GetGroundPos() + Vector(0, 0, 1) * 0.1, self:GetGroundNormal(), size, size, self:GetFaction():GetColor())
+end
+
+function ENT:DrawFlatCircle(size)
+	SF.Units.flatCircle:SetPos(self:GetGroundPos() + Vector(0, 0, 1) * 0.1)
+	SF.Units.flatCircle:SetModelScale(size, 0)
+	local ang = self:GetGroundNormal():Angle()
+	ang:RotateAroundAxis(Vector(1, 0, 0), -90)
+	
+	SF.Units.flatCircle:SetAngles()
+	SF.Units.flatCircle:DrawModel()
+	//render.DrawQuadEasy(, self:GetGroundNormal(), size, size, self:GetFaction():GetColor())
+end
