@@ -145,37 +145,25 @@ function SF.Territory.metaClass:Calculate()
 	SF.Territory:CalculateBoundaries()
 end
 
-function SF.Territory:_checkUncalculated(calculated)
-	for kTerritory, territory in next, self.stored do
-		calculated[kTerritory] = {}
-		for _, kPoint in next, territory.pointsIncluded do
-			if (!table.HasValue(calculated[kTerritory], kPoint)) then
-				return kTerritory, kPoint
-			end
-		end
-	end
-	return false
-end
 
 function SF.Territory:CalculateBoundaries()
 	local calculated = {}
 
-	while (self:_checkUncalculated(calculated) != false) do
-		local boundary = {}
-		local startTerritory_i, startPoint = self:_checkUncalculated(calculated)
-		local startTerritory = self.stored[startTerritory_i]
-		local iCheck = startPoint
-		while (startTerritory.pointsIncluded[iCheck]) do
-			
-			table.insert(boundary, {startTerritory_i, iCheck})
-
-			if (!startTerritory.pointsIncluded[iCheck+1]) then
-				break --Just an early warning <3
+	for terrKey, territory in pairs(self.stored)
+		for _, point in pairs(v.points) do
+			if (!table.HasValue(v.pointsIncluded, point)) then continue end
+			local inTerritory = false
+			for n_terrKey, n_territory in pairs(self.stored) do
+				if (n_territory:PointInArea(point)) then
+					inTerritory = true
+				end
 			end
-			iCheck = iCheck + 1
+			
+			if (inTerritory) then
+				table.insert(calculated, point)
+			end
+
 		end
-		table.insert(self.boundaries, boundary)
-		break; --REMOVE THIS
 	end
 
 	self:NetworkBoundaries()

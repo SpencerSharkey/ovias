@@ -12,6 +12,7 @@ function SF.Territory:PostDrawOpaqueRenderables()
 		end
 		v:Draw()
 	end
+
 end
 
 function SF.Territory.metaClass:CreateDrawCache()
@@ -32,11 +33,31 @@ function SF.Territory.metaClass:CreateDrawCache()
 	end
 end
 
+--Draw selection
+local mBoundary = CreateMaterial("territoryBoundary1", "UnlitGeneric", {
+	["$baseTexture"] = "color/white",
+	["$color"] = 1,
+	["$vertexcolor"] = 1
+})
 function SF.Territory.metaClass:Draw()
+	local amount = #self.drawCache - #self.pointsExcluded
+	local color = self:GetFaction():GetColor()
+	render.SuppressEngineLighting(true)
+	render.SetColorModulation(color.r/255, color.g/255, color.b/255)
+	render.SetMaterial(mBoundary)
+	render.StartBeam(amount)
+	local i = 0
 	for k, pointData in next, self.drawCache do
-		if (table.HasValue(self.pointsExcluded, k)) then continue end
-		render.DrawBeam(pointData[1], pointData[2], 3, 0.5, 0.75, self:GetFaction():GetColor())
+		if (table.HasValue(self.pointsExcluded, k)) then
+			render.EndBeam()
+		end
+		render.AddBeam(pointData[1], 2, i/amount, color)
+		i = i + 1
 	end
+	render.EndBeam()
+	render.SetColorModulation(1, 1, 1)
+	render.SuppressEngineLighting(false)
+	
 end
 
 netstream.Hook("territoryRemove", function(data)
