@@ -5,7 +5,6 @@
 
 
 SF.Territory = {}
-SF.Territory.buffer = {}
 SF.Territory.stored = {}
 SF.Territory.boundaries = {}
 
@@ -140,7 +139,7 @@ function SF.Territory:Create(faction, pos, radius)
 
 	o.faction = faction
 	faction:AddTerritory(o)
-	return o
+	return self:Get(o.index)
 end
 
 function SF.Territory:OnTerritoryTrianglesCalculated(territory)

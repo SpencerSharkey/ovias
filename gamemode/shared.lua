@@ -113,14 +113,14 @@ function hook.Call(name, gamemode, ...)
 		end
 	local timeTook = SysTime() - startTime
 
-	SF.HookTimings[name] = timeTook
+	SF.HookTimings[name] = {timeTook, SysTime()}
 
 	if (value == nil) then
 		local startTime = SysTime()
 			local bStatus, a, b, c = pcall(oldHook, name, gamemode, ...)
 		local timeTook = SysTime() - startTime
 
-		SF.HookTimings[name] = timeTook
+		SF.HookTimings[name] = {timeTook, SysTime()}
 
 		if (!bStatus) then
 			ErrorNoHalt("[GENERIC HOOK '"..name.."'] FAILED\n\t"..a.."\n")
@@ -130,6 +130,24 @@ function hook.Call(name, gamemode, ...)
 	else
 		return value
 	end
+end
+
+--[[
+@class SF
+@name PrintTimings
+@desc A function to print the pretty hooktimings
+--]]
+function SF:PrintTimings(filter)
+	self:Msg("###############################################")
+	self:Msg("# SF Hook Timings")
+	for name, data in pairs(self.HookTimings) do
+		if (filter and string.lower(name) != string.lower(filter)) then continue end
+		local microseconds = data[1]*1000000
+		local timeAgo = (SysTime()-data[2])*1000000
+		SF:Msg(name.." ("..timeAgo.." Microseconds Ago", 1)
+		SF:Msg(microseconds, 2)
+	end
+	self:Msg("###############################################")
 end
 
 --[[

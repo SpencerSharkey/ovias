@@ -43,7 +43,6 @@ function ENT:Think()
 			self:PreBuild()
 			self.calledPreBuild = true
 			self.startBuildTime = CurTime()
-			self.endBuildTime = CurTime() + self:GetBuildTime()
 			netstream.Start(player.GetAll(), "ovB_StartBuild", {ent = self})
 		end
 
