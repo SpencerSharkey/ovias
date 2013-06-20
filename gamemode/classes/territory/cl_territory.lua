@@ -36,7 +36,7 @@ function SF.Territory.metaClass:Draw()
 	for k, pointData in next, self.drawCache do
 		if (table.HasValue(self.pointsExcluded, k)) then continue end
 		render.DrawBeam(pointData[1], pointData[2], 3, 0.5, 0.75, self:GetFaction():GetColor())
-		debugoverlay.Text(pointData[1], k, 5)
+		debugoverlay.Text(pointData[1], self.index..":"..k, 5)
 	end
 end
 

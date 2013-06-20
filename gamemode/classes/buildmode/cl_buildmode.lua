@@ -49,6 +49,7 @@ function SF.BuildMode:PlayerBindPress(ply, bind, pressed)
 	if (self.isBuilding) then 
 		if (bind == "+attack") then
 			netstream.Start("ovPlaceBuilding", self.building:GetTypeID())
+			self:StopBuild()
 			return true 	
 		end
 	end
