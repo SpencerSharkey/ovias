@@ -54,8 +54,9 @@ function SF.Units:CompleteSelection(pos, radius)
 
 end
 
+
 function SF.Units:HandleSelection()
-	if (input.IsMouseDown(MOUSE_LEFT)) then
+	/*if (input.IsMouseDown(MOUSE_LEFT)) then
 		local trace = SF.Client:GetEyeTrace()
 		if (!self.selectingEnt) then
 			self.selectingEnt = ClientsideModel("models/sassilization/viewtools/debug_sphere.mdl", RENDERGROUP_TRANSLUCENT)
@@ -111,8 +112,9 @@ function SF.Units:HandleSelection()
 			self.selectingEnt = nil
 			self:CompleteSelection(self.centerPos, self.selectionRadius)
 		end
-	end
+	end*/
 end
+
 
 --Draw selection
 local mBoundary = CreateMaterial("selectionBeam5", "UnlitGeneric", {

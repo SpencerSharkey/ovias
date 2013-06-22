@@ -121,18 +121,21 @@ function SF.Territory.metaClass:Calculate()
 		index = index + 1
 	end
 
-	for _, tid in next, self.recheckQueue do
-		local territory = SF.Territory.stored[tid]
+	//for _, tid in next, self.recheckQueue do
+	for _, territory in pairs(SF.Territory.stored) do
+		//local territory = SF.Territory.stored[tid]
 		territory.pointsIncluded = {}
 		territory.pointsExcluded = {}	
 		for k, point in next, territory.points do
-			if (self:PointInArea(point)) then
-				if (!table.HasValue(territory.pointsExcluded, k)) then
-					table.insert(territory.pointsExcluded, k)
-				end
-			else
-				if (!table.HasValue(territory.pointsIncluded, k)) then
-					table.insert(territory.pointsIncluded, k)
+			for _, checkTerritory in pairs(SF.Territory.stored) do
+				if (checkTerritory:PointInArea(point)) then
+					if (!table.HasValue(territory.pointsExcluded, k)) then
+						table.insert(territory.pointsExcluded, k)
+					end
+				else
+					if (!table.HasValue(territory.pointsIncluded, k)) then
+						table.insert(territory.pointsIncluded, k)
+					end
 				end
 			end
 		end
@@ -148,11 +151,31 @@ function SF.Territory:GetAllPoints(included)
 	local points = {}
 	for _, v in ipairs(self.stored) do
 		for k, p in pairs(v.points) do
+			if (table.HasValue(v.pointsExcluded, k)) then continue end 
 			table.insert(points, {k, p, v})
 		end
 	end
 	return points
 end
+
+concommand.Add("addt", function(ply, cmd, args)
+	local poss = {
+		Vector(108, 725, -145),
+		Vector(-10, 801, -145),
+		Vector(-113, 583, -145),
+		Vector(-340, 750, -145),
+		Vector(-220, 927, -145),
+		Vector(-63, 1108, -144),
+		Vector(23, 969, -145),
+		Vector(-445, 1138, -144),
+		Vector(-299, 1152, -144)
+	}
+	for k, v in pairs(poss) do
+		local territory = SF.Territory:Create(ply:GetFaction(), v, 140)
+		territory:Calculate()
+
+	end
+end)
 
 function SF.Territory:NearestNeighbor(territory, point)
 	if (type(point) == "number") then
@@ -160,14 +183,19 @@ function SF.Territory:NearestNeighbor(territory, point)
 	end
 	local nearestDistance = math.huge
 	local nearestPoint = nil
-	for _, checkPoint in pairs(self:GetAllPoints(true)) do
-		if (table.HasValue(territory.pointsExcluded, checkPoint[1])) then continue end
+	for gKey, checkPoint in pairs(self:GetAllPoints(true)) do
+		if (table.HasValue(self.boundaryCheckedPoints, checkPoint[2])) then continue end
+		if (table.HasValue(checkPoint[3].pointsExcluded, checkPoint[1])) then continue end
 		if (checkPoint[3] == territory) then continue end 
 		if (point:Distance(checkPoint[2]) <= nearestDistance) then
+
 			nearestDistance = point:Distance(checkPoint[2])
+			
 			nearestPoint = {checkPoint[3], checkPoint[1], checkPoint[2]} --Territory, PointKey, Position
 		end
 	end
+	if (!nearestPoint or nearestDistance >= 100) then return false end 
+	print("Using point "..nearestPoint[1].index.."_"..nearestPoint[2].." - Distance of "..point:Distance(nearestPoint[3]))
 	return nearestPoint[1], nearestPoint[2], nearestPoint[3]
 	--find the nearest
 end
@@ -185,14 +213,16 @@ function SF.Territory:AddTerritoryToBoundary(boundary, territory, startIndex)
 
 	if (table.HasValue(self.boundaryCheckedPoints, thisPoint)) then
 		--We've reached a full-circle, lets add this to our boundary buffer
-		table.insert(self.boundaries, boundary)
+		table.insert(self.boundaries, self.currentBoundary)
+		self.currentBoundary = {}
 		print("Finishing up a boundary.")
 		return
 	end
 
-	print("adding point- "..territory.index..":"..thisID)
+	--print("adding point- "..territory.index..":"..thisID)
 	--Lets add this point, assuming it's a goodie. (The startIndex must be a valid point.)
-	table.insert(boundary, {thisPoint, territory, thisID}) -- Add it to our current boundary.
+	//table.insert(boundary, {thisPoint, territory, thisID}) -- Add it to our current boundary.
+	table.insert(self.currentBoundary, thisPoint)
 	table.insert(self.boundaryCheckedPoints, thisPoint) -- Add it so we don't re-add it later, ever.
 	--Get some info about our next point
 	if (table.HasValue(territory.pointsExcluded, nextID)) then
@@ -200,7 +230,15 @@ function SF.Territory:AddTerritoryToBoundary(boundary, territory, startIndex)
 		-- Since that bitch is excluded, lets move onto a new point.. from a new territory
 		print("Needa look for a bitch")
 		local nTerritory, nPointID, nPos = self:NearestNeighbor(territory, thisID)
+		if (!nTerritory) then
+			table.insert(self.boundaries, self.currentBoundary)
+			self.currentBoundary = {}
+			print("Finishing up a boundary.")
+			return
+		end
 		self:AddTerritoryToBoundary(boundary, nTerritory, nPointID)
+		print("DONE")
+	
 	else
 		--We'll just go ahead and start from the next one <3
 		self:AddTerritoryToBoundary(boundary, territory, nextID)
@@ -212,6 +250,7 @@ function SF.Territory:CalculateBoundaries()
 	self.boundaryCheckedPoints = {}
 	self.boundaries = {}
 	local pointTable = self:GetAllPoints(true) //{pointkey, pos, terr}
+	self.currentBoundary = {}
 	local thisBoundary = {}
 
 	--Loop through all our points that should be included in boundaries...
@@ -220,110 +259,21 @@ function SF.Territory:CalculateBoundaries()
 		local pointKey = pointData[1]
 		local pointTerritory = pointData[3]
 		local pointPos = pointData[2]
-		if (table.HasValue(pointTerritory.pointsExcluded, pointKey)) then continue end 
+		if (table.HasValue(pointTerritory.pointsExcluded, pointKey)) then 
+			continue
+		end 
 		if (!table.HasValue(self.boundaryCheckedPoints, pointPos)) then
+			print("Starting a new boundary at "..pointTerritory.index..":"..pointKey)
 			self:AddTerritoryToBoundary(thisBoundary, pointTerritory, pointKey)
+			--break
 		else
-			print("already added, disregard: "..pointTerritory.index..":"..pointKey)
+			--print("already added, disregard: "..pointTerritory.index..":"..pointKey)
 		end
 	end
 
-	print("total num: "..#self.boundaries)
-	print("====================END")
-
-	if (self.testEnts) then
-		for k, v in pairs(self.testEnts) do
-			v:Remove()
-			v = nil
-		end
-	end
-	self.testEnts = {}
-	for k, v in pairs(self.boundaries) do
-		for _, point in pairs(v) do
-			local ent = ents.Create("prop_physics")
-			ent:SetModel("models/mrgiggles/sassilization/wall.mdl")
-			ent:SetPos(point[1])
-			ent:Spawn()
-			ent:GetPhysicsObject():EnableMotion(false)
-			table.insert(self.testEnts, ent)
-		end
-	end
-
-	/*while (true) do
-		
-		local terr = nextTerritory or self.stored[terrID]
-		if (nextTerritory) then
-			print("Continuing a border from terrID: "..terr.index.." & total: "..numberCalculated.."/"..#pointTable)
-		end
-		nextTerritory = nil
-		if (!terr) then
-			print("No territory")
-			break
-		end
-		print("Workin that territory swag")
-
-		local points = terr.points
-		local thisPoint = 1
-		--for kp, point in pairs(points) do
-		for i = 1, #points do
-
-			if (nextTerritory) then continue end
-			if (nextTerritoryPoint) then
-				thisPoint = nextTerritoryPoint
-				nextTerritoryPoint = nil
-				print("continuging @ "..terr.index.." from p "..thisPoint)
-				continue
-			end
-
-			local point = points[thisPoint]
-			local nextPoint = thisPoint + 1
-			if (thisPoint == #points) then
-				nextPoint = 1
-			end
-
-			if (!table.HasValue(checkedPoints, point)) then 
-				if (thisBoundary[1] and points[nextPoint] == thisBoundary[1][1]) then
-					table.insert(calculated, thisBoundary)
-					numberCalculated = numberCalculated + #thisBoundary + 1 //we add one because we don't really connect the ending points.
-					print("New boundary created, points: ", #thisBoundary+1, numberCalculated, pointCount)
-					if (#checkedPoints >= pointCount) then print("we'redone", numberCalculated, pointCount) break end
-					thisBoundary = {}
-					nextTerritory = self.stored[terr.index+1]
-					continue
-				else
-					if (points[nextPoint] and !table.HasValue(terr.pointsExcluded, nextPoint)) then
-						table.insert(thisBoundary, {point, territory})
-						table.insert(checkedPoints, point)
-						print("point: ", thisPoint, "@", terr.index)
-					else
-						local nearestPoint = nil
-						local nearestDistance = math.huge
-						for checkPointK, checkPoint in pairs(pointTable) do
-							local dist = point:Distance(checkPoint[1])
-							if (checkPoint[2] != terr and dist <= nearestDistance) then
-								nearestPoint = checkPoint
-								nearestDistance = dist
-							end
-						end
-						
-
-						if (nearestPoint) then
-							print("npoint", nearestPoint[1], nearestPoint[2].index)
-							nextTerritory = nearestPoint[2]
-							nextTerritoryPoint = nearestPoint[3]
-							table.insert(thisBoundary, {nearestPoint[1], nextTerritory})
-							table.insert(checkedPoints, nearestPoint[1])
-						else
-							error("No nearest point...")
-							
-						end
-					end
-				end
-			end
-			thisPoint = nextPoint
-		end
-		terrID = terrID + 1
-	end*/
+	print("END=======================")
+	print("ENDNUM: "..#self.boundaries)
+	self:NetworkBoundaries()
 end
 
 function SF.Territory:NetworkBoundaries()

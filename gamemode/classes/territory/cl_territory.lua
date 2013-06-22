@@ -3,14 +3,30 @@
 	Copyright © Slidefuse LLC - 2012
 --]]
 
-local mBoundary = Material("effects/laser_tracer")
+local mBoundary = CreateMaterial("boundaryRing", "UnlitGeneric", {
+	["$baseTexture"] = "color/white",
+	["$color"] = 1,
+	["$vertexcolor"] = 1
+})
+
 function SF.Territory:PostDrawOpaqueRenderables()
 	render.SetMaterial(mBoundary)
-	for k, v in next, self.stored do
+	/*for k, v in next, self.stored do
 		if (!v.drawCache) then
 			v:CreateDrawCache()
 		end
-		v:Draw()
+		//v:Draw()
+	end*/
+	local color = SF.Client:GetFaction():GetColor()
+	for k, v in pairs(self.boundaries) do
+		
+		local pointcount = #v
+		render.StartBeam(pointcount+1)
+		for pointk, point in pairs(v) do
+			render.AddBeam(point+Vector(0, 0, 1), 2, pointk/pointcount, color)
+		end
+		render.AddBeam(v[1]+Vector(0, 0, 2), 2, 0, color)
+		render.EndBeam()
 	end
 end
 
@@ -34,9 +50,14 @@ end
 
 function SF.Territory.metaClass:Draw()
 	for k, pointData in next, self.drawCache do
-		if (table.HasValue(self.pointsExcluded, k)) then continue end
 		render.DrawBeam(pointData[1], pointData[2], 3, 0.5, 0.75, self:GetFaction():GetColor())
-		debugoverlay.Text(pointData[1], self.index..":"..k, 5)
+		if (table.HasValue(self.pointsExcluded, k)) then 
+			debugoverlay.Text(pointData[1], self.index..":"..k, FrameTime())
+			continue 
+		end
+		debugoverlay.Text(pointData[1], self.index.."_"..k, FrameTime())
+		
+		
 	end
 end
 
