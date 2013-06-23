@@ -56,10 +56,8 @@ function SF.Territory.metaClass:PredictTriangle(pos)
 	local angle = Angle(0, math.deg(ang), 0)
 	angle:RotateAroundAxis(Vector(0, 0, 1), -90)
 	local y = angle.y
-	if (y < 0) then
-		y = 180 + (y + 180)
-	end
-	y = math.abs(y - 360)
+	if (y < 0) then y = 180 + (y + 180) end
+
 	local rad = math.rad(y)
 	local r = math.pi*2/32
 	return math.floor(rad/r)+1
