@@ -4,20 +4,28 @@
 --]]
 
 function SF.Territory.metaClass:Calculate()
+	--Setup some variables
 	local position = self.position + Vector(0, 0, 5)
 	local zPos = position.z
-	local s = (math.pi*2)/32
+	local s = -(math.pi*2)/32
 	local index = 1
 
+	--Setup some helpful variables
 	local vUp = Vector(0, 0, 1)
 	local vDown = Vector(0, 0, -1)
 	local skipDistance = 5
 	local org = position
 	self.recheckQueue = {}
 
-	for i = 0, math.pi*2, s do
+	--This will give us (in radians) angles to go out from, in a clockwise fashion.
+	for i = math.pi*2, 0, s do
+		--Find the vector offset, using some basic trig.
 		local vOffset = Vector(math.cos(i), math.sin(i), 0)
+
+		--Setup the length of the ray, we start at 0 and add for every addition
 		local length = 0
+
+		--Setup our first trace, maybe we can make it in one go...
 		local tr = SF.Util:SimpleTrace(org, org + vOffset*self.radius)	 
 		local prevHit = position
 		
@@ -102,7 +110,8 @@ function SF.Territory.metaClass:Calculate()
 		self:CalculateTriangles()
 
 		table.insert(self.recheckQueue, self.index)
-		--Check for excluded bbz
+		
+		--Recalculate excluded points within our territories, etc
 		local finalPos = self.points[index]
 		for tid, territory in next, SF.Territory.stored do
 			if (territory == self) then continue end
@@ -141,8 +150,9 @@ function SF.Territory.metaClass:Calculate()
 		end
 		territory:Network()
 	end
-
-    SF.Territory:CalculateBoundaries()
+	
+	--this was a major failure.
+    //SF.Territory:CalculateBoundaries()
 	
 end
 
@@ -158,24 +168,6 @@ function SF.Territory:GetAllPoints(included)
 	return points
 end
 
-concommand.Add("addt", function(ply, cmd, args)
-	local poss = {
-		Vector(108, 725, -145),
-		Vector(-10, 801, -145),
-		Vector(-113, 583, -145),
-		Vector(-340, 750, -145),
-		Vector(-220, 927, -145),
-		Vector(-63, 1108, -144),
-		Vector(23, 969, -145),
-		Vector(-445, 1138, -144),
-		Vector(-299, 1152, -144)
-	}
-	for k, v in pairs(poss) do
-		local territory = SF.Territory:Create(ply:GetFaction(), v, 140)
-		territory:Calculate()
-
-	end
-end)
 
 function SF.Territory:NearestNeighbor(territory, point)
 	if (type(point) == "number") then

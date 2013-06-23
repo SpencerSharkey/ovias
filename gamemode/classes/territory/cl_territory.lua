@@ -3,70 +3,131 @@
 	Copyright © Slidefuse LLC - 2012
 --]]
 
-local mBoundary = CreateMaterial("boundaryRing", "UnlitGeneric", {
-	["$baseTexture"] = "color/white",
-	["$color"] = 1,
-	["$vertexcolor"] = 1
+--A dummy material for our meshes
+local mInside = CreateMaterial("innerMaterial", "UnlitGeneric", {
+    ["$alpha"] = "0"
 })
 
+--A material for our ring. Let it accept color/alpha
+local mRing = CreateMaterial( "ringMaterial", "UnlitGeneric", {
+    ["$basetexture"] = "color/white",
+    ["$vertexalpha"] = "1",
+    ["$vertexcolor"] = "1"
+})
+
+
 function SF.Territory:PostDrawOpaqueRenderables()
-	render.SetMaterial(mBoundary)
-	/*for k, v in next, self.stored do
+	--Loop through our territories and make sure our meshes are setup.
+	--We only need to calculate the mesh ones per territory, per-frame would be useless and slow.
+	for k, v in next, self.stored do
 		if (!v.drawCache) then
 			v:CreateDrawCache()
 		end
-		//v:Draw()
-	end*/
-	local color = SF.Client:GetFaction():GetColor()
-	for k, v in pairs(self.boundaries) do
-		
-		local pointcount = #v
-		render.StartBeam(pointcount+1)
-		for pointk, point in pairs(v) do
-			render.AddBeam(point+Vector(0, 0, 1), 2, pointk/pointcount, color)
-		end
-		render.AddBeam(v[1]+Vector(0, 0, 2), 2, 0, color)
-		render.EndBeam()
 	end
+
+	--Index our faction color
+	local col = SF.Client:GetFaction():GetColor()
+
+	--Do our cam in a protected call so errors don't fuck up our scene (ex: http://4stor.com/BzRlY)
+	pcall(function() 
+		--Start a cam, duh.
+		cam.Start3D(EyePos(), EyeAngles())
+			--[[
+				Territory stencils 101
+					>Draw the outer boundary (the bigger one) to our stencil buffer
+					>Set the pixel reference value to 2, then draw the smaller one
+					>Use stencils to find the pixels that weren't drawn over by the smaller boundary
+					>Fill those pixels with a solid color to represent a boundary outline!
+			--]]
+			render.ClearStencil()
+			render.SetStencilEnable(true)
+			
+			render.SetStencilCompareFunction(STENCIL_ALWAYS) -- For our first draw, we want to always replace pixel reference values with our new ID
+			render.SetStencilPassOperation(STENCIL_REPLACE) -- Set all the pixels drawn to our new reference value so long as it passes
+			render.SetStencilFailOperation(STENCIL_KEEP) -- Keep failed pixels (that aren't within our newly drawn shit)
+			render.SetStencilZFailOperation(STENCIL_KEEP) -- We want to maintain the depth, so we don't overwrite pixels that we can't "see" (walls)			
+			
+			render.SetStencilReferenceValue(1) --Set our pixel reference value to 1
+
+			render.SetMaterial(mInside) --Set our material to our invisible but still valid material
+
+			--Draw the bigger one first on the reference value of 1
+			for k, v in next, self.stored do 
+				v.meshOutline:Draw()
+			end
+
+			render.SetStencilZFailOperation(STENCIL_REPLACE) -- We don't want to see our boundaries through walls.
+			render.SetStencilReferenceValue(2) -- Set our smaller mesh to a reference value of 2
+
+			--Draw the smaller meshes
+			for k, v in next, self.stored do
+				v.meshOutlineInside:Draw()
+			end
+			render.SetStencilCompareFunction(STENCIL_EQUAL)
+			render.SetStencilReferenceValue(1)
+			--The above two lines say "for all the pixels of a reference value of 1, do this:"
+
+			mRing:SetVector("$color", Vector(col.r/255, col.g/255, col.b/255)) --Set the materials color to reflect our faction color
+			render.SetMaterial(mRing) 
+			render.DrawScreenQuad()--Draw a material filling the above pixels
+
+
+			render.SetStencilEnable(false) --Stop using stencils
+		cam.End3D()
+		--Cleanup
+	end)
 end
 
 function SF.Territory.metaClass:CreateDrawCache()
-	self.drawCache = {}
+	--Setup tables for two of our meshes
+	local meshOutline = {}
+	local meshOutlineInside = {}
+	--Standard normal
+	local norm = Vector(0, 0, 1)
 
 	for k, point in next, self.points do
-		if (table.HasValue(self.pointsExcluded, k)) then continue end
-		local normal
-		local endPoint = point + (point-self.position):Angle():Forward()*5 + Vector(0, 0, 2)
-		local tr = SF.Util:SimpleTrace(point, endPoint)
-		if (!tr) then
-			normal = (point - self.position):Angle():Right()
-		else
-			normal = tr.HitNormal:Angle():Right()
+		--Find our next index
+		local nextK = k+1
+		if (nextK > #self.points) then
+			nextK = 1
 		end
-		
-		self.drawCache[k] = {point - normal*2, point + normal*2, normal}
+
+		--Localize our points, we go up 2 units because we don't want z-fighting (floating points suck)
+		local point = point + Vector(0, 0, 2)
+		local nextPoint = self.points[nextK] + Vector(0, 0, 2)
+
+		--Setup our outer mesh (http://4stor.com/wgv3i)
+		table.insert(meshOutline, {pos = nextPoint, normal = norm})
+		table.insert(meshOutline, {pos = self.position, normal = norm})
+		table.insert(meshOutline, {pos = point, normal = norm})
+
+		--Localize our inside points. We find the angle of each point realative to the centerpoint of the teritory and simply move it back.
+		local innerPoint = (point-self.position):Angle():Forward()*-5 + point
+		local innerNextPoint = (nextPoint-self.position):Angle():Forward()*-5 + nextPoint
+
+		--Setup our inner mesh
+		table.insert(meshOutlineInside, {pos = innerNextPoint, normal = norm})
+		table.insert(meshOutlineInside, {pos = self.position, normal = norm})
+		table.insert(meshOutlineInside, {pos = innerPoint, normal = norm})
 	end
+
+	--Create mesh objects and build them. Should be fast.
+	self.meshOutline = Mesh()
+	self.meshOutline:BuildFromTriangles(meshOutline)
+
+	self.meshOutlineInside = Mesh()
+	self.meshOutlineInside:BuildFromTriangles(meshOutlineInside)
+
+	--We're done here.
+	self.drawCache = true
 end
 
-function SF.Territory.metaClass:Draw()
-	for k, pointData in next, self.drawCache do
-		render.DrawBeam(pointData[1], pointData[2], 3, 0.5, 0.75, self:GetFaction():GetColor())
-		if (table.HasValue(self.pointsExcluded, k)) then 
-			debugoverlay.Text(pointData[1], self.index..":"..k, FrameTime())
-			continue 
-		end
-		debugoverlay.Text(pointData[1], self.index.."_"..k, FrameTime())
-		
-		
-	end
-end
-
+--Network hooks
 netstream.Hook("territoryRemove", function(data)
 	SF.Territory.stored[data]:Remove()
 end)
 
 netstream.Hook("territoryStream", function(data)
-	print("Receiving new territory: "..data.index)
 	if (!SF.Territory.stored[data.index]) then
 		local t = SF.Territory:CreateRaw()
 		t:LoadNetworkTable(data)
@@ -77,8 +138,5 @@ netstream.Hook("territoryStream", function(data)
 	end
 end)
 
-netstream.Hook("boundaryStream", function(data)
-	SF.Territory.boundaries = data
-end)
 
 SF:RegisterClass("clTerritory", SF.Territory)
