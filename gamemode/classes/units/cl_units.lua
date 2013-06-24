@@ -168,12 +168,6 @@ local constScale = Vector(1, 1, 1)
 local matWhite = CreateMaterial("whiteBlank1", "UnlitGeneric", {["$basetexture"] = "vgui/white"})
 function SF.Units:DrawUnits()
 
-
-	for id, ent in next, self:FindUnitEnts() do
-		if (ent.previewSelection) then
-			ent:DrawFlatCircle(ent:GetSize()*1.8)
-		end
-	end
 	--Selection Preview thingz
 	/*if (self.selectingEnt) then
 		cam.Start3D(EyePos(), EyeAngles())

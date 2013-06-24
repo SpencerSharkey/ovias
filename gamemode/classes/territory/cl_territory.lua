@@ -9,10 +9,11 @@ local mInside = CreateMaterial("innerMaterial", "UnlitGeneric", {
 })
 
 --A material for our ring. Let it accept color/alpha
-local mRing = CreateMaterial( "ringMaterial", "UnlitGeneric", {
+local mRing = CreateMaterial( "ringMaterial1", "UnlitGeneric", {
     ["$basetexture"] = "color/white",
     ["$vertexalpha"] = "1",
-    ["$vertexcolor"] = "1"
+    ["$vertexcolor"] = "1",
+    ["$alpha"] = "0.5"
 })
 
 
@@ -86,11 +87,8 @@ function SF.Territory.metaClass:CreateDrawCache()
 	local norm = Vector(0, 0, 1)
 
 	for k, point in next, self.points do
-		--Find our next index
-		local nextK = k+1
-		if (nextK > #self.points) then
-			nextK = 1
-		end
+		local nextK = ((k) % (#self.points)) + 1
+		//local nextK = k % #self.points
 
 		--Localize our points, we go up 2 units because we don't want z-fighting (floating points suck)
 		local point = point + Vector(0, 0, 2)
@@ -102,8 +100,8 @@ function SF.Territory.metaClass:CreateDrawCache()
 		table.insert(meshOutline, {pos = point, normal = norm})
 
 		--Localize our inside points. We find the angle of each point realative to the centerpoint of the teritory and simply move it back.
-		local innerPoint = (point-self.position):Angle():Forward()*-5 + point
-		local innerNextPoint = (nextPoint-self.position):Angle():Forward()*-5 + nextPoint
+		local innerPoint = (point-self.position):Angle():Forward()*-2 + point
+		local innerNextPoint = (nextPoint-self.position):Angle():Forward()*-2 + nextPoint
 
 		--Setup our inner mesh
 		table.insert(meshOutlineInside, {pos = innerNextPoint, normal = norm})

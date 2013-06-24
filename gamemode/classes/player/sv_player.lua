@@ -3,6 +3,20 @@
 	Copyright © Slidefuse LLC - 2012
 --]]
 
+function SF.PlayerMeta:GetEyeTrace()
+	local vAngles = self.ov_ViewAngles
+	local vOrigin = self.ov_ViewOrigin
+
+	local trace = {}
+
+	local newFov = SF.Util:FovFix(90, self.ScrW/self.ScrH)
+	trace.start = vOrigin
+	trace.endpos = trace.start + SF.Util:ScreenToAimVector(self.ov_MouseX, self.ov_MouseY, self.ScrW, self.ScrH, vAngles, math.rad(newFov))*32766
+	trace.filter = self.ovCamera
+
+	return util.TraceLine(trace)
+end
+
 function SF.PlayerMeta:CancelBuildMode()
 	SF.BuildMode:Cancel(self)
 end
@@ -61,6 +75,13 @@ function SF.Player:PlayerInit(ply)
 			v:NewPlayer(ply)
 		end
 	end
+
+	self.ovCamera = ents.Create("ov_camera")
+	self.ovCamera:SetPos(Vector(0, 0, 0))
+	self.ovCamera:Spawn()
+
+	timer.Simple(0.5, function() drive.PlayerStartDriving(ply, self.ovCamera, "drive_ovias") end)
+
 end
 
 SF:RegisterClass("svPlayer", SF.Player)

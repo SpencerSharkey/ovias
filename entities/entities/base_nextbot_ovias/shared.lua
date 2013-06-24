@@ -54,7 +54,10 @@ end
 function ENT:DrawCircle(size, color)
 	render.SetMaterial(mCircle)
 	local color = color or self:GetFaction():GetColor()
-	render.DrawQuadEasy(self:GetGroundPos() + Vector(0, 0, 1) * 0.1, self:GetGroundNormal(), size, size, self:GetFaction():GetColor())
+	if (self.isSelected)then
+		color = Color(255, 0, 0)
+	end
+	render.DrawQuadEasy(self:GetGroundPos() + Vector(0, 0, 1) * 0.1, self:GetGroundNormal(), size, size, color)
 end
 
 function ENT:DrawFlatCircle(size)

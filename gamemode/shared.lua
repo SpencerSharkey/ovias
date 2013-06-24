@@ -10,6 +10,7 @@ GM.Website 		= "slidefuse.com"
 
 SF = {}
 SF.CLASSES = {}
+_R = debug.getregistry()
 
 SF.TEAM_CONNECTED = 2
 SF.TEAM_SPEC = 1

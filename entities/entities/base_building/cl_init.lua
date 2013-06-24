@@ -29,10 +29,11 @@ local mFoundation = CreateMaterial("ovFoundation1", "VertexLitGeneric", {
 	["$model"] = 1
 })
 
-local mBuilder = CreateMaterial("ovBuildMesh3", "VertexLitGeneric", {
+local mBuilder = CreateMaterial("ovBuildMesh5", "VertexLitGeneric", {
 	["$basetexture"] = "ovias/buildframe",
 	["$translucent"] = 1,
-	["$model"] = 1
+	["$model"] = 1,
+	["$alpha"] = 0.5
 })
 
 local mWire = Material("models/wireframe")
@@ -88,8 +89,9 @@ function ENT:Draw()
 
 			render.CullMode(MATERIAL_CULLMODE_CW)
 			render.SuppressEngineLighting(true)
-			render.SetColorModulation(0, 0, 0, 1)
+			render.SetColorModulation(0.5, 0.5, 0.5, 1)
 			self:DrawModel()
+
 			render.SetColorModulation(1, 1, 1, 1)
 			render.SuppressEngineLighting(false)
 			render.CullMode(MATERIAL_CULLMODE_CCW)

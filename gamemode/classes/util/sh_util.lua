@@ -84,9 +84,26 @@ function SF.Util:Plane(tbl, p1, p2, normal)
 
 	self:Triangle(tbl, tl, bl, tr, normal)
 	self:Triangle(tbl, tr, bl, br, normal)
-
 end
 
+function SF.Util:FovFix(fov, ratio)
+	if (SERVER and !ratio) then error("NEEDS RATIO ON SERVERSIDE") end
+	local fov = fov or 90
+	local ratio = ratio or ScrW()/ScrH()
+	return (math.atan(math.tan((fov * math.pi) / 360) * (ratio / (4/3) )) * 360) / math.pi
+end
+
+function SF.Util:ScreenToAimVector(x, y, w, h, camAngle, fov)
+	local fov = fov or 90
+	local hw = w/2
+	local hh = h/2
+	local d = hw/math.tan(fov/2)
+	local forward = camAngle:Forward()
+	local right = camAngle:Right()
+	local up = camAngle:Up()
+
+	return (forward*d + right*(x-hw) + up*(hh-y)):GetNormal()
+end
 
 local RAND_ID = 1
 function SF.Util:Random()

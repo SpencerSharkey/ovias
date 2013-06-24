@@ -45,13 +45,12 @@ function SF.BuildMode:Think()
 	end
 end
 
-function SF.BuildMode:PlayerBindPress(ply, bind, pressed)
-	if (self.isBuilding) then 
-		if (bind == "+attack") then
-			netstream.Start("ovPlaceBuilding", self.building:GetTypeID())
-			self:StopBuild()
-			return true 	
-		end
+function SF.BuildMode:OviasLeftMousePress()
+	print("WFEWFEAFEWA")
+	if (self.isBuilding) then
+		netstream.Start("ovPlaceBuilding", self.building:GetTypeID())
+		self:StopBuild()
+		return true
 	end
 end
 
