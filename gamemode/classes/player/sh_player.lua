@@ -17,3 +17,11 @@ end
 function SF.PlayerMeta:GetFaction()
 	return self.ovFaction or false
 end
+
+function SF.Player:Think()
+	for k, v in pairs(player.GetAll()) do
+		if (v:HasInitialized()) then
+			SF:Call("PlayerThink", v)
+		end
+	end
+end

@@ -25,6 +25,12 @@ function SF.PlayerMeta:SpawnBuilding(type)
 	self:CreateBuilding(type, self:GetEyeTrace())
 end
 
+function SF.PlayerMeta:HasInitialized()
+	if (!self.playerInit) then return false end -- Check to see if the client says we're alive
+	if (!IsValid(self.ovCamera)) then return false end -- Check to see if camera is here
+	return self.playerInit
+end
+
 function SF.PlayerMeta:CreateBuilding(type, trace)
 
 	local ent = ents.Create("building_"..type)
@@ -81,7 +87,6 @@ function SF.Player:PlayerInit(ply)
 	self.ovCamera:Spawn()
 
 	timer.Simple(0.5, function() drive.PlayerStartDriving(ply, self.ovCamera, "drive_ovias") end)
-
 end
 
 SF:RegisterClass("svPlayer", SF.Player)

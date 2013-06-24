@@ -59,8 +59,8 @@ end)
 
 netstream.Hook("playerReady", function(ply, data)
 	if (!ply.playerInit) then
-		SF:Call("PlayerInit", ply)
 		ply.playerInit = true
+		SF:Call("PlayerInit", ply)
 	end
 end)
 
