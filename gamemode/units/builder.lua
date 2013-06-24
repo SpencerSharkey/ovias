@@ -23,7 +23,7 @@ end
 function ENT:RunBehaviour()
 	self.loco:SetDesiredSpeed(40)
 	self.loco:SetJumpHeight(50)
-	self.loco:SetStepHeight(2)
+	self.loco:SetStepHeight(15)
 
 	while ( true ) do
 		self.buildingEnt = nil

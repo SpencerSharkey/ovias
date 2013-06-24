@@ -81,8 +81,6 @@ function GM:ScoreboardShow( )
 end
 
 function GM:ScoreboardHide( )
-	gui.EnableScreenClicker( false )
-
 	oviasScoreboard:SetVisible( false )
 end
 
