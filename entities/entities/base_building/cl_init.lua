@@ -17,7 +17,8 @@ function ENT:Initialize()
 	self.buildProgress = 0
 	self.buildTicks = 0
 
-	
+
+
 
 	self:SharedInit()
 

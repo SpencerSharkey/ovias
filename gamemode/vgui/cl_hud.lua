@@ -24,6 +24,8 @@ surface.CreateFont( "plyInfo", {
 
 function SF.Hud:PostSetFaction()
 	self.panel = vgui.Create("sfCreation")
+
+	self.hotBar = vgui.Create("sfMenuBar")
 end
 
 local exclude = {"CHudHealth", "CHudBattery"}

@@ -38,9 +38,7 @@ function SF.Gamemode:Think()
 end
 
 function SF.Gamemode:SendCountdown(ply)
-	if (!ply) then
-		ply = player.GetAll()
-	end
+	if (!ply) then ply = player.GetAll() end
 
 	local ret = false
 	if (SF.Gamemode.startPlayTime) then
