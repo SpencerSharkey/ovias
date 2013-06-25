@@ -25,6 +25,10 @@ function SF.PlayerMeta:GetEyeTrace()
 	return util.TraceLine(trace)
 end
 
+function SF.PlayerMeta:HasInitialized()
+	return (self:GetFaction() == nil)
+end
+
 netstream.Hook("ovPlayerFaction", function(data)
 	local faction = SF.Faction:GetByNetKey(data)
 	SF.Client:SetFaction(faction)

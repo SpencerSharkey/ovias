@@ -18,6 +18,8 @@ local mRing = CreateMaterial( "ringMaterial1", "UnlitGeneric", {
 
 
 function SF.Territory:PostDrawOpaqueRenderables()
+	if (!SF.Client:HasInitialized()) then return end 
+
 	--Loop through our territories and make sure our meshes are setup.
 	--We only need to calculate the mesh ones per territory, per-frame would be useless and slow.
 	for k, v in next, self.stored do
