@@ -59,9 +59,6 @@ function ENT:Draw()
 
 	--Building Rendering
 	if (self.isBuilding) then
-
-
-
 		local buildProgress = self.buildProgress
 		local height = self.modelMaxs.z
 		local clipHeight = (buildProgress/100)*height
@@ -101,12 +98,9 @@ function ENT:Draw()
 			render.PopCustomClipPlane()
 		render.EnableClipping(false)
 		render.MaterialOverride(false)
-
 	else
 		self:DrawModel()
-
 	end
-
 end
 
 function ENT:Think()
