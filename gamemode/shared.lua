@@ -16,8 +16,11 @@ SF.TEAM_CONNECTED = 2
 SF.TEAM_SPEC = 1
 SF.TEAM_JOINING = 0
 
-AddCSLuaFile("netstream.lua")
-include("netstream.lua")
+--Some external dependencies
+AddCSLuaFile("external/von.lua")
+include("external/von.lua")
+AddCSLuaFile("external/netstream.lua")
+include("external/netstream.lua")
 
 --[[
 @class File
