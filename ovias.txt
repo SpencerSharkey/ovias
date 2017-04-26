@@ -1,7 +1,0 @@
-"ovias"
-{
-	"base"		"sandbox"
-	"title"		"Ovias"
-	"maps"		"^sf_|^ov_"
-	"menusystem"	"1"
-}

@@ -1,4 +1,0 @@
-"bricktile"
-{
-	"decals/bricktile"	"1"
-}

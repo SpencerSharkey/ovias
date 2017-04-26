@@ -1,6 +1,0 @@
-"VertexLitGeneric"
-{
-	"$baseTexture" "models/mrgiggles/sassilization/walltower"
-	"$bumpmap" "models/mrgiggles/sassilization/walltower_norm"
-	"$blendtintbybasealpha" "1"
-}
